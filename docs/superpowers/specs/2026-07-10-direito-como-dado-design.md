@@ -154,7 +154,7 @@ Per the rubric, three artifacts:
 1. **Complete application code** — notebooks + supporting modules.
 2. **RAG pipeline + README.md** — install deps, prepare documents, index the base, run queries.
 3. **Technical report (PDF)** — problem, corpus, LLM justification, models/tools, NLP tasks, prompting strategy + tested versions + evaluation, structured-output/parsing, embeddings + search strategy, query/retrieval examples, inference strategy + privacy/cost/latency justification, RAG description, chunking, vector store, answers with/without context, failure analysis, security risks + controls, reproduction instructions, limitations, future work.
-   - Filename: `correa_sistemas-cognitivos-linguagem-natural_aplicacoes-llms.pdf`
+   - Filename: `anderson_correa_sistemas-cognitivos-linguagem-natural_aplicacoes-llms.pdf`
 
 ### 7.1 File structure
 
