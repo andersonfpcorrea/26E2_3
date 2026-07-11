@@ -38,11 +38,14 @@ def split_articles(norm_id: str, plain_text: str) -> list[Article]:
 
 
 def parse_norm(
-    norm_id: str, title: str, level: HierarchyLevel, plain_text: str
+    norm_id: str, title: str, level: HierarchyLevel, plain_text: str,
+    urn: str = "", domain: str = "",
 ) -> Norm:
     return Norm(
         id=norm_id,
         title=title,
         level=level,
         articles=split_articles(norm_id, plain_text),
+        urn=urn,
+        domain=domain,
     )

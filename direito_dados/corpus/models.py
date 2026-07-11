@@ -51,6 +51,8 @@ class Norm:
     title: str
     level: HierarchyLevel
     articles: list[Article] = field(default_factory=list)
+    urn: str = ""
+    domain: str = ""
 
     def article(self, number: str) -> Article | None:
         for art in self.articles:

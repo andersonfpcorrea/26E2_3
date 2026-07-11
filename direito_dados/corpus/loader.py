@@ -11,7 +11,10 @@ from direito_dados.corpus.registry import NORMS, NormSpec
 
 def load_norm(spec: NormSpec, raw_dir: str) -> Norm:
     text = Path(raw_dir, spec.filename).read_text(encoding="utf-8")
-    return parse_norm(spec.id, spec.title, level_for_norm_type(spec.norm_type), text)
+    return parse_norm(
+        spec.id, spec.title, level_for_norm_type(spec.norm_type), text,
+        urn=spec.urn, domain=spec.domain,
+    )
 
 
 @dataclass
