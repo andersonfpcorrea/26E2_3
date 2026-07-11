@@ -14,7 +14,12 @@ class ParsedAnswer:
     parse_ok: bool = False
 
 
-def _extract_json(raw: str) -> dict | None:
+def extract_json_object(raw: str) -> dict | None:
+    """Extract the first balanced top-level JSON object from raw LLM output.
+
+    Tolerates ```json fences and surrounding prose. Returns None if no
+    balanced, parseable object is found.
+    """
     depth = 0
     start = -1
     for i, ch in enumerate(raw):
@@ -30,6 +35,9 @@ def _extract_json(raw: str) -> dict | None:
                 except json.JSONDecodeError:
                     start = -1
     return None
+
+
+_extract_json = extract_json_object
 
 
 def _norm_citation(c: str) -> str:
