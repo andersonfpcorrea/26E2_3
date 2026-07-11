@@ -1,0 +1,20 @@
+# Core (corpus parsing + fetch)
+beautifulsoup4>=4.12
+lxml>=5.0
+requests>=2.31
+
+# Retrieval (embeddings + vector store)
+chromadb>=1.5
+sentence-transformers>=5.0
+torch>=2.0
+
+# Analytics (visualisation)
+matplotlib>=3.8
+networkx>=3.0
+
+# Dev / tests
+pytest>=8.0
+
+# Tested with: chromadb 1.5.9, sentence-transformers 5.6.0, torch 2.13.0,
+# matplotlib 3.11.0, networkx 3.6.1, on Python 3.13.
+# Local generation uses Ollama (separate install): https://ollama.com
