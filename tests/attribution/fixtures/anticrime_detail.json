@@ -1,0 +1,1039 @@
+{
+  "id": 7850496,
+  "codigoMateria": 140099,
+  "identificacao": "PL 6341/2019",
+  "sigla": "PL",
+  "descricaoSigla": "Projeto de Lei",
+  "numero": "6341",
+  "ano": 2019,
+  "apelido": "Pacote anticrime",
+  "objetivo": "Revisora",
+  "casaIdentificadora": "SF",
+  "siglaEnteIdentificador": "SF",
+  "identificacaoExterna": {},
+  "conteudo": {
+    "id": 7402497,
+    "idTipo": 11,
+    "siglaTipo": "NORMA_GERAL",
+    "tipo": "Norma Geral",
+    "ementa": "Aperfeiçoa a legislação penal e processual penal.",
+    "explicacaoEmenta": "Pacote anticrime - dispõe sobre a legítima defesa para agentes de segurança pública; amplia para 40 anos o tempo máximo de cumprimento das penas; altera regras de livramento condicional; dispõe sobre o perdimento de bens; altera regras de prescrição; dispõe sobre crimes hediondos e sobre os crimes de homicídio, contra a honra, de roubo, de estelionato, de concussão, entre outros previstos na legislação extravagante; dispõe sobre \"juiz das garantias\"; altera normas de processo penal; dispõe sobre a progressão de regime; dispõe sobre a captação ambiental de sinais eletromagnéticos, ópticos ou acústicos, para fins de investigação ou instrução criminal; dispõe sobre a colaboração premiada.",
+    "tipoNormaIndicada": "LEI",
+    "codigoAssuntoEspecifico": 130,
+    "assuntoEspecifico": "Direito penal e processual penal",
+    "codigoAssuntoGeral": 83,
+    "assuntoGeral": "Jurídico"
+  },
+  "documento": {
+    "id": 8052825,
+    "siglaTipo": "PROJETO_LEI_ORDINARIA",
+    "tipo": "Projeto de Lei Ordinária",
+    "dataApresentacao": "2019-12-10",
+    "dataLeitura": "2019-12-11",
+    "casaLeitura": "SF",
+    "indexacao": " ALTERAÇÃO ,  CODIGO DE PROCESSO PENAL ,  CODIGO PENAL ,  LEI DE EXECUÇÃO PENAL ,  LEI FEDERAL ,  CRIME HEDIONDO ,  IMPROBIDADE ADMINISTRATIVA ,  ESCUTA TELEFONICA ,  LAVAGEM DE DINHEIRO ,  ESTATUTO ,  DESARMAMENTO ,  TRANSFERENCIA ,  PRESO ,  IDENTIFICAÇÃO CRIMINAL ,  JULGAMENTO ,  INVESTIGAÇÃO ,  ORGANIZAÇÃO ,  CRIME ,  DELAÇÃO PREMIADA .",
+    "url": "https://legis.senado.gov.br/sdleg-getter/documento?dm=8052825",
+    "autoria": [
+      {
+        "autor": "Câmara dos Deputados",
+        "siglaTipo": "CAMARA",
+        "descricaoTipo": "CAMARA",
+        "ordem": 1,
+        "outrosAutoresNaoInformados": "Não",
+        "idEnte": 2,
+        "siglaEnte": "CD",
+        "casaEnte": "CD",
+        "ente": "Câmara dos Deputados"
+      }
+    ],
+    "resumoAutoria": "Câmara dos Deputados"
+  },
+  "tramitando": "Não",
+  "dataInicioEfetivo": "2019-12-11",
+  "situacaoAtual": "TRANSFORMADA EM NORMA JURÍDICA COM VETO PARCIAL",
+  "siglaSituacaoAtual": "TNJRVETO",
+  "dataSituacaoAtual": "2019-12-24",
+  "classificacoes": [
+    {
+      "codigo": 33805422,
+      "descricao": "Processo Penal",
+      "descricaoHierarquia": "Jurídico / Processo / Processo Penal"
+    },
+    {
+      "codigo": 33805617,
+      "descricao": "Direito Penal e Penitenciário",
+      "descricaoHierarquia": "Jurídico / Direito Penal e Penitenciário"
+    }
+  ],
+  "autoriaIniciativa": [
+    {
+      "autor": "José Rocha",
+      "sexo": "M",
+      "siglaTipo": "DEPUTADO",
+      "descricaoTipo": "DEPUTADO",
+      "ordem": 1,
+      "outrosAutoresNaoInformados": "Não",
+      "codigoParlamentar": 588,
+      "siglaPartido": "PL",
+      "partido": "Partido Liberal",
+      "siglaCargo": "DEPUTADO",
+      "cargo": "Deputado Federal",
+      "idEnte": 2,
+      "siglaEnte": "CD",
+      "casaEnte": "CD",
+      "ente": "Câmara dos Deputados"
+    }
+  ],
+  "idProcessoCasaInicial": 7850495,
+  "identificacaoProcessoInicial": "PL 10372/2018",
+  "siglaCasaIniciadora": "CD",
+  "comissaoMpv": "{}",
+  "outrosNumeros": [
+    {
+      "idOutroProcesso": 7850495,
+      "sigla": "PL",
+      "numero": "10372",
+      "ano": 2018,
+      "tramitando": "Não",
+      "externaAoCongresso": "Não",
+      "casaIdentificadora": "CD",
+      "siglaEnteIdentificador": "CD",
+      "enteIdentificador": "Câmara dos Deputados"
+    }
+  ],
+  "processosRelacionados": [
+    {
+      "idOutroProcesso": 7852380,
+      "tipoRelacao": "REFERENCIA",
+      "sigla": "RQS",
+      "numero": "1102",
+      "ano": 2019,
+      "tramitando": "Não",
+      "casaIdentificadora": "SF",
+      "siglaEnteIdentificador": "PLEN",
+      "enteIdentificador": "Plenário do Senado Federal"
+    },
+    {
+      "idOutroProcesso": 7852595,
+      "tipoRelacao": "REFERENCIA",
+      "sigla": "RQS",
+      "numero": "1108",
+      "ano": 2019,
+      "tramitando": "Não",
+      "casaIdentificadora": "SF",
+      "siglaEnteIdentificador": "PLEN",
+      "enteIdentificador": "Plenário do Senado Federal"
+    },
+    {
+      "idOutroProcesso": 7859241,
+      "tipoRelacao": "VETO",
+      "sigla": "VET",
+      "numero": "56",
+      "ano": 2019,
+      "tramitando": "Não",
+      "casaIdentificadora": "CN",
+      "siglaEnteIdentificador": "PLEN",
+      "enteIdentificador": "Plenário do Congresso Nacional"
+    }
+  ],
+  "despachos": [
+    {
+      "id": 8055353,
+      "data": "2019-12-11",
+      "siglaTipoMotivacao": "LEITURA_DA_MATERIA",
+      "tipoMotivacao": "Leitura da Matéria",
+      "cancelado": "Não",
+      "encontroLegislativo": {
+        "id": 7851937,
+        "numero": 247,
+        "data": "2019-12-11",
+        "casa": "SF",
+        "tipo": "SES",
+        "descricao": "Sessão Deliberativa Ordinária",
+        "colegiado": {
+          "codigo": 1998,
+          "casa": "SF",
+          "sigla": "PLEN",
+          "nome": "Plenário do Senado Federal"
+        }
+      },
+      "providencias": [
+        {
+          "id": 7853703,
+          "tipo": "ANALISE",
+          "descricao": "Análise",
+          "ordem": 1,
+          "analiseTempo": "SUCESSIVA",
+          "analiseConteudo": "MATERIA",
+          "reexame": "Não",
+          "unidadesDestinatarias": [
+            {
+              "ordem": 1,
+              "tipoAnaliseDeliberacao": "NAO_TERMINATIVA",
+              "colegiado": {
+                "codigo": 34,
+                "sigla": "CCJ",
+                "casa": "SF",
+                "nome": "Comissão de Constituição, Justiça e Cidadania"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "autuacoes": [
+    {
+      "numero": 1,
+      "descricao": "Autuação Principal",
+      "idEnteControleAtual": 55304,
+      "siglaEnteControleAtual": "SEXPE",
+      "nomeEnteControleAtual": "Secretaria de Expediente",
+      "situacoes": [
+        {
+          "idTipo": 87,
+          "sigla": "AGDREL",
+          "descricao": "AGUARDANDO DESIGNAÇÃO DO RELATOR",
+          "inicio": "2019-12-10",
+          "fim": "2019-12-10",
+          "colegiado": {
+            "codigo": 34,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "enteAdministrativo": {
+            "id": 13565,
+            "casa": "SF",
+            "sigla": "SACCJ",
+            "nome": "Secretaria de Apoio à Comissão de Constituição, Justiça e Cidadania"
+          }
+        },
+        {
+          "idTipo": 91,
+          "sigla": "RELATOR",
+          "descricao": "MATÉRIA COM A RELATORIA",
+          "inicio": "2019-12-10",
+          "fim": "2019-12-10",
+          "colegiado": {
+            "codigo": 34,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "enteAdministrativo": {
+            "id": 13565,
+            "casa": "SF",
+            "sigla": "SACCJ",
+            "nome": "Secretaria de Apoio à Comissão de Constituição, Justiça e Cidadania"
+          }
+        },
+        {
+          "idTipo": 42,
+          "sigla": "PRONTPAUT",
+          "descricao": "PRONTA PARA A PAUTA NA COMISSÃO",
+          "inicio": "2019-12-10",
+          "fim": "2019-12-10",
+          "colegiado": {
+            "codigo": 34,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "enteAdministrativo": {
+            "id": 13565,
+            "casa": "SF",
+            "sigla": "SACCJ",
+            "nome": "Secretaria de Apoio à Comissão de Constituição, Justiça e Cidadania"
+          }
+        },
+        {
+          "idTipo": 89,
+          "sigla": "APRVPAR",
+          "descricao": "APROVADO PARECER NA COMISSÃO",
+          "inicio": "2019-12-10",
+          "fim": "2019-12-10",
+          "colegiado": {
+            "codigo": 34,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "enteAdministrativo": {
+            "id": 13565,
+            "casa": "SF",
+            "sigla": "SACCJ",
+            "nome": "Secretaria de Apoio à Comissão de Constituição, Justiça e Cidadania"
+          }
+        },
+        {
+          "idTipo": 14,
+          "sigla": "AGLPAR",
+          "descricao": "AGUARDANDO LEITURA PARECER (ES)",
+          "inicio": "2019-12-10",
+          "fim": "2019-12-11",
+          "colegiado": {
+            "codigo": 1998,
+            "casa": "SF",
+            "sigla": "PLEN",
+            "nome": "Plenário do Senado Federal"
+          },
+          "enteAdministrativo": {
+            "id": 55312,
+            "casa": "SF",
+            "sigla": "SLSF",
+            "nome": "Secretaria Legislativa do Senado Federal"
+          }
+        },
+        {
+          "idTipo": 25,
+          "sigla": "APRVD",
+          "descricao": "APROVADA",
+          "inicio": "2019-12-11",
+          "fim": "2019-12-13",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 13594,
+            "casa": "SF",
+            "sigla": "SEADI",
+            "nome": "Secretaria de Atas e Diários"
+          }
+        },
+        {
+          "idTipo": 57,
+          "sigla": "RMSAN",
+          "descricao": "REMETIDA À SANÇÃO",
+          "inicio": "2019-12-13",
+          "fim": "2019-12-24",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55304,
+            "casa": "SF",
+            "sigla": "SEXPE",
+            "nome": "Secretaria de Expediente"
+          }
+        },
+        {
+          "idTipo": 92,
+          "sigla": "TNJRVETO",
+          "descricao": "TRANSFORMADA EM NORMA JURÍDICA COM VETO PARCIAL",
+          "inicio": "2019-12-24",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55304,
+            "casa": "SF",
+            "sigla": "SEXPE",
+            "nome": "Secretaria de Expediente"
+          }
+        }
+      ],
+      "informesLegislativos": [
+        {
+          "id": 2029592,
+          "data": "2019-12-10 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55312,
+            "casa": "SF",
+            "sigla": "SLSF",
+            "nome": "Secretaria Legislativa do Senado Federal"
+          },
+          "descricao": "Este processado contém 177 (cento e setenta e sete) folhas numeradas. \r\nAutuação autorizada pelo Presidente do Senado, nos termos do art. 48 do Regimento Interno do Senado Federal.\r\nEncaminhado à CCJ.",
+          "documentosAssociados": [
+            {
+              "id": 8052836,
+              "tipo": "Avulso inicial da matéria",
+              "siglaTipo": "AVULSO_INICIAL",
+              "identificacao": "Avulso inicial da matéria",
+              "descricao": "-",
+              "data": "2019-12-10T00:00:00",
+              "autoria": "Senado Federal",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8052836"
+            }
+          ]
+        },
+        {
+          "id": 2029593,
+          "data": "2019-12-10 00:00:02",
+          "colegiado": {
+            "codigo": 34,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "enteAdministrativo": {
+            "id": 13565,
+            "casa": "SF",
+            "sigla": "SACCJ",
+            "nome": "Secretaria de Apoio à Comissão de Constituição, Justiça e Cidadania"
+          },
+          "descricao": "Recebido nesta Comissão. Matéria aguardando distribuição.",
+          "idSituacaoIniciada": 87,
+          "siglaSituacaoIniciada": "AGDREL"
+        },
+        {
+          "id": 102259,
+          "data": "2019-12-10 09:57:54",
+          "colegiado": {
+            "codigo": 34,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "enteAdministrativo": {
+            "id": 13565,
+            "casa": "SF",
+            "sigla": "SACCJ",
+            "nome": "Secretaria de Apoio à Comissão de Constituição, Justiça e Cidadania"
+          },
+          "descricao": "Distribuído ao Senador Marcos do Val, para emitir relatório.",
+          "idSituacaoIniciada": 91,
+          "siglaSituacaoIniciada": "RELATOR"
+        },
+        {
+          "id": 2029594,
+          "data": "2019-12-10 09:57:55",
+          "colegiado": {
+            "codigo": 34,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "enteAdministrativo": {
+            "id": 13565,
+            "casa": "SF",
+            "sigla": "SACCJ",
+            "nome": "Secretaria de Apoio à Comissão de Constituição, Justiça e Cidadania"
+          },
+          "descricao": "Juntei, às 10h23, a Emenda nº 1, de autoria do Senador Alessandro Vieira.\r\nEncaminhada ao relator, Senador Marcos do Val, para análise"
+        },
+        {
+          "id": 2029595,
+          "data": "2019-12-10 09:57:56",
+          "colegiado": {
+            "codigo": 34,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "enteAdministrativo": {
+            "id": 13565,
+            "casa": "SF",
+            "sigla": "SACCJ",
+            "nome": "Secretaria de Apoio à Comissão de Constituição, Justiça e Cidadania"
+          },
+          "descricao": "Recebido relatório do Senador Marcos do Val com voto favorável ao Projeto, com duas emendas de redação que apresenta e contrário à emenda nº 1.\r\nMatéria pronta para a Pauta na Comissão.",
+          "idSituacaoIniciada": 42,
+          "siglaSituacaoIniciada": "PRONTPAUT",
+          "documentosAssociados": [
+            {
+              "id": 8053095,
+              "tipo": "Relatório Legislativo",
+              "siglaTipo": "RELATORIO",
+              "identificacao": "Relatório Legislativo - SF195397407163",
+              "data": "2019-12-10T15:05:26",
+              "autoria": "Senador Marcos do Val (PODEMOS/ES)",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8053095"
+            }
+          ]
+        },
+        {
+          "id": 2029596,
+          "data": "2019-12-10 09:57:57",
+          "colegiado": {
+            "codigo": 34,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "enteAdministrativo": {
+            "id": 13565,
+            "casa": "SF",
+            "sigla": "SACCJ",
+            "nome": "Secretaria de Apoio à Comissão de Constituição, Justiça e Cidadania"
+          },
+          "descricao": "Na 77ª Reunião Extraordinária, realizada nesta data, a matéria é incluída como item Extrapauta nº 4.\r\n\r\nDurante a discussão da matéria, o Senador Marcos do Val altera o relatório concluindo por voto favorável ao Projeto e contrário à Emenda n° 1.\r\n\r\nA Comissão aprova o relatório que passa a constituir o Parecer da CCJ, favorável ao Projeto e contrário à Emenda n° 1.",
+          "idSituacaoIniciada": 89,
+          "siglaSituacaoIniciada": "APRVPAR",
+          "documentosAssociados": [
+            {
+              "id": 8053121,
+              "tipo": "Parecer",
+              "siglaTipo": "PARECER",
+              "identificacao": "P.S 163/2019 - CCJ",
+              "data": "2019-12-10T00:00:00",
+              "autoria": "Comissão de Constituição, Justiça e Cidadania",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8053121"
+            },
+            {
+              "id": 8053117,
+              "tipo": "Relatório Legislativo",
+              "siglaTipo": "RELATORIO",
+              "identificacao": "Relatório Legislativo - SF192929274625",
+              "data": "2019-12-10T15:32:58",
+              "autoria": "Senador Marcos do Val (PODEMOS/ES)",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8053117"
+            }
+          ]
+        },
+        {
+          "id": 102290,
+          "data": "2019-12-10 15:27:09",
+          "colegiado": {
+            "codigo": 34,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "enteAdministrativo": {
+            "id": 13565,
+            "casa": "SF",
+            "sigla": "SACCJ",
+            "nome": "Secretaria de Apoio à Comissão de Constituição, Justiça e Cidadania"
+          },
+          "descricao": "Encerrada a relatoria do Senador Marcos do Val por deliberação da matéria.\nÀ SLSF, para prosseguimento da tramitação."
+        },
+        {
+          "id": 2029599,
+          "data": "2019-12-10 15:27:10",
+          "colegiado": {
+            "codigo": 1998,
+            "casa": "SF",
+            "sigla": "PLEN",
+            "nome": "Plenário do Senado Federal"
+          },
+          "enteAdministrativo": {
+            "id": 55312,
+            "casa": "SF",
+            "sigla": "SLSF",
+            "nome": "Secretaria Legislativa do Senado Federal"
+          },
+          "descricao": "Juntado, às fls. 219-220, requerimento de urgência de autoria da CCJ, aprovado naquela Comissão na reunião de 11/12/2019.\r\n\r\nEncaminhado ao Plenário para comunicação da conclusão da instrução da matéria e abertura de prazo para emenda.",
+          "idSituacaoIniciada": 14,
+          "siglaSituacaoIniciada": "AGLPAR",
+          "documentosAssociados": [
+            {
+              "id": 8053643,
+              "tipo": "Requerimento",
+              "siglaTipo": "REQUERIMENTO",
+              "identificacao": "Requerimento",
+              "descricao": "Requerimento de urgência ao PL 6341/2019, da CCJ.",
+              "data": "2019-12-11T00:00:00",
+              "autoria": "Comissão de Constituição, Justiça e Cidadania",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8053643"
+            }
+          ]
+        },
+        {
+          "id": 2029600,
+          "data": "2019-12-11 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55312,
+            "casa": "SF",
+            "sigla": "SLSF",
+            "nome": "Secretaria Legislativa do Senado Federal"
+          },
+          "descricao": "Recebida, na Secretaria-Geral da Mesa, a Emenda nº 2-Plen, do Senador Weverton.",
+          "documentosAssociados": [
+            {
+              "id": 8053857,
+              "tipo": "Emenda",
+              "siglaTipo": "EMENDA",
+              "identificacao": "EMENDA 2 PLEN - PL 6341/2019",
+              "data": "2019-12-11T15:06:04",
+              "autoria": "Senador Weverton (PDT/MA)",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8053857"
+            }
+          ]
+        },
+        {
+          "id": 2029601,
+          "data": "2019-12-11 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 13594,
+            "casa": "SF",
+            "sigla": "SEADI",
+            "nome": "Secretaria de Atas e Diários"
+          },
+          "descricao": "Concluída a instrução da matéria, fica aberto o prazo de cinco dias úteis para recebimento de emendas perante à Mesa.\r\nEncaminhado à publicação e aprovado o Requerimento nº 1102, de 2019, de urgência para a presente matéria.\r\nEncaminhado à publicação e retirado o Requerimento nº 1108, de 2019, de autoria da Senadora Eliziane Gama, que solicita a tramitação conjunta da presente matéria com o PL nº 1864, de 2019.\r\nO Senador Weverton retira a Emenda nº 2 – PLEN.\r\nDiscussão encerrada.\r\nAprovado o projeto, nos termos do parecer.\r\nÀ sanção.\n(Encaminhada à publicação a Emenda nº 2 - PLEN)",
+          "idSituacaoIniciada": 25,
+          "siglaSituacaoIniciada": "APRVD",
+          "documentosAssociados": [
+            {
+              "id": 8054546,
+              "tipo": "Requerimento",
+              "siglaTipo": "REQUERIMENTO",
+              "identificacao": "RQS 1108/2019",
+              "descricao": "Tramitação conjunta do PL nº 6341/2019 com o PL nº 1864/2019.",
+              "data": "2019-12-10T16:29:36",
+              "autoria": "Senadora Eliziane Gama (CIDADANIA/MA)",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8054546"
+            },
+            {
+              "id": 8054351,
+              "tipo": "Requerimento",
+              "siglaTipo": "REQUERIMENTO",
+              "identificacao": "RQS 1102/2019",
+              "descricao": "Urgência para o PL nº 6341, DE 2019.",
+              "data": "2019-12-11T18:37:51",
+              "autoria": "Comissão de Constituição, Justiça e Cidadania",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8054351"
+            }
+          ]
+        },
+        {
+          "id": 102437,
+          "data": "2019-12-12 10:35:28",
+          "colegiado": {
+            "codigo": 1998,
+            "casa": "SF",
+            "sigla": "PLEN",
+            "nome": "Plenário do Senado Federal"
+          },
+          "enteAdministrativo": {
+            "id": 13594,
+            "casa": "SF",
+            "sigla": "SEADI",
+            "nome": "Secretaria de Atas e Diários"
+          },
+          "descricao": "Cancelamento do prazo para Apresentação de Emendas a projeto que obteve parecer favorável da Comissão, em 13/12/2019."
+        },
+        {
+          "id": 2029603,
+          "data": "2019-12-12 10:35:29",
+          "colegiado": {
+            "codigo": 1998,
+            "casa": "SF",
+            "sigla": "PLEN",
+            "nome": "Plenário do Senado Federal"
+          },
+          "enteAdministrativo": {
+            "id": 13594,
+            "casa": "SF",
+            "sigla": "SEADI",
+            "nome": "Secretaria de Atas e Diários"
+          },
+          "descricao": "À SEXP para envio à sanção, em virtude da aprovação da matéria."
+        },
+        {
+          "id": 2029606,
+          "data": "2019-12-13 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55304,
+            "casa": "SF",
+            "sigla": "SEXPE",
+            "nome": "Secretaria de Expediente"
+          },
+          "descricao": "Anexado o texto (fls. 225 a 257)."
+        },
+        {
+          "id": 2029608,
+          "data": "2019-12-13 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55304,
+            "casa": "SF",
+            "sigla": "SEXPE",
+            "nome": "Secretaria de Expediente"
+          },
+          "descricao": "Remetido Ofício SF nº 1083, de 13/12/19, ao Senhor Ministro de Estado Chefe da Casa Civil, encaminhando a Mensagem SF nº 203 ao Excelentíssimo Senhor Presidente da República, submetendo à sanção presidencial autógrafos do Projeto de Lei nº 6.341, de 2019. (fls. 258 a 292).\r\n\r\nRemetido Ofício SF nº 1084, de 13/12/19, à Senhora Primeira-Secretária da Câmara dos Deputados, comunicando que o Projeto de Lei nº 6.341, de 2019,  foi encaminhado à sanção presidencial (fl. 293).",
+          "idSituacaoIniciada": 57,
+          "siglaSituacaoIniciada": "RMSAN",
+          "documentosAssociados": [
+            {
+              "id": 8054983,
+              "tipo": "Ofício",
+              "siglaTipo": "OFICIO",
+              "identificacao": "OFSF 1084/2019",
+              "descricao": "Comunica à Câmara dos Deputados o encaminhamento à Presidência da República do Projeto de Lei n° 6.341, de 2019.",
+              "data": "2019-12-13T00:00:00",
+              "autoria": "Primeiro-Secretário do Senado Federal",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8054983"
+            },
+            {
+              "id": 8054976,
+              "tipo": "Ofício",
+              "siglaTipo": "OFICIO",
+              "identificacao": "OFSF 1083/2019",
+              "descricao": "Encaminha a Mensagem n° 203 , de 2019 (SF), da Presidência do Senado Federal, submetendo à sanção presidencial autógrafos do Projeto de Lei n° 6.341, de 2019.",
+              "data": "2019-12-13T00:00:00",
+              "autoria": "Primeiro-Secretário do Senado Federal",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8054976"
+            },
+            {
+              "id": 8054962,
+              "tipo": "Mensagem",
+              "siglaTipo": "MENSAGEM",
+              "identificacao": "MPSF 203/2019",
+              "descricao": "Encaminha à sanção o Projeto de Lei n° 6.341, de 2019.",
+              "data": "2019-12-13T00:00:00",
+              "autoria": "Presidente do Senado Federal",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8054962"
+            },
+            {
+              "id": 8055589,
+              "tipo": "Projeto de Lei Ordinária",
+              "siglaTipo": "PROJETO_LEI_ORDINARIA",
+              "identificacao": "Autógrafo - PL 6341/2019",
+              "descricao": "Aperfeiçoa a legislação penal e processual penal.",
+              "data": "2019-12-13T10:15:00",
+              "autoria": "Senado Federal",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8055589"
+            }
+          ]
+        },
+        {
+          "id": 2029610,
+          "data": "2019-12-24 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55304,
+            "casa": "SF",
+            "sigla": "SEXPE",
+            "nome": "Secretaria de Expediente"
+          },
+          "descricao": "(PR) PRESIDÊNCIA DA REPÚBLICA.\r\nSANCIONADA. LEI 13.964 DE 2019. (vetada parcialmente: vide MSG 726 de 2019).\r\nDOUE (Diário Oficial da União - Edição Extra) - 24/12/2019 - Seção I - págs. 1 e 7.\r\nSancionada em 24/12/2019.\r\n\r\nÀ COARQ.",
+          "idSituacaoIniciada": 92,
+          "siglaSituacaoIniciada": "TNJRVETO"
+        },
+        {
+          "id": 2053553,
+          "data": "2021-05-12 17:55:31",
+          "colegiado": {
+            "codigo": 1998,
+            "casa": "SF",
+            "sigla": "PLEN",
+            "nome": "Plenário do Senado Federal"
+          },
+          "enteAdministrativo": {
+            "id": 13594,
+            "casa": "SF",
+            "sigla": "SEADI",
+            "nome": "Secretaria de Atas e Diários"
+          },
+          "descricao": "Encaminhado à publicação a Mensagem  nº 179, de 2021, que restitui o autógrafo do veto parcial rejeitado pelo Congresso Nacional do Projeto de Lei nº 6.341, de 2019, promulgado e convertido na Lei nº 13.964, de 24 de dezembro de 2019.\r\nSerá feita a devida comunicação à Câmara dos Deputados."
+        },
+        {
+          "id": 2053945,
+          "data": "2021-05-19 10:40:44",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55304,
+            "casa": "SF",
+            "sigla": "SEXPE",
+            "nome": "Secretaria de Expediente"
+          },
+          "descricao": "Remetido Ofício CN nº 125, de 19/05/21, ao Primeiro-Secretário da Câmara dos Deputados, comunicando que a Presidência da República encaminhou ao Senado Federal a Mensagem n°179, de 2021, na origem, restituindo autógrafo das partes vetadas do Projeto de Lei n° 6341, de 2019, promulgadas e incorporadas à Lei n° 13.964, de 24 de dezembro de 2019.",
+          "documentosAssociados": [
+            {
+              "id": 8969239,
+              "tipo": "Ofício",
+              "siglaTipo": "OFICIO",
+              "identificacao": "OFCN 125/2021",
+              "descricao": "Comunica à Câmara dos Deputados restituição de autógrafo promulgado de partes vetadas do Veto Parcial n° 56, de 2019, aposto ao Projeto de Lei  n° 6.341, de 2019.",
+              "data": "2021-05-19T00:00:00",
+              "autoria": "Primeiro-Secretário do Senado Federal",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=8969239"
+            }
+          ]
+        },
+        {
+          "id": 2085584,
+          "data": "2022-04-27 15:16:37",
+          "colegiado": {
+            "codigo": 1998,
+            "casa": "SF",
+            "sigla": "PLEN",
+            "nome": "Plenário do Senado Federal"
+          },
+          "enteAdministrativo": {
+            "id": 55305,
+            "casa": "SF",
+            "sigla": "ATRSGM",
+            "nome": "Assessoria Técnica"
+          },
+          "descricao": "Anexadas cópias dos Ofícios eletrônicos nº 2757/2022 e 2766/2022, do Supremo Tribunal Federal, que encaminham certidões de julgamento das Ações Diretas de Inconstitucionalidade nº 6582 e 6581, que conferiram interpretação conforme a Constituição ao parágrafo único do art. 316 do Código de Processo Penal, com a redação dada pela Lei nº 13.964/2019.",
+          "documentosAssociados": [
+            {
+              "id": 9136217,
+              "tipo": "Ofício",
+              "siglaTipo": "OFICIO",
+              "identificacao": "Ofício - SF222015457390",
+              "descricao": "Ofício eletrônico nº 2776/2022, do Supremo Tribunal Federal, que encaminha certidão de julgamento da Ação Direta de Inconstitucionalidade nº 6581.",
+              "data": "2022-03-14T00:00:00",
+              "autoria": "Supremo Tribunal Federal",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=9136217"
+            },
+            {
+              "id": 9136195,
+              "tipo": "Ofício",
+              "siglaTipo": "OFICIO",
+              "identificacao": "Ofício - SF226412632950",
+              "descricao": "Ofício eletrônico nº 2757/2022, do Supremo Tribunal Federal, que encaminha certidão de julgamento da Ação Direta de Inconstitucionalidade nº 6582.",
+              "data": "2022-03-14T00:00:00",
+              "autoria": "Supremo Tribunal Federal",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=9136195"
+            }
+          ]
+        }
+      ],
+      "movimentacoes": [
+        {
+          "id": 8854349,
+          "dataEnvio": "2019-12-10 09:41:00",
+          "enteOrigem": {
+            "id": 55312,
+            "casa": "SF",
+            "sigla": "SLSF",
+            "nome": "Secretaria Legislativa do Senado Federal"
+          },
+          "dataRecebimento": "2019-12-10 09:57:30",
+          "enteDestino": {
+            "id": 13565,
+            "casa": "SF",
+            "sigla": "SACCJ",
+            "nome": "Secretaria de Apoio à Comissão de Constituição, Justiça e Cidadania"
+          },
+          "colegiadoDestino": {}
+        },
+        {
+          "id": 8854350,
+          "dataEnvio": "2019-12-10 16:22:12",
+          "enteOrigem": {
+            "id": 13565,
+            "casa": "SF",
+            "sigla": "SACCJ",
+            "nome": "Secretaria de Apoio à Comissão de Constituição, Justiça e Cidadania"
+          },
+          "dataRecebimento": "2019-12-10 16:27:34",
+          "enteDestino": {
+            "id": 55312,
+            "casa": "SF",
+            "sigla": "SLSF",
+            "nome": "Secretaria Legislativa do Senado Federal"
+          },
+          "colegiadoDestino": {
+            "codigo": 1998,
+            "casa": "SF",
+            "sigla": "PLEN",
+            "nome": "Plenário do Senado Federal"
+          }
+        },
+        {
+          "id": 8854351,
+          "dataEnvio": "2019-12-11 14:37:14",
+          "enteOrigem": {
+            "id": 55312,
+            "casa": "SF",
+            "sigla": "SLSF",
+            "nome": "Secretaria Legislativa do Senado Federal"
+          },
+          "dataRecebimento": null,
+          "enteDestino": {
+            "id": 13594,
+            "casa": "SF",
+            "sigla": "SEADI",
+            "nome": "Secretaria de Atas e Diários"
+          },
+          "colegiadoDestino": {}
+        },
+        {
+          "id": 8854352,
+          "dataEnvio": "2019-12-11 21:25:46",
+          "enteOrigem": {
+            "id": 55312,
+            "casa": "SF",
+            "sigla": "SLSF",
+            "nome": "Secretaria Legislativa do Senado Federal"
+          },
+          "dataRecebimento": "2019-12-11 21:39:17",
+          "enteDestino": {
+            "id": 13594,
+            "casa": "SF",
+            "sigla": "SEADI",
+            "nome": "Secretaria de Atas e Diários"
+          },
+          "colegiadoDestino": {}
+        },
+        {
+          "id": 8854354,
+          "dataEnvio": "2019-12-11 21:39:17",
+          "enteOrigem": {
+            "id": 13594,
+            "casa": "SF",
+            "sigla": "SEADI",
+            "nome": "Secretaria de Atas e Diários"
+          },
+          "dataRecebimento": null,
+          "enteDestino": {
+            "id": 55304,
+            "casa": "SF",
+            "sigla": "SEXPE",
+            "nome": "Secretaria de Expediente"
+          },
+          "colegiadoDestino": {}
+        },
+        {
+          "id": 8854356,
+          "dataEnvio": "2019-12-12 11:30:32",
+          "enteOrigem": {
+            "id": 13594,
+            "casa": "SF",
+            "sigla": "SEADI",
+            "nome": "Secretaria de Atas e Diários"
+          },
+          "dataRecebimento": "2019-12-12 17:26:39",
+          "enteDestino": {
+            "id": 55304,
+            "casa": "SF",
+            "sigla": "SEXPE",
+            "nome": "Secretaria de Expediente"
+          },
+          "colegiadoDestino": {}
+        },
+        {
+          "id": 8854358,
+          "dataEnvio": "2019-12-26 08:04:38",
+          "enteOrigem": {
+            "id": 55304,
+            "casa": "SF",
+            "sigla": "SEXPE",
+            "nome": "Secretaria de Expediente"
+          },
+          "dataRecebimento": "2020-01-06 10:59:36",
+          "enteDestino": {
+            "id": 55299,
+            "casa": "SF",
+            "sigla": "COARQ",
+            "nome": "Coordenação de Arquivo"
+          },
+          "colegiadoDestino": {}
+        },
+        {
+          "id": 8966645,
+          "dataEnvio": "2021-05-06 12:59:52",
+          "enteOrigem": {
+            "id": 55299,
+            "casa": "SF",
+            "sigla": "COARQ",
+            "nome": "Coordenação de Arquivo"
+          },
+          "dataRecebimento": "2021-05-11 11:21:43",
+          "enteDestino": {
+            "id": 55312,
+            "casa": "SF",
+            "sigla": "SLSF",
+            "nome": "Secretaria Legislativa do Senado Federal"
+          },
+          "colegiadoDestino": {
+            "codigo": 1998,
+            "casa": "SF",
+            "sigla": "PLEN",
+            "nome": "Plenário do Senado Federal"
+          }
+        },
+        {
+          "id": 8967923,
+          "dataEnvio": "2021-05-11 11:22:13",
+          "enteOrigem": {
+            "id": 55312,
+            "casa": "SF",
+            "sigla": "SLSF",
+            "nome": "Secretaria Legislativa do Senado Federal"
+          },
+          "dataRecebimento": "2021-05-12 17:55:20",
+          "enteDestino": {
+            "id": 13594,
+            "casa": "SF",
+            "sigla": "SEADI",
+            "nome": "Secretaria de Atas e Diários"
+          },
+          "colegiadoDestino": {
+            "codigo": 1998,
+            "casa": "SF",
+            "sigla": "PLEN",
+            "nome": "Plenário do Senado Federal"
+          }
+        },
+        {
+          "id": 8968936,
+          "dataEnvio": "2021-05-12 19:44:38",
+          "enteOrigem": {
+            "id": 13594,
+            "casa": "SF",
+            "sigla": "SEADI",
+            "nome": "Secretaria de Atas e Diários"
+          },
+          "dataRecebimento": "2021-05-13 09:49:52",
+          "enteDestino": {
+            "id": 55304,
+            "casa": "SF",
+            "sigla": "SEXPE",
+            "nome": "Secretaria de Expediente"
+          },
+          "colegiadoDestino": {}
+        },
+        {
+          "id": 9135819,
+          "dataEnvio": "2022-04-27 07:16:06",
+          "enteOrigem": {
+            "id": 55304,
+            "casa": "SF",
+            "sigla": "SEXPE",
+            "nome": "Secretaria de Expediente"
+          },
+          "dataRecebimento": "2022-04-27 14:11:39",
+          "enteDestino": {
+            "id": 55305,
+            "casa": "SF",
+            "sigla": "ATRSGM",
+            "nome": "Assessoria Técnica"
+          },
+          "colegiadoDestino": {}
+        },
+        {
+          "id": 9136414,
+          "dataEnvio": "2022-04-27 18:40:40",
+          "enteOrigem": {
+            "id": 55305,
+            "casa": "SF",
+            "sigla": "ATRSGM",
+            "nome": "Assessoria Técnica"
+          },
+          "dataRecebimento": "2022-04-28 11:50:32",
+          "enteDestino": {
+            "id": 55304,
+            "casa": "SF",
+            "sigla": "SEXPE",
+            "nome": "Secretaria de Expediente"
+          },
+          "colegiadoDestino": {}
+        }
+      ]
+    }
+  ],
+  "deliberacao": {
+    "data": "2019-12-11",
+    "siglaTipo": "APROVADA_NO_PLENARIO",
+    "tipoDeliberacao": "Aprovada pelo Plenário",
+    "idDestino": 3,
+    "siglaDestino": "SANCAO",
+    "destino": "À sanção"
+  },
+  "normaGerada": {
+    "codigo": 31865675,
+    "siglaTipo": "LEI-n",
+    "tipo": "Lei Numerada",
+    "numero": 13964,
+    "anoAssinatura": "2019",
+    "dataAssinatura": "2019-12-24",
+    "observacao": "Quanto à vigência desta Lei, vide Art. 20.",
+    "descricao": "Lei nº 13.964 de 24/12/2019",
+    "dataPublicacao": "2019-12-24",
+    "siglaVeiculoPublicacao": "DOUE",
+    "veiculoPublicacao": "[Diário Oficial da União - Edição Extra  de 24/12/2019 - nº 248-A] (p. 1, col. 1)"
+  }
+}

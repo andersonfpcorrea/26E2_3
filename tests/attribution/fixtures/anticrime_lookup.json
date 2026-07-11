@@ -1,0 +1,42 @@
+[
+  {
+    "apelido": "Pacote anticrime",
+    "autoria": "Câmara dos Deputados",
+    "casaIdentificadora": "SF",
+    "codigoMateria": 140099,
+    "dataApresentacao": "2019-12-10",
+    "dataDeliberacao": "2019-12-11",
+    "dataSituacaoAtual": "2019-12-24",
+    "ementa": "Aperfeiçoa a legislação penal e processual penal.",
+    "enteIdentificador": "SF",
+    "id": 7850496,
+    "identificacao": "PL 6341/2019",
+    "normaGerada": "Lei nº 13.964 de 24/12/2019",
+    "objetivo": "Revisora",
+    "siglaTipoDeliberacao": "APROVADA_NO_PLENARIO",
+    "situacaoAtual": "TRANSFORMADA EM NORMA JURÍDICA COM VETO PARCIAL",
+    "tipoConteudo": "Norma Geral",
+    "tipoDocumento": "Projeto de Lei Ordinária",
+    "tramitando": "Não",
+    "urlDocumento": "https://legis.senado.gov.br/sdleg-getter/documento?dm=8052825"
+  },
+  {
+    "autoria": "Presidência da República",
+    "casaIdentificadora": "CN",
+    "codigoMateria": 140380,
+    "dataApresentacao": "2019-12-25",
+    "dataDeliberacao": "2021-04-19",
+    "dataSituacaoAtual": "2021-04-19",
+    "ementa": "Veto Parcial aposto ao Projeto de Lei nº 6.341, de 2019 (nº 10.372/2018, na Câmara dos Deputados), que \"Aperfeiçoa a legislação penal e processual penal\".",
+    "enteIdentificador": "PLEN",
+    "id": 7859241,
+    "identificacao": "VET 56/2019",
+    "normaGerada": "Lei nº 13.964 de 24/12/2019",
+    "siglaTipoDeliberacao": "MANTIDO_PARCIALMENTE",
+    "situacaoAtual": "VETO DELIBERADO PELO PLENÁRIO",
+    "tipoConteudo": "Veto Constitucional",
+    "tipoDocumento": "Mensagem",
+    "tramitando": "Não",
+    "urlDocumento": "https://legis.senado.gov.br/sdleg-getter/documento?dm=8060285"
+  }
+]

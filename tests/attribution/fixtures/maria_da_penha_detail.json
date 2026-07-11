@@ -1,0 +1,1117 @@
+{
+  "id": 2066200,
+  "codigoMateria": 77244,
+  "identificacao": "PLC 37/2006",
+  "sigla": "PLC",
+  "descricaoSigla": "Projeto de Lei da Câmara",
+  "numero": "37",
+  "ano": 2006,
+  "apelido": "LEI MARIA DA PENHA",
+  "objetivo": "Revisora",
+  "casaIdentificadora": "SF",
+  "siglaEnteIdentificador": "SF",
+  "identificacaoExterna": {},
+  "conteudo": {
+    "id": 2066205,
+    "idTipo": 11,
+    "siglaTipo": "NORMA_GERAL",
+    "tipo": "Norma Geral",
+    "ementa": "Cria mecanismos para coibir a violência doméstica e familiar contra a mulher, nos termos do § 8º do art. 226 da Constituição Federal, da Convenção para a Eliminação de todas as formas de Discriminação contra as Mulheres e da Convenção de Belém do Pará; dispõe sobre a criação dos Juizados de Violência Doméstica e Familiar contra a Mulher; altera os Decretos-Lei nºs 3.689, de 3 de outubro de 1941 - Código de Processo Penal e 2.848, de 7 de dezembro de 1940 - Código Penal, e a Lei nº 7.210, de 11 de julho de 1984; e dá outras providências.",
+    "tipoNormaIndicada": "LEI",
+    "codigoAssuntoEspecifico": 145,
+    "assuntoEspecifico": "Família, proteção a crianças, adolescentes, mulheres e idosos",
+    "codigoAssuntoGeral": 84,
+    "assuntoGeral": "Social"
+  },
+  "documento": {
+    "id": 2066206,
+    "siglaTipo": "PROJETO_LEI_ORDINARIA",
+    "tipo": "Projeto de Lei Ordinária",
+    "dataApresentacao": "2006-03-31",
+    "dataLeitura": "2006-03-31",
+    "indexacao": "CRIAÇÃO, NORMAS, COMBATE, VIOLÊNCIA DOMÉSTICA, VIOLÊNCIA FAMILIAR, AGRESSÃO, MULHER, DANOS FÍSICOS, DANOS PSICOLÓGICOS, DANOS MORAIS, DANOS MATERIAIS, RELAÇÃO, GÊNERO, DIREITO CONSTITUCIONAL, ASSISTÊNCIA, PRESERVAÇÃO, SAÚDE MENTAL, IMPLEMENTAÇÃO, POLÍTICAS PÚBLICAS, UNIÃO FEDERAL, ESTADOS, (DF), MUNICÍPIOS, INTEGRAÇÃO, PARCERIA, CONVÊNIO, PROTOCOLO, ÓRGÃO PÚBLICO, JUDICIÁRIO, MINISTÉRIO PÚBLICO, DEFENSORIA PÚBLICA, SEGURANÇA PÚBLICA, ASSISTÊNCIA SOCIAL, SAÚDE, EDUCAÇÃO, TRABALHO, HABITAÇÃO, LAZER, PREVENÇÃO, ERRADICAÇÃO, VIOLÊNCIA, INOVAÇÃO, PROCEDIMENTO ESPECIAL, VARAS JUDICIÁRIAS, JUIZADO ESPECIAL CIVIL, JUIZADO ESPECIAL CRIMINAL, AÇÃO PENAL PÚBLICA CONDICIONADA, EXIGÊNCIA, COMPARECIMENTO, AUTORIDADE POLICIAL, LOCAL, FATO, CRIMINOSO, INSTAURAÇÃO, INQUÉRITO POLICIAL, ATENDIMENTO, DEPOIMENTO, VÍTIMA, INFRATOR, TESTEMUNHA, RECOLHIMENTO, PROVA PERICIAL, EXAME, EXAME DE CORPO DELITO, PERÍCIA, GARANTIA, ASSISTÊNCIA JURÍDICA GRATUITA, ACOMPANHAMENTO, AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO, ADVOGADO, DECRETAÇÃO, JUÍZO, MEDIDA CAUTELAR, AFASTAMENTO, ACUSADO, RESIDÊNCIA, ENCAMINHAMENTO, FAMÍLIA, DEPENDENTE, PROGRAMA, PROTEÇÃO, ASSISTÊNCIA PSICOLÓGICA, CENTRO DE ATENDIMENTO, REHABILITAÇÃO, EQUIPE INTERDISCIPLINAR, PROTEÇAO, PATRIMÔNIO, PROIBIÇÃO, APLICAÇÃO, PENA RESTRITIVA DE DIREITOS, PENA PECUNIÁRIA, CESTA DE ALIMENTOS BÁSICOS, MULTA, DECRETAÇÃO, PRISÃO PREVENTIVA, INFRATOR, CRIME, VIOLÊNCIA  DOMÉSTICA, VIOLÊNCIA FAMILIAR, VÍTIMA, MULHER.",
+    "autoria": [
+      {
+        "autor": "Câmara dos Deputados",
+        "siglaTipo": "CAMARA",
+        "descricaoTipo": "CAMARA",
+        "ordem": 1,
+        "outrosAutoresNaoInformados": "Não",
+        "idEnte": 2,
+        "siglaEnte": "CD",
+        "casaEnte": "CD",
+        "ente": "Câmara dos Deputados"
+      }
+    ],
+    "resumoAutoria": "Câmara dos Deputados"
+  },
+  "tramitando": "Não",
+  "dataInicioEfetivo": "2006-03-31",
+  "situacaoAtual": "TRANSFORMADA EM NORMA JURÍDICA",
+  "siglaSituacaoAtual": "TNJR",
+  "dataSituacaoAtual": "2006-08-08",
+  "classificacoes": [
+    {
+      "codigo": 33805422,
+      "descricao": "Processo Penal",
+      "descricaoHierarquia": "Jurídico / Processo / Processo Penal"
+    },
+    {
+      "codigo": 33805617,
+      "descricao": "Direito Penal e Penitenciário",
+      "descricaoHierarquia": "Jurídico / Direito Penal e Penitenciário"
+    },
+    {
+      "codigo": 33809408,
+      "descricao": "Mulheres",
+      "descricaoHierarquia": "Política Social / Proteção Social / Mulheres"
+    }
+  ],
+  "autoriaIniciativa": [
+    {
+      "autor": "Presidência da República",
+      "siglaTipo": "PRESIDENTE_REPUBLICA",
+      "descricaoTipo": "PRESIDENTE_REPUBLICA",
+      "ordem": 1,
+      "outrosAutoresNaoInformados": "Não",
+      "idEnte": 55126,
+      "siglaEnte": "PR",
+      "ente": "Presidência da República"
+    }
+  ],
+  "idProcessoCasaInicial": 2066197,
+  "identificacaoProcessoInicial": "PL 4559/2004",
+  "siglaCasaIniciadora": "CD",
+  "comissaoMpv": "{}",
+  "outrosNumeros": [
+    {
+      "idOutroProcesso": 2066197,
+      "sigla": "PL",
+      "numero": "04559",
+      "ano": 2004,
+      "tramitando": "Não",
+      "externaAoCongresso": "Não",
+      "casaIdentificadora": "CD",
+      "siglaEnteIdentificador": "CD",
+      "enteIdentificador": "Câmara dos Deputados"
+    },
+    {
+      "sigla": "MSG",
+      "numero": "782",
+      "ano": 2004,
+      "tramitando": "Não",
+      "siglaEnteIdentificador": "PR",
+      "enteIdentificador": "Presidência da República"
+    }
+  ],
+  "despachos": [
+    {
+      "id": 7815785,
+      "data": "2006-04-03",
+      "siglaTipoMotivacao": "NAO_CATEGORIZADO",
+      "tipoMotivacao": "Motivação não categorizada",
+      "cancelado": "Não",
+      "encontroLegislativo": {
+        "colegiado": {}
+      },
+      "providencias": [
+        {
+          "id": 7602067,
+          "tipo": "ANALISE",
+          "descricao": "Análise",
+          "ordem": 1,
+          "analiseTempo": null,
+          "analiseConteudo": null,
+          "reexame": "Não",
+          "unidadesDestinatarias": [
+            {
+              "ordem": 1,
+              "tipoAnaliseDeliberacao": "NAO_TERMINATIVA",
+              "colegiado": {
+                "codigo": 34,
+                "sigla": "CCJ",
+                "casa": "SF",
+                "nome": "Comissão de Constituição, Justiça e Cidadania"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "autuacoes": [
+    {
+      "numero": 1,
+      "descricao": "Autuação Principal",
+      "idEnteControleAtual": 55299,
+      "siglaEnteControleAtual": "COARQ",
+      "nomeEnteControleAtual": "Coordenação de Arquivo",
+      "situacoes": [
+        {
+          "idTipo": 13,
+          "sigla": "AGLEIT",
+          "descricao": "AGUARDANDO LEITURA",
+          "inicio": "2006-03-31",
+          "fim": "2006-04-03",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          }
+        },
+        {
+          "idTipo": 87,
+          "sigla": "AGDREL",
+          "descricao": "AGUARDANDO DESIGNAÇÃO DO RELATOR",
+          "inicio": "2006-04-03",
+          "fim": "2006-04-10",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 3947535,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          }
+        },
+        {
+          "idTipo": 91,
+          "sigla": "RELATOR",
+          "descricao": "MATÉRIA COM A RELATORIA",
+          "inicio": "2006-04-10",
+          "fim": "2006-05-22",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 3947535,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          }
+        },
+        {
+          "idTipo": 138,
+          "sigla": "INPAUTA",
+          "descricao": "INCLUÍDA NA PAUTA DA REUNIÃO",
+          "inicio": "2006-05-22",
+          "fim": "2006-05-24",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 3947535,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          }
+        },
+        {
+          "idTipo": 89,
+          "sigla": "APRVPAR",
+          "descricao": "APROVADO PARECER NA COMISSÃO",
+          "inicio": "2006-05-24",
+          "fim": "2006-06-01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 3947535,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          }
+        },
+        {
+          "idTipo": 14,
+          "sigla": "AGLPAR",
+          "descricao": "AGUARDANDO LEITURA PARECER (ES)",
+          "inicio": "2006-06-01",
+          "fim": "2006-06-02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          }
+        },
+        {
+          "idTipo": 88,
+          "sigla": "AGREMESA",
+          "descricao": "AGUARDANDO RECEBIMENTO DE EMENDAS PERANTE A MESA",
+          "inicio": "2006-06-02",
+          "fim": "2006-06-13",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 7217796,
+            "casa": "SF",
+            "sigla": "ATA-PLEN",
+            "nome": "SUBSECRETARIA DE ATA - PLENÁRIO"
+          }
+        },
+        {
+          "idTipo": 8,
+          "sigla": "PRONDEPLEN",
+          "descricao": "PRONTO PARA DELIBERAÇÃO DO PLENÁRIO",
+          "inicio": "2006-06-13",
+          "fim": "2006-07-04",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          }
+        },
+        {
+          "idTipo": 25,
+          "sigla": "APRVD",
+          "descricao": "APROVADA",
+          "inicio": "2006-07-04",
+          "fim": "2006-07-11",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 7217796,
+            "casa": "SF",
+            "sigla": "ATA-PLEN",
+            "nome": "SUBSECRETARIA DE ATA - PLENÁRIO"
+          }
+        },
+        {
+          "idTipo": 8,
+          "sigla": "PRONDEPLEN",
+          "descricao": "PRONTO PARA DELIBERAÇÃO DO PLENÁRIO",
+          "inicio": "2006-07-11",
+          "fim": "2006-07-12",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          }
+        },
+        {
+          "idTipo": 25,
+          "sigla": "APRVD",
+          "descricao": "APROVADA",
+          "inicio": "2006-07-12",
+          "fim": "2006-07-19",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 7217796,
+            "casa": "SF",
+            "sigla": "ATA-PLEN",
+            "nome": "SUBSECRETARIA DE ATA - PLENÁRIO"
+          }
+        },
+        {
+          "idTipo": 57,
+          "sigla": "RMSAN",
+          "descricao": "REMETIDA À SANÇÃO",
+          "inicio": "2006-07-19",
+          "fim": "2006-08-08",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55368,
+            "casa": "SF",
+            "sigla": "SSEXP",
+            "nome": "SUBSECRETARIA DE EXPEDIENTE"
+          }
+        },
+        {
+          "idTipo": 64,
+          "sigla": "TNJR",
+          "descricao": "TRANSFORMADA EM NORMA JURÍDICA",
+          "inicio": "2006-08-08",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55368,
+            "casa": "SF",
+            "sigla": "SSEXP",
+            "nome": "SUBSECRETARIA DE EXPEDIENTE"
+          }
+        }
+      ],
+      "informesLegislativos": [
+        {
+          "id": 1211441,
+          "data": "2006-03-31 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 7217797,
+            "casa": "SF",
+            "sigla": "PLEG",
+            "nome": "PROTOCOLO LEGISLATIVO"
+          },
+          "descricao": "Este processo contém 53 (cinqüenta e tres) folhas numeradas e rubricadas.\nÀ SSCLSF.\n"
+        },
+        {
+          "id": 1211444,
+          "data": "2006-03-31 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Juntei, às fls. 54/58, legislação citada no Projeto.\n\nAguardando leitura.",
+          "idSituacaoIniciada": 13,
+          "siglaSituacaoIniciada": "AGLEIT"
+        },
+        {
+          "id": 1211447,
+          "data": "2006-04-03 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 7217796,
+            "casa": "SF",
+            "sigla": "ATA-PLEN",
+            "nome": "SUBSECRETARIA DE ATA - PLENÁRIO"
+          },
+          "descricao": "Leitura.\n\nÀ Comissão de Constituição, Justiça e Cidadania."
+        },
+        {
+          "id": 1211450,
+          "data": "2006-04-03 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 3947535,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "descricao": "Recebido nesta Comissão.\nMatéria aguardando distribuição.",
+          "idSituacaoIniciada": 87,
+          "siglaSituacaoIniciada": "AGDREL"
+        },
+        {
+          "id": 1211452,
+          "data": "2006-04-10 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 3947535,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "descricao": "Distribuído à Senadora Lucia Vânia para emitir relatório.\n\n(Art. 84, §2º, III do RISF)\n\n",
+          "idSituacaoIniciada": 91,
+          "siglaSituacaoIniciada": "RELATOR"
+        },
+        {
+          "id": 1211454,
+          "data": "2006-05-22 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 3947535,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "descricao": "Recebido o relatório da Senadora Lúcia Vânia, com voto pela aprovação do Projeto com as alterações redacionais devidas, nos termos do texto consolidado que apresenta.\nMatéria incluída na Pauta na Comissão.",
+          "idSituacaoIniciada": 138,
+          "siglaSituacaoIniciada": "INPAUTA"
+        },
+        {
+          "id": 1211456,
+          "data": "2006-05-24 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 3947535,
+            "casa": "SF",
+            "sigla": "CCJ",
+            "nome": "Comissão de Constituição, Justiça e Cidadania"
+          },
+          "descricao": "Em Reunião Ordinária realizada nesta data, é aprovado o Relatório da Senadora Lúcia Vânia, que passa a constituir Parecer da CCJ, favorável ao Projeto com as alterações redacionais apresentadas, nos termos do texto consolidado.\n\nA Comissão  aprova  o Requerimento nº 8, de 2006-CCJ, de  URGÊNCIA  para  a  matéria,  por  iniciativa  da  Senadora Serys Slhessarenko (fls. nºs 91/92).\n\n\nÀ SSCLSF, para prosseguimento da tramitação.",
+          "idSituacaoIniciada": 89,
+          "siglaSituacaoIniciada": "APRVPAR",
+          "documentosAssociados": [
+            {
+              "id": 4159830,
+              "tipo": "Parecer",
+              "siglaTipo": "PARECER",
+              "identificacao": "Parecer",
+              "data": "2006-05-24T00:00:00",
+              "autoria": "Autoria não registrada.",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=4159830"
+            }
+          ]
+        },
+        {
+          "id": 1211458,
+          "data": "2006-05-25 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Recebido neste Órgão, nesta data."
+        },
+        {
+          "id": 1211460,
+          "data": "2006-06-01 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Anexado às fls. 93 a 100, legislação citada no parecer.\nEncaminhado ao Plenário, para leitura de parecer.\n",
+          "idSituacaoIniciada": 14,
+          "siglaSituacaoIniciada": "AGLPAR"
+        },
+        {
+          "id": 1211462,
+          "data": "2006-06-02 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 7217796,
+            "casa": "SF",
+            "sigla": "ATA-PLEN",
+            "nome": "SUBSECRETARIA DE ATA - PLENÁRIO"
+          },
+          "descricao": "     Leitura e encaminhamento à publicação do Parecer nº. 638, de 2006, CCJ, Relatora: Senadora Lúcia Vânia, que concluiu pela aprovação da matéria, com as alterações redacionais devidas, nos termos do seguinte texto consolidado, como faculta o § 6º do art. 133 do Regimento Interno do Senado Federal.\n      A matéria ficará perante a Mesa durante cinco dias úteis, a fim de receber emendas, nos termos do art. 235, II, \"d\", do Regimento Interno.\n\n\n\n     À SSCLSF.\n",
+          "idSituacaoIniciada": 88,
+          "siglaSituacaoIniciada": "AGREMESA"
+        },
+        {
+          "id": 1211464,
+          "data": "2006-06-05 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Prazo para recebimento de emendas perante a Mesa: 06/06/2006 a 12/06/2006."
+        },
+        {
+          "id": 1211466,
+          "data": "2006-06-12 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Encaminhado ao Plenário para comunicação do término de prazo para apresentação de emendas perante a Mesa."
+        },
+        {
+          "id": 1211468,
+          "data": "2006-06-13 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 7217796,
+            "casa": "SF",
+            "sigla": "ATA-PLEN",
+            "nome": "SUBSECRETARIA DE ATA - PLENÁRIO"
+          },
+          "descricao": "A Presidência comunica ao Plenário que se encerrou ontem o prazo sem apresentação de emendas à matéria, que será incluída em Ordem do Dia oportunamente. \n\nÀ SSCLSF.\n"
+        },
+        {
+          "id": 1211471,
+          "data": "2006-06-13 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Matéria aguardando inclusão em Ordem do Dia.",
+          "idSituacaoIniciada": 8,
+          "siglaSituacaoIniciada": "PRONDEPLEN"
+        },
+        {
+          "id": 1211473,
+          "data": "2006-07-04 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Encaminhado ao Plenário."
+        },
+        {
+          "id": 1211475,
+          "data": "2006-07-04 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 7217796,
+            "casa": "SF",
+            "sigla": "ATA-PLEN",
+            "nome": "SUBSECRETARIA DE ATA - PLENÁRIO"
+          },
+          "descricao": "(Matéria incluída na Ordem do Dia, extrapauta, em regime de urgência, nos termos do Requerimento nº 736, de 2006)\n\nAprovado o projeto.\n\n\n\nÀ SGM.",
+          "idSituacaoIniciada": 25,
+          "siglaSituacaoIniciada": "APRVD"
+        },
+        {
+          "id": 1211477,
+          "data": "2006-07-11 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55291,
+            "casa": "SF",
+            "sigla": "SGM",
+            "nome": "Secretaria Geral da Mesa"
+          },
+          "descricao": "Encaminhado ao Plenário para leitura da redação final.\n"
+        },
+        {
+          "id": 1211479,
+          "data": "2006-07-11 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 7217796,
+            "casa": "SF",
+            "sigla": "ATA-PLEN",
+            "nome": "SUBSECRETARIA DE ATA - PLENÁRIO"
+          },
+          "descricao": "Leitura do Parecer nº 874, de 2006-CDIR, de 11 de julho de 2006, Relator: Senador João Alberto Souza, oferecendo a redação final ao presente projeto.\n\n\nÀ SSCLSF.",
+          "documentosAssociados": [
+            {
+              "id": 4159821,
+              "tipo": "Projeto de Lei Ordinária",
+              "siglaTipo": "PROJETO_LEI_ORDINARIA",
+              "identificacao": "Redação Final de Plenário - Projeto de Lei Ordinária",
+              "data": "2006-07-11T00:00:00",
+              "autoria": "Autoria não registrada.",
+              "url": "http://legis.senado.leg.br/sdleg-getter/documento?dm=4159821"
+            }
+          ]
+        },
+        {
+          "id": 1211481,
+          "data": "2006-07-11 00:00:03",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Aguardando inclusão em Ordem do Dia.",
+          "idSituacaoIniciada": 8,
+          "siglaSituacaoIniciada": "PRONDEPLEN"
+        },
+        {
+          "id": 1211483,
+          "data": "2006-07-12 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Encaminhado ao Plenário."
+        },
+        {
+          "id": 1211484,
+          "data": "2006-07-12 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 7217796,
+            "casa": "SF",
+            "sigla": "ATA-PLEN",
+            "nome": "SUBSECRETARIA DE ATA - PLENÁRIO"
+          },
+          "descricao": "É lido e aprovado o Requerimento nº 813, de 2006, subscrito pela Senadora Lúcia Vânia, solicitando a dispensa de interstício eprévia distribuição de avulsos da redação final da matéria.\nAprovada a redação final, sem debates.\n\nÀ sanção.\n\n\nÀ SEXP.",
+          "idSituacaoIniciada": 25,
+          "siglaSituacaoIniciada": "APRVD"
+        },
+        {
+          "id": 1211485,
+          "data": "2006-07-12 00:00:03",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55368,
+            "casa": "SF",
+            "sigla": "SSEXP",
+            "nome": "SUBSECRETARIA DE EXPEDIENTE"
+          },
+          "descricao": "Recebido neste órgão às 20:30 hs."
+        },
+        {
+          "id": 1211487,
+          "data": "2006-07-13 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55368,
+            "casa": "SF",
+            "sigla": "SSEXP",
+            "nome": "SUBSECRETARIA DE EXPEDIENTE"
+          },
+          "descricao": "Anexado o texto revisado."
+        },
+        {
+          "id": 1211489,
+          "data": "2006-07-19 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55368,
+            "casa": "SF",
+            "sigla": "SSEXP",
+            "nome": "SUBSECRETARIA DE EXPEDIENTE"
+          },
+          "descricao": "Ofício SF nº 1351 de 18/07/06, à Ministra de Estado Chefe da Casa Civil encaminhando a Mensagem SF nº 185/06, ao Excelentíssimo Senhor Presidente da República submetendo à sanção presidencial autógrafos do Projeto (fls).\n\nOfício SF nº 1352 de 18/07/06, ao Primeiro-Secretário da Câmara dos Deputados comunicando a aprovação, em revisão, do presente Projeto e o seu encaminhamento à sanção presidencial (fls.).",
+          "idSituacaoIniciada": 57,
+          "siglaSituacaoIniciada": "RMSAN"
+        },
+        {
+          "id": 1211491,
+          "data": "2006-08-08 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55368,
+            "casa": "SF",
+            "sigla": "SSEXP",
+            "nome": "SUBSECRETARIA DE EXPEDIENTE"
+          },
+          "descricao": "(PR) PRESIDÊNCIA DA REPÚBLICA.\nSANCIONADA. LEI 011340 DE 2006.\nDOU - 08/08/2006 PÁG. 00001 a 00004. \nSancionada em 07/08/2006.",
+          "idSituacaoIniciada": 64,
+          "siglaSituacaoIniciada": "TNJR"
+        },
+        {
+          "id": 1211493,
+          "data": "2006-08-09 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55368,
+            "casa": "SF",
+            "sigla": "SSEXP",
+            "nome": "SUBSECRETARIA DE EXPEDIENTE"
+          },
+          "descricao": "À SGM a pedido."
+        },
+        {
+          "id": 1211495,
+          "data": "2006-08-09 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55291,
+            "casa": "SF",
+            "sigla": "SGM",
+            "nome": "Secretaria Geral da Mesa"
+          },
+          "descricao": "Recebido neste Órgão, nesta data."
+        },
+        {
+          "id": 1211497,
+          "data": "2006-08-10 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Encaminhado ao Plenário."
+        },
+        {
+          "id": 1211500,
+          "data": "2006-08-10 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 7217796,
+            "casa": "SF",
+            "sigla": "ATA-PLEN",
+            "nome": "SUBSECRETARIA DE ATA - PLENÁRIO"
+          },
+          "descricao": "         A Presidência comunica ao Plenário o recebimento da Mensagem nº 209, de 2006 (nº 673/2006 na origem)  do Senhor Presidente da República restituindo autógrafos da matéria, sancionada e transformada na Lei nº 11.340, de 7 de agosto de 2006.\n       \n\n\n       À SSEXP para a devida comunicação à Câmara dos Deputados e posterior remessa do processado ao Arquivo.\n"
+        },
+        {
+          "id": 1211502,
+          "data": "2006-08-14 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55368,
+            "casa": "SF",
+            "sigla": "SSEXP",
+            "nome": "SUBSECRETARIA DE EXPEDIENTE"
+          },
+          "descricao": "Recebido neste órgão às 14:45 hs."
+        },
+        {
+          "id": 1211505,
+          "data": "2006-08-15 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55368,
+            "casa": "SF",
+            "sigla": "SSEXP",
+            "nome": "SUBSECRETARIA DE EXPEDIENTE"
+          },
+          "descricao": "Ofício SF nº 1580 de 15/08/06, ao Primeiro-Secretário da Câmara dos Deputados encaminhando o incluso autógrafo sancionado pelo Excelentíssimo Senhor Presidente da República e transformado na Lei nº 11.340, de 7 de agosto de 2006.\n\nAo Protocolo Legislativo com destino ao Arquivo."
+        },
+        {
+          "id": 1211508,
+          "data": "2006-08-25 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55373,
+            "casa": "SF",
+            "sigla": "SARQ",
+            "nome": "Secretaria de Arquivo"
+          },
+          "descricao": "APROVADO\nSANCIONADA A LEI 11.340, DE 7 AGOSTO DE 2006.\nARQUIVADO"
+        },
+        {
+          "id": 1211511,
+          "data": "2006-09-15 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55373,
+            "casa": "SF",
+            "sigla": "SARQ",
+            "nome": "Secretaria de Arquivo"
+          },
+          "descricao": "emprestado a pedido ao Gab. SENa. LUCIA VANIA"
+        },
+        {
+          "id": 1211514,
+          "data": "2006-09-25 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55373,
+            "casa": "SF",
+            "sigla": "SARQ",
+            "nome": "Secretaria de Arquivo"
+          },
+          "descricao": "DEVOLVIDO DO GAB. SENa. LUCIA VANIA.\nARQUIVADO"
+        },
+        {
+          "id": 1211517,
+          "data": "2006-09-25 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55373,
+            "casa": "SF",
+            "sigla": "SARQ",
+            "nome": "Secretaria de Arquivo"
+          },
+          "descricao": "Processo emprestado a SSCLSF"
+        },
+        {
+          "id": 1211519,
+          "data": "2006-09-26 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Encaminhado ao Arquivo.\n\nÀ SARQ."
+        },
+        {
+          "id": 1211523,
+          "data": "2006-09-26 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55373,
+            "casa": "SF",
+            "sigla": "SARQ",
+            "nome": "Secretaria de Arquivo"
+          },
+          "descricao": "Processo devolvido"
+        },
+        {
+          "id": 1211526,
+          "data": "2010-07-21 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55373,
+            "casa": "SF",
+            "sigla": "SARQ",
+            "nome": "Secretaria de Arquivo"
+          },
+          "descricao": "ENCAMINHADO A SSCLSF POR SOLICITAÇÃO"
+        },
+        {
+          "id": 1211529,
+          "data": "2010-07-21 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Juntei às fl. 439 original do Of. n. 480/P do Presidente do STF solicitando informações sobre o alegado na petição inicial da Ação Direta de Inconstitucionalidade n. 4424.\nÀ ADVOSF.\n"
+        },
+        {
+          "id": 1211532,
+          "data": "2010-09-03 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55314,
+            "casa": "SF",
+            "sigla": "ADVOSF",
+            "nome": "Advocacia do Senado Federal"
+          },
+          "descricao": "DEVOLUÇÃO C/ CÓPIA DA INFORMAÇÕES ENCAMINHADAS STF ATRAVÉS OF.190/10-PRESID/ADVOSF. ADIN 4424."
+        },
+        {
+          "id": 1211536,
+          "data": "2010-09-08 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Devolvido ao Arquivo."
+        },
+        {
+          "id": 1211538,
+          "data": "2011-04-28 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55373,
+            "casa": "SF",
+            "sigla": "SARQ",
+            "nome": "Secretaria de Arquivo"
+          },
+          "descricao": "ENCAMINHADO AO SENADOR JOÃO PEDRO POR SOLICITAÇÃO."
+        },
+        {
+          "id": 1211541,
+          "data": "2012-02-16 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55373,
+            "casa": "SF",
+            "sigla": "SARQ",
+            "nome": "Secretaria de Arquivo"
+          },
+          "descricao": "PROCESSO DEVOLVIDO E ARQUIVADO."
+        },
+        {
+          "id": 1211544,
+          "data": "2012-02-16 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55373,
+            "casa": "SF",
+            "sigla": "SARQ",
+            "nome": "Secretaria de Arquivo"
+          },
+          "descricao": "PROCESSO ENCAMINHADO À SUBSECRETARIA DE COORDENAÇÃO LEGISLATIVA DO SENADO POR SOLICITAÇÃO."
+        },
+        {
+          "id": 1211547,
+          "data": "2012-02-16 00:00:03",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55362,
+            "casa": "SF",
+            "sigla": "SSCLSF",
+            "nome": "SUBSEC. COORDENAÇÃO LEGISLATIVA DO SENADO"
+          },
+          "descricao": "Recebido neste Órgão às 18:58.\n\nJuntado, às fls. 440 e 441, o Ofício nº 236/P, de 2011, do Presidente do STF, comunicando que a ADI 4.424 foi julgada procedente.\n\nEncaminhado ao Plenário."
+        },
+        {
+          "id": 1211550,
+          "data": "2012-02-17 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 7217796,
+            "casa": "SF",
+            "sigla": "ATA-PLEN",
+            "nome": "SUBSECRETARIA DE ATA - PLENÁRIO"
+          },
+          "descricao": "A Presidência comunica o recebimento do Ofício nº 236, de 2011, do Presidente do Supremo Tribunal Federal, comunicando que a Ação Direta de Inconstitucionalidade nº 4.424 foi julgada procedente, assentando a natureza incondicionada de ação penal em caso de crime de lesão praticado contra a mulher no ambiente doméstico, dando interpretação conforme aos artigos 12, inciso I, e 16, ambos da Lei nº 11.340, de 2006, \"Lei Maria da Penha\".\nO expediente, juntado ao processado da presente matéria, será encaminhado à Advocacia do Senado Federal.\nSerá feita a devida comunicação à Câmara dos Deputados."
+        },
+        {
+          "id": 1211553,
+          "data": "2012-02-17 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55375,
+            "casa": "SF",
+            "sigla": "SEXP",
+            "nome": "SECRETARIA DE EXPEDIENTE"
+          },
+          "descricao": "Recebido neste órgão às  11:43 hs."
+        },
+        {
+          "id": 1211556,
+          "data": "2012-02-27 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55375,
+            "casa": "SF",
+            "sigla": "SEXP",
+            "nome": "SECRETARIA DE EXPEDIENTE"
+          },
+          "descricao": "Anexado o Ofício CN nº 79 de 27/02/12, ao Senhor Presidente da Câmara dos Deputados comunicando que esta Presidência recebeu o Ofício nº 236/11.do Presidente do Supremo Tribunal Federal (fls. 443).\n\n\n\nÀ ADVOSF."
+        },
+        {
+          "id": 1211558,
+          "data": "2012-03-12 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55314,
+            "casa": "SF",
+            "sigla": "ADVOSF",
+            "nome": "Advocacia do Senado Federal"
+          },
+          "descricao": "DEVOLUÇÃO C/ CÓPIA DAS INFORMAÇÕES ENCAMINHADAS STF, VIA ASSINATURA ELETRÔNICA, ATRAVÉS OF.017/12-PRESID/ADVOSF. ADIN 4424"
+        },
+        {
+          "id": 1211562,
+          "data": "2012-03-12 00:00:02",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55375,
+            "casa": "SF",
+            "sigla": "SEXP",
+            "nome": "SECRETARIA DE EXPEDIENTE"
+          },
+          "descricao": "Recebido neste órgão às 19:25 hs."
+        },
+        {
+          "id": 1211565,
+          "data": "2012-03-13 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55375,
+            "casa": "SF",
+            "sigla": "SEXP",
+            "nome": "SECRETARIA DE EXPEDIENTE"
+          },
+          "descricao": "À SGM conforme informação da Advocacia do Senado datada de 1º de março do corrente ano e anexada às fls. 446."
+        },
+        {
+          "id": 1211567,
+          "data": "2012-05-30 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55291,
+            "casa": "SF",
+            "sigla": "SGM",
+            "nome": "Secretaria Geral da Mesa"
+          },
+          "descricao": "Devolvido ao Arquivo."
+        },
+        {
+          "id": 1211571,
+          "data": "2012-06-06 00:00:01",
+          "colegiado": {},
+          "enteAdministrativo": {
+            "id": 55373,
+            "casa": "SF",
+            "sigla": "SARQ",
+            "nome": "Secretaria de Arquivo"
+          },
+          "descricao": "PROCESSO DEVOLVIDO E ARQUIVADO."
+        }
+      ],
+      "movimentacoes": [
+        {
+          "id": 9070967,
+          "dataEnvio": "2022-02-16 15:03:54",
+          "enteOrigem": {
+            "id": 55373,
+            "casa": "SF",
+            "sigla": "SARQ",
+            "nome": "Secretaria de Arquivo"
+          },
+          "dataRecebimento": "2022-02-16 15:04:11",
+          "enteDestino": {
+            "id": 55299,
+            "casa": "SF",
+            "sigla": "COARQ",
+            "nome": "Coordenação de Arquivo"
+          },
+          "colegiadoDestino": {}
+        },
+        {
+          "id": 9070970,
+          "dataEnvio": "2022-02-16 15:04:37",
+          "enteOrigem": {
+            "id": 55299,
+            "casa": "SF",
+            "sigla": "COARQ",
+            "nome": "Coordenação de Arquivo"
+          },
+          "dataRecebimento": "2022-02-17 17:03:50",
+          "enteDestino": {
+            "id": 55305,
+            "casa": "SF",
+            "sigla": "ATRSGM",
+            "nome": "Assessoria Técnica"
+          },
+          "colegiadoDestino": {}
+        },
+        {
+          "id": 9072100,
+          "dataEnvio": "2022-02-17 17:48:31",
+          "enteOrigem": {
+            "id": 55305,
+            "casa": "SF",
+            "sigla": "ATRSGM",
+            "nome": "Assessoria Técnica"
+          },
+          "dataRecebimento": "2022-03-06 23:14:49",
+          "enteDestino": {
+            "id": 55299,
+            "casa": "SF",
+            "sigla": "COARQ",
+            "nome": "Coordenação de Arquivo"
+          },
+          "colegiadoDestino": {}
+        }
+      ]
+    }
+  ],
+  "ordensDoDia": [
+    {
+      "dataSessao": "2006-07-04T14:00:00",
+      "casaSessao": "SF",
+      "codigoSessaoLegislativa": 686,
+      "siglaTipoSessao": "DOR",
+      "numeroSessao": "95  ",
+      "tipoApreciacao": "Discussão, em turno único",
+      "resultado": "Não houve deliberação."
+    },
+    {
+      "dataSessao": "2006-07-12T14:00:00",
+      "casaSessao": "SF",
+      "codigoSessaoLegislativa": 686,
+      "siglaTipoSessao": "DOR",
+      "numeroSessao": "108 ",
+      "tipoApreciacao": "Discussão, em turno único",
+      "resultado": "Não houve deliberação."
+    }
+  ],
+  "deliberacao": {
+    "data": "2006-07-12",
+    "siglaTipo": "APROVADA_NO_PLENARIO",
+    "tipoDeliberacao": "Aprovada pelo Plenário",
+    "idDestino": 3,
+    "siglaDestino": "SANCAO",
+    "destino": "À sanção"
+  },
+  "normaGerada": {
+    "codigo": 572125,
+    "siglaTipo": "LEI-n",
+    "tipo": "Lei Numerada",
+    "numero": 11340,
+    "anoAssinatura": "2006",
+    "dataAssinatura": "2006-08-07",
+    "observacao": "LEI DECLARADA PARCIALMENTE INCONSTITUCIONAL PELO PLENÁRIO DO STF, NO JULGAMENTO DA ADI 4.424. INTERPRETAÇÃO CONFORME A CONSTITUIÇÃO DOS ARTS. 12, INCISO I, E 16.",
+    "descricao": "Lei nº 11.340 de 07/08/2006",
+    "dataPublicacao": "2006-08-08",
+    "siglaVeiculoPublicacao": "DOU",
+    "veiculoPublicacao": "[Diário Oficial da União  de 08/08/2006] (p. 1, col. 1)"
+  }
+}
