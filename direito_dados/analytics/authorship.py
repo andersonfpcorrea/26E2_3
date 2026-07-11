@@ -12,7 +12,10 @@ from direito_dados.attribution.models import Authorship
 
 _PARLIAMENTARY_KINDS = {"DEPUTADO", "SENADOR"}
 _EXECUTIVE_KINDS = {"PRESIDENTE_REPUBLICA"}
-_COMMISSION_KINDS = {"COMISSAO", "CPMI", "ORGAO_COLEGIADO"}
+# Senado's siglaTipo vocabulary for collegiate authors includes variants like
+# COMISSAO_CONGRESSO (observed live for CPMI-origin laws, e.g. Lei 12.015/2009),
+# so commission-ness is matched by prefix, not exact value.
+_COMMISSION_PREFIXES = ("COMISSAO", "CPMI", "ORGAO_COLEGIADO")
 
 
 def authors_by_party(records: list[Authorship]) -> dict[str, int]:
@@ -31,7 +34,7 @@ def _origin_category(record: Authorship) -> str:
     kinds = {a.kind for a in record.authors}
     if kinds & _EXECUTIVE_KINDS:
         return "Poder Executivo"
-    if kinds & _COMMISSION_KINDS:
+    if any(k.startswith(_COMMISSION_PREFIXES) for k in kinds):
         return "Comissão"
     if record.origin_house == "CD":
         return "Câmara"

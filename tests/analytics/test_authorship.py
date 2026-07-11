@@ -40,6 +40,15 @@ def test_amendments_by_origin_classifies_executive_commission_and_houses():
     }
 
 
+def test_amendments_by_origin_matches_commission_kind_variants():
+    records = [
+        _record("Lei nº 12.015", 2009,
+                [Author(name="CPMI - Exploração Sexual - 2003", kind="COMISSAO_CONGRESSO")],
+                origin_house="SF"),
+    ]
+    assert amendments_by_origin(records) == {"Comissão": 1}
+
+
 def test_amendments_by_origin_ignores_unresolved_records():
     records = [_record("Lei nº 1", 2020, [], origin_house="CD", status="not_found")]
     assert amendments_by_origin(records) == {}
