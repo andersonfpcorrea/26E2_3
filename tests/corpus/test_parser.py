@@ -57,6 +57,30 @@ def test_caput_skips_lone_line_ordinal_marker():
     assert art1.caput.startswith("Não há crime")
 
 
+PARAGRAPH_REVOGADO_SAMPLE = """PARTE ESPECIAL
+TÍTULO I
+
+Art. 121. Matar alguém:
+Pena - reclusão, de seis a vinte anos.
+§ 7º ... (Revogado pela Lei nº 13.104, de 2015)
+
+Art. 240. (Revogado pela Lei nº 11.106, de 2005)
+"""
+
+
+def test_paragraph_level_revogado_does_not_revoke_whole_article():
+    arts = split_articles("CP", PARAGRAPH_REVOGADO_SAMPLE)
+    art121 = next(a for a in arts if a.number == "121")
+    art240 = next(a for a in arts if a.number == "240")
+
+    assert art121.status == VigenciaStatus.ALTERADO
+    assert art240.status == VigenciaStatus.REVOGADO
+
+    in_force = [a for a in arts if a.status != VigenciaStatus.REVOGADO]
+    assert art121 in in_force
+    assert art240 not in in_force
+
+
 def test_html_to_plain_text_keeps_articles_and_annotations():
     from direito_dados.corpus.fetch import html_to_plain_text
 

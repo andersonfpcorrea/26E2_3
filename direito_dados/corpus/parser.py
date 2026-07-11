@@ -2,7 +2,7 @@
 
 import re
 
-from direito_dados.corpus.annotations import extract_annotations, status_from_annotations
+from direito_dados.corpus.annotations import article_status, extract_annotations
 from direito_dados.corpus.models import Article, HierarchyLevel, Norm
 
 # Article header: "Art. 155.", "Art. 155 -", "Art. 121-A." (optional letter suffix).
@@ -14,6 +14,29 @@ _ARTICLE_HEADER_RE = re.compile(
 )
 
 
+def _extract_caput(body: str) -> str:
+    """First logical line of an article body.
+
+    Real Planalto text wraps at a fixed column, so a parenthetical
+    annotation that opens on the caput's line — most importantly
+    ``(Revogado ...)`` on a wholly revoked article — can have its
+    closing paren pushed onto a following line, e.g. ``"(Revogado\\npela
+    Lei nº 13.869, de 2019)"``. Splitting on the first ``\\n`` alone would
+    truncate the caput to ``"(Revogado"``, hiding the revocation. So the
+    caput is extended line by line until parentheses balance.
+    """
+    lines = body.split("\n")
+    caput_lines = [lines[0]]
+    idx = 1
+    while idx < len(lines):
+        joined = " ".join(caput_lines)
+        if joined.count("(") <= joined.count(")"):
+            break
+        caput_lines.append(lines[idx])
+        idx += 1
+    return " ".join(caput_lines).strip()
+
+
 def split_articles(norm_id: str, plain_text: str) -> list[Article]:
     matches = list(_ARTICLE_HEADER_RE.finditer(plain_text))
     articles: list[Article] = []
@@ -22,7 +45,7 @@ def split_articles(norm_id: str, plain_text: str) -> list[Article]:
         body_start = match.end()
         body_end = matches[i + 1].start() if i + 1 < len(matches) else len(plain_text)
         body = plain_text[body_start:body_end].strip()
-        caput = body.split("\n", 1)[0].strip()
+        caput = _extract_caput(body)
         annotations = extract_annotations(body)
         articles.append(
             Article(
@@ -31,7 +54,7 @@ def split_articles(norm_id: str, plain_text: str) -> list[Article]:
                 caput=caput,
                 text=body,
                 annotations=annotations,
-                status=status_from_annotations(annotations),
+                status=article_status(caput, annotations),
             )
         )
     return articles

@@ -73,3 +73,47 @@ def test_extract_annotation_with_embedded_crlf():
     assert anns[0].kind == "redacao"
     assert anns[0].law_ref == "Lei nº 7.209"
     assert anns[0].year == 1984
+
+
+def test_article_with_paragraph_level_revogado_is_alterado():
+    # paragraph-level revocation must NOT revoke the whole article
+    from direito_dados.corpus.annotations import article_status
+
+    caput = "Matar alguém:"
+    body = "Matar alguém:\n§ 7º ... (Revogado pela Lei nº 13.104, de 2015)"
+    anns = extract_annotations(body)
+    assert article_status(caput, anns) == VigenciaStatus.ALTERADO
+
+
+def test_article_with_revoked_caput_is_revogado():
+    from direito_dados.corpus.annotations import article_status
+
+    caput = "(Revogado pela Lei nº 11.106, de 2005)"
+    anns = extract_annotations(caput)
+    assert article_status(caput, anns) == VigenciaStatus.REVOGADO
+
+
+def test_bare_revogado_without_lawref_is_captured():
+    anns = extract_annotations("Art. 5 (Revogado)")
+    assert any(a.kind == "revogado" for a in anns)
+
+
+def test_bare_revogado_has_empty_lawref_and_no_year():
+    anns = extract_annotations("Art. 5 (Revogado)")
+    assert anns[0].law_ref == ""
+    assert anns[0].year is None
+
+
+def test_medida_provisoria_law_ref_recognized():
+    text = "(Redação dada pela Medida Provisória nº 2.187-13, de 2001)"
+    anns = extract_annotations(text)
+    assert anns[0].kind == "redacao"
+    assert anns[0].law_ref.startswith("Medida Provisória")
+    assert anns[0].year == 2001
+
+
+def test_article_status_vigente_when_no_annotations():
+    from direito_dados.corpus.annotations import article_status
+
+    caput = "Matar alguém:"
+    assert article_status(caput, []) == VigenciaStatus.VIGENTE
