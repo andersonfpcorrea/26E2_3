@@ -30,3 +30,9 @@ def test_revoked_article_chunk_marked_in_metadata(tmp_path):
     chunks = chunk_corpus(_corpus(tmp_path))
     art240 = next(c for c in chunks if c.id == "CP:art240")
     assert art240.metadata["status"] == "revogado"
+
+def test_embed_text_leads_with_caput(tmp_path):
+    chunks = chunk_corpus(_corpus(tmp_path))
+    art121 = next(c for c in chunks if c.id == "CP:art121")
+    assert art121.embed_text.startswith("Matar alguém")
+    assert len(art121.embed_text) <= 300

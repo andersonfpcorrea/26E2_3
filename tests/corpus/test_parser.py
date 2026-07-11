@@ -81,6 +81,12 @@ def test_paragraph_level_revogado_does_not_revoke_whole_article():
     assert art240 not in in_force
 
 
+def test_chained_article_suffixes_are_distinct():
+    text = "Art. 359-M. Primeiro.\n\nArt. 359-M-A. Segundo.\n\nArt. 359-M-B. Terceiro."
+    nums = [a.number for a in split_articles("CP", text)]
+    assert nums == ["359-M", "359-M-A", "359-M-B"]
+
+
 def test_html_to_plain_text_keeps_articles_and_annotations():
     from direito_dados.corpus.fetch import html_to_plain_text
 

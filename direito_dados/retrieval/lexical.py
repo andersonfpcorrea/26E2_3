@@ -8,7 +8,7 @@ its own candidate pool, then fuses them by chunk id as
 
 import math
 
-from direito_dados.retrieval.index import Result
+from direito_dados.retrieval.index import REVOGADO_STATUS, Result
 
 _K1 = 1.5
 _B = 0.75
@@ -68,7 +68,7 @@ class BM25Index:
         for cid in self._order:
             chunk = self._chunks[cid]
             meta = chunk.metadata
-            if exclude_revoked and meta.get("status") == "revogado":
+            if exclude_revoked and meta.get("status") == REVOGADO_STATUS:
                 continue
             if domain is not None and meta.get("domain") != domain:
                 continue

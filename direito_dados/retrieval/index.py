@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from direito_dados.retrieval.chunks import Chunk
 from direito_dados.retrieval.embedder import Embedder
 
+REVOGADO_STATUS = "revogado"
+
 
 @dataclass(frozen=True)
 class Result:
@@ -37,7 +39,7 @@ class VectorIndex:
         if chunks:
             collection.add(
                 ids=[c.id for c in chunks],
-                embeddings=embedder.embed_passages([c.text for c in chunks]),
+                embeddings=embedder.embed_passages([c.embed_text or c.text for c in chunks]),
                 documents=[c.text for c in chunks],
                 metadatas=[c.metadata for c in chunks],
             )
@@ -47,7 +49,7 @@ class VectorIndex:
               exclude_revoked: bool = True, domain: str | None = None) -> list[Result]:
         conditions = []
         if exclude_revoked:
-            conditions.append({"status": {"$ne": "revogado"}})
+            conditions.append({"status": {"$ne": REVOGADO_STATUS}})
         if domain is not None:
             conditions.append({"domain": {"$eq": domain}})
         where = None if not conditions else (conditions[0] if len(conditions) == 1 else {"$and": conditions})
