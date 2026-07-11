@@ -1,0 +1,98 @@
+{
+  "dados": [
+    {
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/160512",
+      "nome": "Aureo",
+      "codTipo": 10000,
+      "tipo": "Deputado(a)",
+      "ordemAssinatura": 10,
+      "proponente": 1
+    },
+    {
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178975",
+      "nome": "Baleia Rossi",
+      "codTipo": 10000,
+      "tipo": "Deputado(a)",
+      "ordemAssinatura": 5,
+      "proponente": 1
+    },
+    {
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/73441",
+      "nome": "Celso Russomanno",
+      "codTipo": 10000,
+      "tipo": "Deputado(a)",
+      "ordemAssinatura": 8,
+      "proponente": 1
+    },
+    {
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/143632",
+      "nome": "Domingos Neto",
+      "codTipo": 10000,
+      "tipo": "Deputado(a)",
+      "ordemAssinatura": 9,
+      "proponente": 1
+    },
+    {
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/74554",
+      "nome": "José Rocha",
+      "codTipo": 10000,
+      "tipo": "Deputado(a)",
+      "ordemAssinatura": 1,
+      "proponente": 1
+    },
+    {
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/160510",
+      "nome": "Luis Tibé",
+      "codTipo": 10000,
+      "tipo": "Deputado(a)",
+      "ordemAssinatura": 6,
+      "proponente": 1
+    },
+    {
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/146788",
+      "nome": "Marcelo Aro",
+      "codTipo": 10000,
+      "tipo": "Deputado(a)",
+      "ordemAssinatura": 2,
+      "proponente": 1
+    },
+    {
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/166401",
+      "nome": "Nilson Leitão",
+      "codTipo": 10000,
+      "tipo": "Deputado(a)",
+      "ordemAssinatura": 4,
+      "proponente": 1
+    },
+    {
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178920",
+      "nome": "Ricardo Teobaldo",
+      "codTipo": 10000,
+      "tipo": "Deputado(a)",
+      "ordemAssinatura": 7,
+      "proponente": 1
+    },
+    {
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/88950",
+      "nome": "Rodrigo Garcia",
+      "codTipo": 10000,
+      "tipo": "Deputado(a)",
+      "ordemAssinatura": 11,
+      "proponente": 1
+    },
+    {
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/73930",
+      "nome": "Wladimir Costa",
+      "codTipo": 10000,
+      "tipo": "Deputado(a)",
+      "ordemAssinatura": 3,
+      "proponente": 1
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2178170/autores"
+    }
+  ]
+}
