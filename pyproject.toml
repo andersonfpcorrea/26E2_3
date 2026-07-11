@@ -12,6 +12,7 @@ dependencies = [
 dev = ["pytest>=8.0"]
 retrieval = ["chromadb>=1.0"]
 retrieval-e5 = ["sentence-transformers>=3.0"]
+analytics = ["matplotlib>=3.8", "networkx>=3.2"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
