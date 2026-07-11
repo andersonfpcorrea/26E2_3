@@ -15,6 +15,10 @@ networkx>=3.0
 # Dev / tests
 pytest>=8.0
 
+# Report (scripts/build_report.py: Markdown -> PDF)
+markdown>=3.6
+xhtml2pdf>=0.2.16
+
 # Notebooks (c03_embeddings_busca.ipynb, c07_lei_como_dado.ipynb)
 jupyter>=1.1
 nbconvert>=7.0

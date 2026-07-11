@@ -15,6 +15,7 @@ retrieval-e5 = ["sentence-transformers>=3.0"]
 analytics = ["matplotlib>=3.8", "networkx>=3.2"]
 notebooks = ["jupyter>=1.1", "nbconvert>=7.0", "ipykernel>=6.29"]
 nlp = ["transformers>=5.0"]
+report = ["markdown>=3.6", "xhtml2pdf>=0.2.16"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
