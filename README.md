@@ -44,7 +44,9 @@ de 2009 — filtrados antes de chegarem a qualquer resposta.
 uma linha do tempo — os picos de 1984 (reforma da Parte Geral) e de 2019–2020 ("pacote
 anticrime") aparecem nos dados — e um detector aponta **candidatos a antinomia** (normas
 possivelmente conflitantes), classificados pelos critérios clássicos de resolução
-(_lex superior, lex specialis, lex posterior_ — LINDB).
+(_lex superior, lex specialis, lex posterior_ — LINDB). Uma camada opcional (`make
+attribution`) resolve, para cada norma externa, quem mudou a lei — projeto de origem e
+autoria de registro do Congresso, via dados abertos do Senado e da Câmara.
 
 ## Comece em 3 comandos
 
@@ -59,13 +61,13 @@ make demo      # o pipeline REAL de ponta a ponta: corpus, grafo, análises e
 make models    # (opcional, ~5 GB) habilita a última etapa: respostas geradas por LLM
 ```
 
-**Por que `make models` é opcional?** O sistema usa **dois modelos**. O de *embeddings*
+**Por que `make models` é opcional?** O sistema usa **dois modelos**. O de _embeddings_
 (busca semântica, ~440 MB) baixa automaticamente durante o primeiro `make demo` — a busca
-citada, o filtro de vigência e as análises funcionam só com ele. O de *geração* (Llama 3.1
+citada, o filtro de vigência e as análises funcionam só com ele. O de _geração_ (Llama 3.1
 8B) roda no [Ollama](https://ollama.com), um aplicativo separado, e serve apenas à etapa
 final: redigir respostas em linguagem natural. Sem ele, o `make demo` executa tudo até a
 busca citada e avisa que a geração foi pulada. **Nada no demo é simulado** — todas as
-etapas rodam o pipeline real; *mocks* existem somente nos testes unitários.
+etapas rodam o pipeline real; _mocks_ existem somente nos testes unitários.
 
 Depois, pergunte o que quiser: `make ask q="qual a pena para furto?"`
 Todos os comandos: `make help`. Alternativa sem uv no final deste arquivo.
@@ -182,11 +184,12 @@ python scripts/demo.py
 
 ## Interface web (opcional)
 
-`make app` sobe uma interface local em Streamlit ("Letra da Lei") com cinco abas: perguntas
+`make app` sobe uma interface local em Streamlit ("Letra da Lei") com seis abas: perguntas
 à lei com citações verificadas, a linha do tempo das emendas, o grafo normativo interativo,
-os candidatos a antinomia e o painel de vigência. É uma camada **além da rubrica** — a
-avaliação central está nas notebooks, no relatório e nos 116 testes — e funciona em modo
-somente recuperação (sem resposta gerada) quando o Ollama não está ativo.
+os candidatos a antinomia, o painel de vigência e "Quem mudou a lei" (autoria de registro
+por norma, gerada por `make attribution`). É uma camada **além da rubrica** — a avaliação
+central está nas notebooks, no relatório e nos testes — e funciona em modo somente
+recuperação (sem resposta gerada) quando o Ollama não está ativo.
 
 ## Limitações
 

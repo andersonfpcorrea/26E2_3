@@ -18,9 +18,12 @@ import streamlit as st
 import streamlit.components.v1 as components
 from pyvis.network import Network
 
+from direito_dados.analytics.authorship import amendments_by_origin, authors_by_party, top_authors
 from direito_dados.analytics.network import to_network_data
 from direito_dados.analytics.summary import most_amended_articles, vigencia_summary
 from direito_dados.analytics.timeline import amendments_by_decade
+from direito_dados.attribution.enrich import load_authorship
+from direito_dados.attribution.models import Authorship
 from direito_dados.conflicts.candidates import CandidatePair, generate_candidates
 from direito_dados.conflicts.detect import detect_conflicts
 from direito_dados.corpus import NORMS, Corpus, VigenciaStatus, load_corpus
@@ -35,6 +38,7 @@ from direito_dados.retrieval.index import Result, VectorIndex
 MODEL = "llama3.1:8b"
 RAW_DIR = str(Path(__file__).resolve().parent / "data" / "raw")
 GRAPH_NODE_CAP = 150
+AUTHORSHIP_PATH = Path(__file__).resolve().parent / "data" / "attribution" / "authorship.json"
 
 STATUS_COLORS = {"vigente": "#2e7d32", "alterado": "#f9a825", "revogado": "#9e9e9e"}
 NORM_COLOR = "#1565c0"
@@ -70,6 +74,15 @@ def get_index_bundle(scope: str):
     embedder = get_embedder()
     index = VectorIndex.build(chunks, embedder)
     return chunks, embedder, index
+
+
+@st.cache_resource(show_spinner=False)
+def get_authorship() -> list[Authorship] | None:
+    """None when `data/attribution/authorship.json` hasn't been generated yet
+    (`make attribution`) — the tab renders an info box instead of failing."""
+    if not AUTHORSHIP_PATH.exists():
+        return None
+    return load_authorship(AUTHORSHIP_PATH)
 
 
 # --- Small rendering helpers -------------------------------------------------
@@ -386,6 +399,97 @@ def render_vigencia_tab() -> None:
     st.dataframe(revoked_df, use_container_width=True, hide_index=True)
 
 
+# --- Tab 6: Quem mudou a lei -------------------------------------------------------
+
+def _authorship_row(record: Authorship) -> dict:
+    autores = ", ".join(
+        f"{a.name} ({a.party})" if a.party else a.name for a in record.authors
+    )
+    return {
+        "lei": record.law_ref,
+        "ano": record.ano,
+        "status": record.status,
+        "projeto de origem": record.origin_bill,
+        "casa": record.origin_house,
+        "autores": autores,
+        "fonte": record.source,
+    }
+
+
+def render_attribution_tab() -> None:
+    st.subheader("Quem mudou a lei")
+    records = get_authorship()
+    if records is None:
+        st.info(
+            "Dataset de autoria ainda não gerado. Rode `make attribution` "
+            "(ou `uv run python scripts/build_attribution.py`) para resolvê-lo "
+            "a partir dos dados abertos do Congresso — a execução completa "
+            "leva de 10 a 15 minutos e o resultado fica salvo em "
+            "`data/attribution/authorship.json`."
+        )
+        return
+
+    st.caption(
+        "Autoria de registro, conforme os dados abertos do Congresso — "
+        "proveniência factual, não atribuição de responsabilidade."
+    )
+    st.warning(
+        "**Nuance do pacote anticrime (Lei nº 13.964/2019):** a autoria oficial "
+        "credita 11 deputados signatários do PL 10.372/2018; o projeto do "
+        "Poder Executivo (PL 882/2019) foi arquivado por prejudicialidade "
+        "após ser absorvido pelo substitutivo, e não consta como coautor de "
+        "registro — ainda que seja a versão popularmente associada à lei.\n\n"
+        "**Partido = filiação atual/última registrada**, não necessariamente "
+        "a filiação no momento da autoria (troca-troca partidário é comum)."
+    )
+
+    by_tipo: dict[str, Counter] = {}
+    for r in records:
+        by_tipo.setdefault(r.tipo or "(sem tipo)", Counter())[r.status] += 1
+
+    st.subheader("Cobertura")
+    coverage_rows = [
+        {"tipo": tipo, "status": status, "quantidade": count}
+        for tipo, counts in sorted(by_tipo.items())
+        for status, count in sorted(counts.items())
+    ]
+    st.dataframe(pd.DataFrame(coverage_rows), use_container_width=True, hide_index=True)
+
+    col_origin, col_party = st.columns(2)
+    with col_origin:
+        st.markdown("**Amendas/leis por origem**")
+        origin_counts = amendments_by_origin(records)
+        if origin_counts:
+            st.bar_chart(pd.Series(origin_counts, name="quantidade"))
+        else:
+            st.caption("Sem registros resolvidos para agregar.")
+    with col_party:
+        st.markdown("**Autores parlamentares por partido**")
+        party_counts = authors_by_party(records)
+        if party_counts:
+            st.bar_chart(pd.Series(party_counts, name="quantidade"))
+        else:
+            st.caption("Sem autores parlamentares identificados.")
+
+    st.subheader("Autores mais frequentes")
+    top_n = st.slider("Quantidade", 5, 30, 15, key="attribution_top_n")
+    ranked = top_authors(records, top=top_n)
+    st.dataframe(
+        pd.DataFrame(ranked, columns=["autor", "leis de autoria"]),
+        use_container_width=True, hide_index=True,
+    )
+
+    st.subheader("Todas as normas")
+    table_df = pd.DataFrame([_authorship_row(r) for r in records])
+    search = st.text_input("Buscar (lei, autor, partido, projeto de origem)...", key="attribution_search")
+    if search and not table_df.empty:
+        mask = table_df.apply(
+            lambda row: search.lower() in " ".join(str(v) for v in row).lower(), axis=1
+        )
+        table_df = table_df[mask]
+    st.dataframe(table_df, use_container_width=True, hide_index=True)
+
+
 # --- Main ------------------------------------------------------------------------
 
 def main() -> None:
@@ -424,8 +528,8 @@ def main() -> None:
     with st.spinner(spinner_msg):
         get_index_bundle(scope)
 
-    tab_qa, tab_timeline, tab_graph, tab_conflicts, tab_vigencia = st.tabs(
-        ["Pergunte à lei", "A lei no tempo", "O grafo", "Antinomias", "Vigência"]
+    tab_qa, tab_timeline, tab_graph, tab_conflicts, tab_vigencia, tab_attribution = st.tabs(
+        ["Pergunte à lei", "A lei no tempo", "O grafo", "Antinomias", "Vigência", "Quem mudou a lei"]
     )
     with tab_qa:
         render_qa_tab(scope, ollama_up)
@@ -437,6 +541,8 @@ def main() -> None:
         render_conflicts_tab(scope, ollama_up)
     with tab_vigencia:
         render_vigencia_tab()
+    with tab_attribution:
+        render_attribution_tab()
 
 
 main()
