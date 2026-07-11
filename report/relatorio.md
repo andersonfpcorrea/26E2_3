@@ -18,7 +18,9 @@
 >   `c01_modelos_llm.ipynb` · `c02_prompting.ipynb` · `c03_embeddings_busca.ipynb` ·
 >   `c04_inferencia_local_ou_remota.ipynb` · `c05_rag_pipeline.ipynb` · `c06_antinomias.ipynb` ·
 >   `c07_lei_como_dado.ipynb`
-> - **Código-fonte:** `direito_dados/` (pacote instalável, testado, com 116 testes em `tests/`)
+> - **Código-fonte:** `direito_dados/` (pacote instalável, testado, com 160 testes em `tests/`)
+> - **Interface web local (opcional, além da rubrica):** `app.py` — `make app`
+> - **Dataset de autoria das leis emendadoras:** `data/attribution/authorship.json`
 > - **README com instruções de uso:** `README.md`
 > - **Corpus bruto (snapshot versionado):** `data/raw/`
 > - **Figuras deste relatório:** `report/figures/`
@@ -103,7 +105,7 @@ Ao mesmo tempo, o projeto **não terceiriza para o LLM aquilo que pode ser feito
 | Embeddings/encoder | `sentence-transformers`, `torch` | c03, c05, c06 |
 | Grafo e visualização | `networkx`, `matplotlib` | c07 |
 | Corpus (parsing/fetch) | `beautifulsoup4`, `lxml`, `requests` | corpus, scripts/fetch_corpus.py |
-| Testes | `pytest` (116 testes, incluindo integração ao vivo com e5 e Ollama) | tests/ |
+| Testes | `pytest` (160 testes, incluindo integração ao vivo com e5 e Ollama) | tests/ |
 
 Toda a geração é **local**, via Ollama — nenhuma chamada a API de nuvem é feita em nenhuma das sete notebooks (a comparação com nuvem, na seção de inferência, é arquitetada e justificada, não executada). Essa escolha é discutida em detalhe na seção "Estratégia de inferência local ou remota".
 
@@ -574,6 +576,25 @@ Um detalhe de design vale registro: excluir nós externos (`include_external=Fal
 
 Tratar o microssistema penal como grafo transforma perguntas historicamente respondidas por doutrina e leitura manual — "quando o Código Penal foi mais reformado?", "quais dispositivos são mais instáveis?", "o que realmente aconteceu em 2019?" — em consultas sobre dados: agregações, rankings e uma visualização de rede, todas reproduzíveis a partir do mesmo snapshot versionado em `data/raw/`. É essa mesma estrutura — nós, arestas, proveniência e `verification_state` — que sustenta tanto a segurança de vigência da recuperação quanto o detector de antinomias: "lei como dado" não é uma metáfora, é a escolha de arquitetura que faz o resto do sistema funcionar.
 
+### Quem mudou a lei — autoria de registro (camada adicional, além da rubrica)
+
+O grafo responde *qual lei alterou qual artigo*; esta camada adicional responde **quem propôs cada uma dessas leis**, segundo o registro oficial do Congresso. Para cada uma das **328 normas distintas** que emendaram o corpus (193 leis ordinárias, 125 emendas constitucionais consultáveis, mais casos residuais), um adaptador (`direito_dados/attribution/`) consulta a API de dados abertos do Senado Federal — o serviço `/dadosabertos/processo`, que aceita busca reversa por número/ano/tipo da norma — e extrai o projeto de origem (ex.: `PL 10372/2018`), a casa iniciadora e a **autoria de iniciativa** (nome, tipo, partido e UF quando parlamentar). Para projetos originados na Câmara com coautoria múltipla, a lista completa de subscritores vem da API da Câmara (`/proposicoes/{id}/autores`), corrigindo a tendência do espelho do Senado de registrar apenas o primeiro autor.
+
+**Cobertura obtida** (lote executado em 11/07/2026; dataset versionado em `data/attribution/authorship.json`, reconstruível com `make attribution`):
+
+| Tipo | Resolvidas | Taxa |
+|---|---|---|
+| Leis ordinárias | 186 / 189 | 98,4% |
+| Emendas constitucionais | 123 / 125 | 98,4% |
+| Ignoradas por tipo (decretos-lei, MP, referências sem ano) | 14 | registradas como `skipped_type` |
+| Não encontradas na API | 5 | registradas como `not_found` |
+
+No grafo, isso materializa **2.344 arestas `enacted_by`** ligando as leis emendadoras a **1.105 nós de autor**, com proveniência por aresta (`verification_state=VERIFIED`, fonte = o registro do processo consultado). Distribuição por origem: Câmara 138 normas, Senado 92, Poder Executivo 69, comissões (incl. CPMIs) 10.
+
+Um exemplo mostra ao mesmo tempo o valor e o limite do dado: para a **Lei 13.964/2019 ("pacote anticrime")**, a autoria de registro são **11 deputados** (subscritores do PL 10.372/2018 — Aureo, Baleia Rossi, Celso Russomanno, José Rocha e outros) — e **não** o PL 882/2019 do Poder Executivo, popularmente associado à lei, que foi arquivado por prejudicialidade ao ser absorvido pelo substitutivo. O sistema exibe o que o registro oficial afirma, com a fonte: *autoria de registro*, não narrativa popular.
+
+**Limitações declaradas:** o partido refletido é a filiação atual/última registrada nas APIs, não necessariamente a da época da autoria; a atribuição é em nível de **lei** (a lei alterou o artigo; os autores propuseram a lei), não de artigo; e, coerente com a postura de transparência do projeto, os dados são apresentados como **proveniência factual** ("a norma X, de autoria de Y, alterou o art. Z"), nunca como atribuição de responsabilidade por eventual conflito normativo. A camada é explorável na aba **"Quem mudou a lei"** da interface web local (`make app`).
+
 ---
 
 ## Riscos de segurança e controles
@@ -678,7 +699,7 @@ make models
 # 4. Fazer uma pergunta ao RAG
 make ask q="qual a pena para furto?"
 
-# 5. Rodar a suíte de testes (116 testes; os que dependem do modelo e5 real
+# 5. Rodar a suíte de testes (160 testes; os que dependem do modelo e5 real
 #    ou de um Ollama ativo são pulados automaticamente se indisponíveis)
 make test
 

@@ -86,7 +86,7 @@ Os três artefatos da entrega e onde cada competência da rubrica é demonstrada
 | Além da rubrica: detecção de antinomias    | [`c06_antinomias.ipynb`](c06_antinomias.ipynb)                                 | "Detecção de antinomias"                      |
 | Além da rubrica: a lei como dado           | [`c07_lei_como_dado.ipynb`](c07_lei_como_dado.ipynb)                           | "Análise Direito como Dado"                   |
 
-- **Código completo:** pacote [`direito_dados/`](direito_dados/) (com 116 testes — `make test`)
+- **Código completo:** pacote [`direito_dados/`](direito_dados/) (com 160 testes — `make test`)
   - as 7 notebooks acima, todas executadas com saídas embutidas (podem ser avaliadas sem rodar nada).
 - **Pipeline RAG + este README** com instalação, preparação dos dados, indexação e consultas.
 - **Relatório técnico (PDF):**
@@ -147,7 +147,7 @@ direito_dados/
   conflicts/    # princípios LINDB, geração de candidatos, adjudicação, avaliação
 scripts/        # demo.py, fetch_corpus.py, build_report.py
 data/raw/       # snapshot das 9 normas (texto processado)
-tests/          # 116 testes espelhando o pacote
+tests/          # 160 testes espelhando o pacote
 ```
 
 ## Propriedades de segurança
@@ -169,7 +169,7 @@ tests/          # 116 testes espelhando o pacote
 make setup      # dependências Python (uv sync --all-extras)
 make demo       # demonstração de ponta a ponta (independe do Ollama)
 make models     # modelos locais: llama3.1:8b via Ollama + embeddings e5
-make test       # 116 testes; os que exigem e5/Ollama pulam se indisponíveis
+make test       # 160 testes; os que exigem e5/Ollama pulam se indisponíveis
 make notebooks  # re-executa as 7 notebooks (lento; exige Ollama ativo)
 make report     # regenera o PDF a partir de report/relatorio.md
 ```
