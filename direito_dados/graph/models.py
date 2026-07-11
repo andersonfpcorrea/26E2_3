@@ -14,6 +14,7 @@ from enum import Enum
 class NodeKind(Enum):
     NORM = "norm"
     PROVISION = "provision"
+    AUTHOR = "author"
 
 
 class EdgeKind(Enum):
