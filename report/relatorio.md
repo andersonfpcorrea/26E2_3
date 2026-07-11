@@ -185,7 +185,9 @@ O modelo acerta o padrão sintático (as previsões são adjetivos/pronomes plau
 
 ## Engenharia de prompt e saída controlada (c02)
 
-A notebook `c02_prompting.ipynb` narra a iteração real até o prompt de produção usado por `direito_dados.generation.rag.answer_question`, testando três técnicas em ordem crescente de controle, todas com chamadas reais ao `llama3.1:8b` sobre o mesmo par de contexto (art. 121 e art. 155 do CP) e a mesma pergunta: *"Qual a pena para quem mata alguém?"*
+A notebook `c02_prompting.ipynb` narra a iteração real até o prompt de produção usado por `direito_dados.generation.rag.answer_question`, testando quatro técnicas com chamadas reais ao `llama3.1:8b`: três em ordem crescente de controle sobre a **forma** da saída — sobre o mesmo par de contexto (art. 121 e art. 155 do CP) e a mesma pergunta, *"Qual a pena para quem mata alguém?"* — e uma quarta (chain-of-thought estruturado) voltada ao **raciocínio**, aplicada ao conflito aparente de normas.
+
+O **critério explícito de qualidade** adotado para avaliar e iterar os prompts foi, em todas as versões, objetivo e verificável programaticamente: **(a)** a saída é parseável (`parse_ok`); **(b)** o array `citations` vem preenchido com os ids exatos dos dispositivos efetivamente usados; **(c)** `abstained` é coerente com o contexto fornecido. Cada versão de prompt foi julgada contra esse critério, e é ele que organiza a tabela comparativa ao final desta seção.
 
 ### Técnica 1 — Zero-shot, prosa livre
 
@@ -244,7 +246,25 @@ Com essa configuração, a estrutura da resposta é sempre correta (`parse_ok=Tr
 
 Um teste final confirma **abstenção coerente**: com contexto vazio (nenhuma provisão recuperada) para a pergunta fora de escopo *"Qual o prazo prescricional do IPTU?"*, o modelo retorna `{"answer": "", "citations": [], "abstained": true, "confidence": 1.0}` — sem inventar uma resposta.
 
-**Resumo comparativo das três técnicas:**
+### Técnica 4 — Chain-of-thought estruturado (raciocínio antes do veredito)
+
+As três técnicas anteriores atacam a **forma** da saída; chain-of-thought ataca o **raciocínio** — e o enunciado o recomenda "quando fizer sentido". No domínio jurídico ele faz sentido exatamente onde este projeto mais precisa dele: no **conflito aparente de normas**, que exige raciocínio em etapas (identificar os dispositivos aplicáveis → testar a relação de especialidade → concluir pela *lex specialis*). O experimento usa o caso clássico da doutrina — homicídio (art. 121, norma geral) vs. infanticídio (art. 123, norma especial) — em duas variantes sobre o mesmo contexto: **(A)** veredito direto (schema pede apenas `dispositivo` + `justificativa`); **(B)** CoT estruturado (o schema inclui um campo `raciocinio`, lista de passos, **antes** dos campos de veredito — como a geração é autoregressiva, os tokens de raciocínio são gerados antes do veredito, condicionando-o, em vez de uma racionalização a posteriori).
+
+No resultado real, **as duas variantes acertam o veredito** (`CP:art123`, infanticídio) — o caso é clássico o bastante para o modelo de 8B. A diferença está no que cada saída permite **auditar**. A Variante B expõe o teste de especialidade passo a passo:
+
+```json
+"raciocinio": [
+  "(2) ... Sim, porque o art. 123 especifica que a conduta deve ser cometida pela
+   gestante sob influência do estado puerperal e contra o próprio filho.",
+  "(3) O dispositivo específico [prevalece], pois ele contém elementos adicionais
+   que não estão presentes no art. 121."
+],
+"dispositivo": "CP:art123"
+```
+
+Em um sistema que só emite **candidatos para revisão humana**, essa auditabilidade é o valor real do chain-of-thought: o revisor confere o *porquê*, não apenas o *o quê*. É por isso que o adjudicador de antinomias de produção (`direito_dados.conflicts.detector`, seção c06) exige o campo `rationale` no schema do veredito — a mesma técnica, institucionalizada no pipeline.
+
+**Resumo comparativo — as três técnicas de forma, avaliadas contra o critério explícito de qualidade:**
 
 | Técnica | Mecanismo | `parse_ok` | Citações confiáveis? | Abstenção coerente? |
 | --- | --- | :---: | :---: | :---: |
