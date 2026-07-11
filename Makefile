@@ -1,4 +1,4 @@
-# O Direito como Dado — comandos do projeto
+# Letra da Lei — comandos do projeto
 # Requer uv (https://docs.astral.sh/uv/). Alternativa com pip documentada no README.
 
 OLLAMA_MODEL ?= llama3.1:8b

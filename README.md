@@ -1,11 +1,11 @@
-# O Direito como Dado
+# Letra da Lei
 
 Um sistema que permite **conversar com a legislação penal federal brasileira** — com
-respostas fundamentadas no texto oficial, citações verificadas automaticamente e recusa
+respostas presas à letra do texto oficial, citações verificadas automaticamente e recusa
 explícita quando não há base legal — e que trata **a própria lei como dado**: mostra como
 ela cresceu, o que está em vigor, o que foi revogado e onde duas normas podem se contradizer.
 
-> **Aviso:** ferramenta de *pesquisa e compreensão* da legislação. Não constitui consulta,
+> **Aviso:** ferramenta de _pesquisa e compreensão_ da legislação. Não constitui consulta,
 > parecer ou aconselhamento jurídico. Conflitos entre normas são apresentados como
 > **candidatos para revisão humana**, nunca como veredito.
 
@@ -32,17 +32,19 @@ Toda citação que o modelo produz é conferida, por código, contra o corpus of
 inexistente é sinalizada como **alucinada** e descartada; sem base recuperada, o sistema
 **se recusa a responder** em vez de inventar.
 
-**2. Nunca apresenta lei revogada como se estivesse em vigor.** Cada artigo carrega sua
-situação de vigência (em vigor / alterado / revogado), extraída das anotações oficiais do
-Planalto, e a busca exclui normas revogadas por padrão. Exemplo real: para *"violação
-sexual mediante fraude"*, os dois resultados mais similares são artigos **revogados**
-(arts. 214 e 216 do CP) — o sistema os filtra antes de qualquer resposta.
+**2. Sabe o que ainda é lei — e o que deixou de ser.** O adultério foi crime no Brasil até
+2005 (art. 240 do Código Penal, revogado pela Lei nº 11.106); um sistema sem noção de
+vigência responderia com lei morta. Aqui, cada um dos 2.310 artigos carrega sua situação
+(em vigor / alterado / revogado), extraída das anotações oficiais do Planalto, e a busca
+**exclui normas revogadas por padrão**. A demonstração (`make demo`) mostra um caso real ao
+vivo: uma consulta cujos dois resultados mais similares são artigos extintos pela reforma
+de 2009 — filtrados antes de chegarem a qualquer resposta.
 
 **3. Revela a estrutura e a história da lei.** As 4.453 emendas do corpus viram um grafo e
 uma linha do tempo — os picos de 1984 (reforma da Parte Geral) e de 2019–2020 ("pacote
 anticrime") aparecem nos dados — e um detector aponta **candidatos a antinomia** (normas
 possivelmente conflitantes), classificados pelos critérios clássicos de resolução
-(*lex superior, lex specialis, lex posterior* — LINDB).
+(_lex superior, lex specialis, lex posterior_ — LINDB).
 
 ## Comece em 3 comandos
 
@@ -51,10 +53,19 @@ Python; instala o próprio Python 3.13 se preciso). Opcional: [Ollama](https://o
 para a geração local.
 
 ```bash
-make setup     # instala todas as dependências (uv sync)
-make demo      # corpus, análises e busca citada — funciona sem Ollama
-make models    # (opcional) baixa os modelos locais e habilita as respostas geradas
+make setup     # dependências Python (uv sync)
+make demo      # o pipeline REAL de ponta a ponta: corpus, grafo, análises e
+               # busca semântica citada, sobre os dados reais
+make models    # (opcional, ~5 GB) habilita a última etapa: respostas geradas por LLM
 ```
+
+**Por que `make models` é opcional?** O sistema usa **dois modelos**. O de *embeddings*
+(busca semântica, ~440 MB) baixa automaticamente durante o primeiro `make demo` — a busca
+citada, o filtro de vigência e as análises funcionam só com ele. O de *geração* (Llama 3.1
+8B) roda no [Ollama](https://ollama.com), um aplicativo separado, e serve apenas à etapa
+final: redigir respostas em linguagem natural. Sem ele, o `make demo` executa tudo até a
+busca citada e avisa que a geração foi pulada. **Nada no demo é simulado** — todas as
+etapas rodam o pipeline real; *mocks* existem somente nos testes unitários.
 
 Depois, pergunte o que quiser: `make ask q="qual a pena para furto?"`
 Todos os comandos: `make help`. Alternativa sem uv no final deste arquivo.
@@ -63,18 +74,18 @@ Todos os comandos: `make help`. Alternativa sem uv no final deste arquivo.
 
 Os três artefatos da entrega e onde cada competência da rubrica é demonstrada:
 
-| Competência da rubrica | Notebook (executada, com saídas reais) | Seção do relatório |
-|---|---|---|
-| 1. Aplicações NLP com LLMs + Hugging Face | [`c01_modelos_llm.ipynb`](c01_modelos_llm.ipynb) | "Tarefas de PLN e Hugging Face" |
-| 2. Prompt engineering + saídas controladas | [`c02_prompting.ipynb`](c02_prompting.ipynb) | "Engenharia de prompt e saída controlada" |
-| 3. Embeddings semânticos + busca vetorial | [`c03_embeddings_busca.ipynb`](c03_embeddings_busca.ipynb) | "Embeddings, estratégia de busca e avaliação" |
-| 4. Inferência local, remota ou privada | [`c04_inferencia_local_ou_remota.ipynb`](c04_inferencia_local_ou_remota.ipynb) | "Estratégia de inferência local ou remota" |
-| 5. Pipeline RAG + segurança | [`c05_rag_pipeline.ipynb`](c05_rag_pipeline.ipynb) | "O pipeline RAG" + "Riscos de segurança" |
-| Além da rubrica: detecção de antinomias | [`c06_antinomias.ipynb`](c06_antinomias.ipynb) | "Detecção de antinomias" |
-| Além da rubrica: a lei como dado | [`c07_lei_como_dado.ipynb`](c07_lei_como_dado.ipynb) | "Análise Direito como Dado" |
+| Competência da rubrica                     | Notebook (executada, com saídas reais)                                         | Seção do relatório                            |
+| ------------------------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------- |
+| 1. Aplicações NLP com LLMs + Hugging Face  | [`c01_modelos_llm.ipynb`](c01_modelos_llm.ipynb)                               | "Tarefas de PLN e Hugging Face"               |
+| 2. Prompt engineering + saídas controladas | [`c02_prompting.ipynb`](c02_prompting.ipynb)                                   | "Engenharia de prompt e saída controlada"     |
+| 3. Embeddings semânticos + busca vetorial  | [`c03_embeddings_busca.ipynb`](c03_embeddings_busca.ipynb)                     | "Embeddings, estratégia de busca e avaliação" |
+| 4. Inferência local, remota ou privada     | [`c04_inferencia_local_ou_remota.ipynb`](c04_inferencia_local_ou_remota.ipynb) | "Estratégia de inferência local ou remota"    |
+| 5. Pipeline RAG + segurança                | [`c05_rag_pipeline.ipynb`](c05_rag_pipeline.ipynb)                             | "O pipeline RAG" + "Riscos de segurança"      |
+| Além da rubrica: detecção de antinomias    | [`c06_antinomias.ipynb`](c06_antinomias.ipynb)                                 | "Detecção de antinomias"                      |
+| Além da rubrica: a lei como dado           | [`c07_lei_como_dado.ipynb`](c07_lei_como_dado.ipynb)                           | "Análise Direito como Dado"                   |
 
 - **Código completo:** pacote [`direito_dados/`](direito_dados/) (com 116 testes — `make test`)
-  + as 7 notebooks acima, todas executadas com saídas embutidas (podem ser avaliadas sem rodar nada).
+  - as 7 notebooks acima, todas executadas com saídas embutidas (podem ser avaliadas sem rodar nada).
 - **Pipeline RAG + este README** com instalação, preparação dos dados, indexação e consultas.
 - **Relatório técnico (PDF):**
   [`report/anderson_correa_sistemas-cognitivos-linguagem-natural_aplicacoes-llms.pdf`](report/anderson_correa_sistemas-cognitivos-linguagem-natural_aplicacoes-llms.pdf)
@@ -172,10 +183,10 @@ python scripts/demo.py
 ## Limitações
 
 - A vigência cobre revogações e alterações **anotadas** nos textos consolidados do
-  Planalto; *revogação tácita* e *inconstitucionalidade* exigem interpretação e estão fora
+  Planalto; _revogação tácita_ e _inconstitucionalidade_ exigem interpretação e estão fora
   do escopo determinístico (o detector de antinomias as aponta apenas como candidatos).
 - Níveis normativos de mesma posição hierárquica (decreto-lei, lei ordinária, medida
-  provisória) são tratados com o mesmo *rank* para fins de *lex superior*.
+  provisória) são tratados com o mesmo _rank_ para fins de _lex superior_.
 - A qualidade da resposta gerada é limitada pelo modelo local (8B parâmetros): a resposta
   pode citar um dispositivo existente porém semanticamente incorreto — limitação analisada
   em detalhe no relatório ("análise de falhas"), com os controles que a mitigam.

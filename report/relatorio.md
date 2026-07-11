@@ -1,10 +1,10 @@
-# O Direito como Dado — RAG Hierarquia- e Vigência-Aware sobre o Microssistema Penal Federal
+# Letra da Lei — RAG hierarquia- e vigência-aware sobre o microssistema penal federal
 
 ## Identificação
 
 - **Aluno:** Anderson Felipe Paixão Corrêa
 - **Disciplina:** Sistemas Cognitivos com Large Language Models (INFNET, 26E2_3)
-- **Título do projeto:** O Direito como Dado — RAG e Análise do Microssistema Penal Federal
+- **Título do projeto:** Letra da Lei — o direito como dado: RAG e análise do microssistema penal federal
 - **Repositório (reprodução):** https://github.com/andersonfpcorrea/26E2_3
 
 ---
