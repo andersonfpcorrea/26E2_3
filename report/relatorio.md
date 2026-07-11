@@ -65,7 +65,7 @@ Dos 2.310 artigos, **2.248 estão em vigor** (1.215 na redação original/`vigen
 Um snapshot já processado acompanha o repositório em `data/raw/` (textos de domínio público, um arquivo `.txt` por norma), de modo que a reprodução do projeto **não depende de acesso à rede**. Para rebaixar as normas diretamente do Planalto:
 
 ```bash
-PYTHONPATH=. python scripts/fetch_corpus.py
+make data      # equivale a: uv run python scripts/fetch_corpus.py
 ```
 
 O script (`scripts/fetch_corpus.py`) percorre o registro de 9 normas (`direito_dados.corpus.registry.NORMS`), baixa cada uma via `direito_dados.corpus.fetch.download_norm` com um intervalo de cortesia de 1,5s entre requisições, e reporta falhas individuais sem abortar o lote inteiro — uma norma que falhe é simplesmente pulada e pode ser tentada de novo depois.
@@ -658,39 +658,45 @@ Por fim, tratamos a lei toda como uma rede de conexões — quais leis alteraram
 
 ## Instruções de reprodução
 
-O projeto usa **Python 3.11+** (testado em 3.13) e um ambiente virtual padrão (`venv`), sem gerenciador de pacotes proprietário.
+O projeto usa **Python 3.11+** (fixado em 3.13 via `.python-version`), gerenciado com
+**uv** (https://docs.astral.sh/uv/) e dependências travadas em `uv.lock`. Um `Makefile`
+autodocumentado (`make help`) encapsula todos os fluxos:
 
 ```bash
-# 1. Criar e ativar o ambiente virtual
-python3 -m venv .venv
-source .venv/bin/activate
+# 1. Instalar as dependências (cria o ambiente a partir do uv.lock)
+make setup
 
-# 2. Instalar as dependências
-pip install -r requirements.txt
+# 2. Demonstração de ponta a ponta — corpus, análises e busca citada
+#    (funciona sem Ollama; a etapa de geração é pulada com aviso)
+make demo
 
-# 3. (Opcional) Instalar Ollama e baixar o modelo de geração local
-#    necessário para c02, c04, c05, c06 (RAG e detector de antinomias)
-#    https://ollama.com
-ollama serve                   # ou abra o app do Ollama
-ollama pull llama3.1           # ~4.7 GB
+# 3. (Opcional) Modelos locais: llama3.1:8b via Ollama (~4,9 GB) +
+#    embeddings multilingual-e5-base (~440 MB). Requer o Ollama
+#    instalado (https://ollama.com) e ativo (ollama serve ou o app).
+make models
 
-# 4. (Opcional) Rebaixar o corpus diretamente do Planalto
-#    (um snapshot já processado acompanha o repositório em data/raw/)
-PYTHONPATH=. python scripts/fetch_corpus.py
+# 4. Fazer uma pergunta ao RAG
+make ask q="qual a pena para furto?"
 
 # 5. Rodar a suíte de testes (116 testes; os que dependem do modelo e5 real
-#    ou de um Ollama ativo são pulados automaticamente se a dependência
-#    não estiver disponível)
-python -m pytest -q
+#    ou de um Ollama ativo são pulados automaticamente se indisponíveis)
+make test
 
-# 6. Executar as notebooks (requer Ollama ativo para c02/c04/c05/c06)
-jupyter nbconvert --to notebook --execute --inplace c0*.ipynb
+# 6. (Opcional) Rebaixar o corpus diretamente do Planalto
+#    (um snapshot já processado acompanha o repositório em data/raw/)
+make data
 
-# 7. Gerar o relatório em PDF
-pip install -e ".[report]"     # ou: pip install markdown xhtml2pdf
-python scripts/build_report.py
+# 7. Re-executar as notebooks (lento; requer Ollama ativo para c02/c04/c05/c06)
+make notebooks
+
+# 8. Gerar o relatório em PDF
+make report
 ```
 
-Após a etapa 7, o PDF é gerado em `report/anderson_correa_sistemas-cognitivos-linguagem-natural_aplicacoes-llms.pdf`. As sete notebooks já estão versionadas **com as saídas calculadas**, de modo que a etapa 6 só é necessária para reexecutar o pipeline do zero — para simples leitura dos resultados, basta abrir as notebooks no GitHub ou localmente com `jupyter lab`.
+Alternativa sem uv (pip): `python3 -m venv .venv && source .venv/bin/activate &&
+pip install -r requirements.txt && pip install -e .` — em seguida os scripts em
+`scripts/` e o `pytest` funcionam diretamente.
 
-> Observação: o corpus bruto (`data/raw/`) já é versionado no repositório, de modo que a etapa 4 só é necessária para reconstruir os dados diretamente da fonte. As notebooks c02, c04, c05 e c06 fazem chamadas reais a um servidor Ollama local — sem ele ativo, essas células falham (não há *mock* de geração nas notebooks, apenas nos testes unitários).
+Após a etapa 8, o PDF é gerado em `report/anderson_correa_sistemas-cognitivos-linguagem-natural_aplicacoes-llms.pdf`. As sete notebooks já estão versionadas **com as saídas calculadas**, de modo que a etapa 7 só é necessária para reexecutar o pipeline do zero — para simples leitura dos resultados, basta abrir as notebooks no GitHub ou localmente com `jupyter lab`.
+
+> Observação: o corpus bruto (`data/raw/`) já é versionado no repositório, de modo que a etapa 6 só é necessária para reconstruir os dados diretamente da fonte. As notebooks c02, c04, c05 e c06 fazem chamadas reais a um servidor Ollama local — sem ele ativo, essas células falham (não há *mock* de geração nas notebooks, apenas nos testes unitários).

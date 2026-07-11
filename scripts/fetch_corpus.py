@@ -1,11 +1,17 @@
 """Download all 9 criminal-microsystem norms into data/raw/.
 
-Run from the repo root with the package importable, e.g.:
-    PYTHONPATH=. python scripts/fetch_corpus.py
+Run via ``make data`` (or ``uv run python scripts/fetch_corpus.py``).
 A failing norm is reported and skipped rather than aborting the whole run.
 """
 
+import sys
 import time
+from pathlib import Path
+
+# Fallback for running without an installed package (plain `python scripts/fetch_corpus.py`).
+_repo_root = Path(__file__).resolve().parent.parent
+if str(_repo_root) not in sys.path:
+    sys.path.insert(0, str(_repo_root))
 
 from direito_dados.corpus.fetch import download_norm
 from direito_dados.corpus.registry import NORMS
