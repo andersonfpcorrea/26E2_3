@@ -9,6 +9,20 @@ from direito_dados.retrieval.embedder import Embedder
 from direito_dados.retrieval.index import VectorIndex
 
 
+# JSON schema that constrains Ollama's structured output to our answer shape.
+_ANSWER_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "answer": {"type": "string"},
+        "citations": {"type": "array", "items": {"type": "string"}},
+        "hierarchy_notes": {"type": "string"},
+        "abstained": {"type": "boolean"},
+        "confidence": {"type": "number"},
+    },
+    "required": ["answer", "citations", "abstained", "confidence"],
+}
+
+
 @dataclass
 class RagAnswer:
     answer: str
@@ -38,7 +52,7 @@ def answer_question(question: str, index: VectorIndex, embedder: Embedder,
                          abstained=True, retrieved_ids=[])
 
     prompt = build_user_prompt(question, results)
-    raw = llm.generate(prompt, system=SYSTEM_PROMPT)
+    raw = llm.generate(prompt, system=SYSTEM_PROMPT, format=_ANSWER_SCHEMA)
     parsed = parse_answer(raw)
 
     allowed = set(retrieved_ids)

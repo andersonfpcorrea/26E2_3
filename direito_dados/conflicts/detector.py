@@ -20,6 +20,19 @@ CONFLICT_SYSTEM_PROMPT = (
 )
 
 
+# JSON schema constraining Ollama's structured output to a conflict verdict.
+_VERDICT_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "conflict": {"type": "boolean"},
+        "principle": {"type": "string"},
+        "rationale": {"type": "string"},
+        "confidence": {"type": "number"},
+    },
+    "required": ["conflict", "principle", "confidence"],
+}
+
+
 @dataclass
 class ConflictVerdict:
     conflict: bool
@@ -40,7 +53,7 @@ def build_conflict_prompt(text_a: str, cite_a: str, text_b: str, cite_b: str, hi
 def adjudicate(text_a: str, cite_a: str, text_b: str, cite_b: str, hint: str,
                llm: LLMClient) -> ConflictVerdict:
     raw = llm.generate(build_conflict_prompt(text_a, cite_a, text_b, cite_b, hint),
-                       system=CONFLICT_SYSTEM_PROMPT)
+                       system=CONFLICT_SYSTEM_PROMPT, format=_VERDICT_SCHEMA)
     data = extract_json_object(raw)
     if data is None:
         return ConflictVerdict(conflict=False, principle="undetermined",
