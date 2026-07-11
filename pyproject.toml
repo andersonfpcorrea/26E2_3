@@ -10,6 +10,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+retrieval = ["chromadb>=1.0"]
+retrieval-e5 = ["sentence-transformers>=3.0"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
