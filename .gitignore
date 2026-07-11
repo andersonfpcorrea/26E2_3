@@ -1,1 +1,9 @@
 requirements.html
+docs
+
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.env
+data/raw/*.html
