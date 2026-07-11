@@ -47,3 +47,18 @@ def test_parse_norm_builds_norm_object():
     assert norm.id == "CP"
     assert norm.level == HierarchyLevel.DECRETO_LEI
     assert norm.article("121") is not None
+
+
+def test_html_to_plain_text_keeps_articles_and_annotations():
+    from direito_dados.corpus.fetch import html_to_plain_text
+
+    html = (
+        "<html><head><style>x{}</style></head><body>"
+        "<p>Art. 155. Subtrair coisa alheia "
+        "(Redação dada pela Lei nº 13.654, de 2018).</p>"
+        "<script>ignore()</script></body></html>"
+    )
+    text = html_to_plain_text(html)
+    assert "Art. 155." in text
+    assert "Lei nº 13.654" in text
+    assert "ignore()" not in text
