@@ -3,7 +3,7 @@
 
 OLLAMA_MODEL ?= llama3.1:8b
 
-.PHONY: help setup models data demo ask test notebooks report
+.PHONY: help setup models data demo ask test notebooks report app
 
 help: ## mostra esta ajuda
 	@echo "Comandos disponíveis:"
@@ -45,3 +45,6 @@ notebooks: ## re-executa as 7 notebooks (lento; requer Ollama ativo para c02/c04
 
 report: ## regenera o PDF do relatório a partir de report/relatorio.md
 	uv run python scripts/build_report.py
+
+app: ## interface web local (Streamlit) — camada opcional, além da rubrica
+	uv run streamlit run app.py

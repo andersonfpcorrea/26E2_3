@@ -180,6 +180,14 @@ pip install -r requirements.txt && pip install -e .
 python scripts/demo.py
 ```
 
+## Interface web (opcional)
+
+`make app` sobe uma interface local em Streamlit ("Letra da Lei") com cinco abas: perguntas
+à lei com citações verificadas, a linha do tempo das emendas, o grafo normativo interativo,
+os candidatos a antinomia e o painel de vigência. É uma camada **além da rubrica** — a
+avaliação central está nas notebooks, no relatório e nos 116 testes — e funciona em modo
+somente recuperação (sem resposta gerada) quando o Ollama não está ativo.
+
 ## Limitações
 
 - A vigência cobre revogações e alterações **anotadas** nos textos consolidados do
