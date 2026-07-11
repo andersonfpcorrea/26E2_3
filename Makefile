@@ -3,7 +3,7 @@
 
 OLLAMA_MODEL ?= llama3.1:8b
 
-.PHONY: help setup models data demo ask test notebooks report app
+.PHONY: help setup models data demo ask test notebooks report app attribution
 
 help: ## mostra esta ajuda
 	@echo "Comandos disponíveis:"
@@ -48,3 +48,6 @@ report: ## regenera o PDF do relatório a partir de report/relatorio.md
 
 app: ## interface web local (Streamlit) — camada opcional, além da rubrica
 	uv run streamlit run app.py
+
+attribution: ## (opcional) rebaixa quem mudou a lei (autoria de registro) — dataset já acompanha o repo
+	uv run python scripts/build_attribution.py
