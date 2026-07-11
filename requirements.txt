@@ -15,6 +15,12 @@ networkx>=3.0
 # Dev / tests
 pytest>=8.0
 
+# Notebooks (c03_embeddings_busca.ipynb, c07_lei_como_dado.ipynb)
+jupyter>=1.1
+nbconvert>=7.0
+ipykernel>=6.29
+
 # Tested with: chromadb 1.5.9, sentence-transformers 5.6.0, torch 2.13.0,
-# matplotlib 3.11.0, networkx 3.6.1, on Python 3.13.
+# matplotlib 3.11.0, networkx 3.6.1, jupyter 1.1.1, nbconvert 7.17.1,
+# ipykernel 7.3.0, on Python 3.13.
 # Local generation uses Ollama (separate install): https://ollama.com
