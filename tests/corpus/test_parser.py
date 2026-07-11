@@ -49,6 +49,14 @@ def test_parse_norm_builds_norm_object():
     assert norm.article("121") is not None
 
 
+def test_caput_skips_lone_line_ordinal_marker():
+    text = "Art. 1\nº - Não há crime sem lei anterior que o defina.\n\nArt. 2. Ninguém..."
+    arts = split_articles("CP", text)
+    art1 = next(a for a in arts if a.number == "1")
+    assert not art1.caput.startswith("º")
+    assert art1.caput.startswith("Não há crime")
+
+
 def test_html_to_plain_text_keeps_articles_and_annotations():
     from direito_dados.corpus.fetch import html_to_plain_text
 

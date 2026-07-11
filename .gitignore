@@ -6,4 +6,5 @@ __pycache__/
 .venv/
 .pytest_cache/
 .env
-data/raw/*.html
+data/raw/*
+!data/raw/.gitkeep

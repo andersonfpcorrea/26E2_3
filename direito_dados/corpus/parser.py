@@ -6,7 +6,12 @@ from direito_dados.corpus.annotations import extract_annotations, status_from_an
 from direito_dados.corpus.models import Article, HierarchyLevel, Norm
 
 # Article header: "Art. 155.", "Art. 155 -", "Art. 121-A." (optional letter suffix).
-_ARTICLE_HEADER_RE = re.compile(r"(?m)^\s*Art\.\s*(\d+(?:-[A-Z])?)\s*[.\-–]?\s*")
+# Also tolerates an ordinal marker ("º" or the letter "o") that trails the
+# number on its own line, e.g. "Art. 1\nº - Não há crime..." (real Planalto
+# line breaks), so the marker itself is consumed and never becomes the caput.
+_ARTICLE_HEADER_RE = re.compile(
+    r"(?m)^\s*Art\.\s*(\d+(?:-[A-Z])?)\s*(?:[ºo]\s*)?[.\-–]?\s*"
+)
 
 
 def split_articles(norm_id: str, plain_text: str) -> list[Article]:
