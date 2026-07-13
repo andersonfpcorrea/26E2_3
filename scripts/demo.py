@@ -91,17 +91,16 @@ def show_retrieval(embedder, index) -> None:
     for r in index.query("qual a pena para quem mata alguém?", embedder, k=3):
         print(f"  {r.score:.3f}  {r.citation:14s} {_preview(r.text)}...")
 
-    print('\nSegurança de vigência — consulta: "violação sexual mediante fraude":')
+    print('\nSegurança de vigência — consulta: "adultério é crime?"')
+    print("  (o adultério foi crime até 2005 — art. 240, revogado pela Lei nº 11.106)")
     print("  sem filtro (o que a similaridade bruta devolveria):")
-    for r in index.query(
-        "violação sexual mediante fraude", embedder, k=3, exclude_revoked=False
-    ):
+    for r in index.query("adultério é crime?", embedder, k=3, exclude_revoked=False):
         print(f"    {r.score:.3f}  {r.citation:14s} situação: {r.metadata['status']}")
     print("  com filtro (o padrão do sistema):")
-    for r in index.query("violação sexual mediante fraude", embedder, k=3):
+    for r in index.query("adultério é crime?", embedder, k=3):
         print(f"    {r.score:.3f}  {r.citation:14s} situação: {r.metadata['status']}")
-    print("  -> os dois primeiros resultados brutos são artigos REVOGADOS; por padrão,")
-    print("     normas revogadas nunca são apresentadas como se estivessem em vigor.")
+    print("  -> o resultado mais similar é o art. 240, REVOGADO; por padrão, normas")
+    print("     revogadas nunca são apresentadas como se estivessem em vigor.")
 
 
 def show_rag(chunks, embedder, index, question: str) -> None:
@@ -114,7 +113,7 @@ def show_rag(chunks, embedder, index, question: str) -> None:
         print("A busca citada acima e as análises funcionam sem o Ollama.")
         return
     print(f'Pergunta: "{question}"')
-    print(f"Gerando com {MODEL} (local")
+    print(f"Gerando com {MODEL} (local — a consulta não sai da sua máquina)...")
     answer = answer_question(
         question,
         index,

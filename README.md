@@ -1,16 +1,15 @@
 # Letra da Lei
 
-Um sistema que permite **conversar com a legislação penal federal brasileira** — com
-respostas presas à letra do texto oficial, citações verificadas automaticamente e recusa
-explícita quando não há base legal — e que trata **a própria lei como dado**: mostra como
+Um sistema que permite **conversar com a legislação penal federal brasileira**, e mostra como
 ela cresceu, o que está em vigor, o que foi revogado e onde duas normas podem se contradizer.
 
 > **Aviso:** ferramenta de _pesquisa e compreensão_ da legislação. Não constitui consulta,
 > parecer ou aconselhamento jurídico. Conflitos entre normas são apresentados como
-> **candidatos para revisão humana**, nunca como veredito.
+> **candidatos para revisão**.
 
 **Disciplina:** Sistemas Cognitivos com Large Language Models (INFNET, 26E2_3) ·
-**Autor:** Anderson Felipe Paixão Corrêa
+
+**Autor:** Anderson Corrêa
 
 ---
 
@@ -28,19 +27,15 @@ Citações verificadas contra o texto oficial: [CP art. 312 — peculato]
 Citações inventadas pelo modelo (alucinadas): nenhuma
 ```
 
-Toda citação que o modelo produz é conferida, por código, contra o corpus oficial: citação
-inexistente é sinalizada como **alucinada** e descartada; sem base recuperada, o sistema
-**se recusa a responder** em vez de inventar.
+Toda citação que o modelo produz é conferida contra o corpus oficial: citações
+inexistentes são sinalizadas como **alucinação** e descartadas; sem base recuperada, o sistema
+não responde.
 
-**2. Sabe o que ainda é lei — e o que deixou de ser.** O adultério foi crime no Brasil até
-2005 (art. 240 do Código Penal, revogado pela Lei nº 11.106); um sistema sem noção de
-vigência responderia com lei morta. Aqui, cada um dos 2.310 artigos carrega sua situação
+**2. Sabe o que ainda é lei — e o que deixou de ser.** Cada um dos 2.310 artigos carrega sua situação
 (em vigor / alterado / revogado), extraída das anotações oficiais do Planalto, e a busca
-**exclui normas revogadas por padrão**. A demonstração (`make demo`) mostra um caso real ao
-vivo: uma consulta cujos dois resultados mais similares são artigos extintos pela reforma
-de 2009 — filtrados antes de chegarem a qualquer resposta.
+**exclui normas revogadas**.
 
-**3. Revela a estrutura e a história da lei.** As 4.453 emendas do corpus viram um grafo e
+**3. Revela a estrutura e a história da lei.** As 4.453 emendas do corpus formam um grafo e
 uma linha do tempo — os picos de 1984 (reforma da Parte Geral) e de 2019–2020 ("pacote
 anticrime") aparecem nos dados — e um detector aponta **candidatos a antinomia** (normas
 possivelmente conflitantes), classificados pelos critérios clássicos de resolução
@@ -74,8 +69,6 @@ Todos os comandos: `make help`. Alternativa sem uv no final deste arquivo.
 
 ## Entregáveis e mapa da avaliação
 
-Os três artefatos da entrega e onde cada competência da rubrica é demonstrada:
-
 | Competência da rubrica                     | Notebook (executada, com saídas reais)                                         | Seção do relatório                            |
 | ------------------------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------- |
 | 1. Aplicações NLP com LLMs + Hugging Face  | [`c01_modelos_llm.ipynb`](c01_modelos_llm.ipynb)                               | "Tarefas de PLN e Hugging Face"               |
@@ -94,11 +87,8 @@ Os três artefatos da entrega e onde cada competência da rubrica é demonstrada
 
 ## O corpus
 
-O recorte é o conjunto de normas federais que estrutura o direito penal brasileiro — na
-doutrina, um **microssistema**: um conjunto de leis que gravitam em torno de um código e
-formam um subsistema coeso do ordenamento. Como legislar sobre direito penal é competência
-privativa da União (CF, art. 22, I), o recorte federal é **completo por definição**, não
-uma amostra. São 9 normas, **2.310 artigos** (2.248 em vigor, 62 revogados), obtidas dos
+O recorte é um **microssistema**: um conjunto de leis que gravitam em torno de um código e
+formam um subsistema coeso do ordenamento. São 9 normas, **2.310 artigos** (2.248 em vigor, 62 revogados), obtidas dos
 textos consolidados oficiais do Planalto:
 
 - [Constituição da República Federativa do Brasil de 1988](https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm) — direitos e garantias, competência penal
@@ -152,14 +142,11 @@ tests/          # 160 testes espelhando o pacote
 
 ## Propriedades de segurança
 
-- **Vigência:** a busca exclui normas revogadas por padrão; a revogação é determinada em
-  nível de artigo (a revogação de um parágrafo não revoga o artigo inteiro).
-- **Citação verificada:** toda citação do modelo é conferida programaticamente contra o
-  corpus; ids inexistentes são reportados como alucinados e nunca aceitos em silêncio.
-- **Abstenção:** sem contexto recuperado, o sistema se recusa a responder — o modelo nem
-  chega a ser chamado.
-- **Privacidade:** a geração é local (Ollama); as perguntas não saem da máquina. Não há
-  chaves, tokens ou segredos no repositório.
+- **Vigência:** a busca exclui artigos revogadas; a revogação de um parágrafo não revoga o artigo inteiro.
+- **Citação verificada:** toda citação do modelo é conferida contra o
+  corpus; ids inexistentes são reportados como alucinados.
+- **Abstenção:** sem contexto recuperado o sistema não responde.
+- **Privacidade:** a geração é local (Ollama). Não há chaves, tokens ou segredos no repositório.
 - Análise completa de riscos (injeção de prompt, vazamento de contexto) e controles:
   notebook `c05` e seção "Riscos de segurança" do relatório.
 
@@ -187,9 +174,7 @@ python scripts/demo.py
 `make app` sobe uma interface local em Streamlit ("Letra da Lei") com seis abas: perguntas
 à lei com citações verificadas, a linha do tempo das emendas, o grafo normativo interativo,
 os candidatos a antinomia, o painel de vigência e "Quem mudou a lei" (autoria de registro
-por norma, gerada por `make attribution`). É uma camada **além da rubrica** — a avaliação
-central está nas notebooks, no relatório e nos testes — e funciona em modo somente
-recuperação (sem resposta gerada) quando o Ollama não está ativo.
+por norma, gerada por `make attribution`). É uma camada **além da rubrica**.
 
 ## Limitações
 
