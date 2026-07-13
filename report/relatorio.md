@@ -727,6 +727,10 @@ O projeto usa **Python 3.11+** (fixado em 3.13 via `.python-version`), gerenciad
 autodocumentado (`make help`) encapsula todos os fluxos:
 
 ```bash
+# 0. Caminho rápido — um único comando: instala o que faltar (verificando
+#    antes de baixar e pulando o que já existe) e abre a interface web
+make run
+
 # 1. Instalar as dependências (cria o ambiente a partir do uv.lock)
 make setup
 

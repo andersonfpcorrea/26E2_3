@@ -43,28 +43,34 @@ possivelmente conflitantes), classificados pelos critérios clássicos de resolu
 attribution`) resolve, para cada norma externa, quem mudou a lei — projeto de origem e
 autoria de registro do Congresso, via dados abertos do Senado e da Câmara.
 
-## Comece em 3 comandos
+## Comece com um comando
 
 Requisitos: [uv](https://docs.astral.sh/uv/getting-started/installation/) (gerenciador
 Python; instala o próprio Python 3.13 se preciso). Opcional: [Ollama](https://ollama.com)
-para a geração local.
+para a geração local de respostas.
 
 ```bash
-make setup     # dependências Python (uv sync)
-make demo      # o pipeline REAL de ponta a ponta: corpus, grafo, análises e
-               # busca semântica citada, sobre os dados reais
-make models    # (opcional, ~5 GB) habilita a última etapa: respostas geradas por LLM
+make run       # instala o que faltar (verifica antes de baixar, pula o que já existe)
+               # e abre a interface web com tudo funcionando
 ```
 
-**Por que `make models` é opcional?** O sistema usa **dois modelos**. O de _embeddings_
-(busca semântica, ~440 MB) baixa automaticamente durante o primeiro `make demo` — a busca
-citada, o filtro de vigência e as análises funcionam só com ele. O de _geração_ (Llama 3.1
-8B) roda no [Ollama](https://ollama.com), um aplicativo separado, e serve apenas à etapa
-final: redigir respostas em linguagem natural. Sem ele, o `make demo` executa tudo até a
-busca citada e avisa que a geração foi pulada. **Nada no demo é simulado** — todas as
-etapas rodam o pipeline real; _mocks_ existem somente nos testes unitários.
+Prefere passos separados? Os mesmos estágios existem como comandos individuais:
 
-Depois, pergunte o que quiser: `make ask q="qual a pena para furto?"`
+```bash
+make setup     # só as dependências Python (uv sync)
+make demo      # demonstração no terminal: corpus, grafo, análises e busca citada
+make models    # só os modelos locais (verifica e baixa apenas o que faltar)
+make ask q="qual a pena para furto?"   # pergunta direta no terminal
+```
+
+**E se eu não tiver o Ollama?** O sistema usa **dois modelos**. O de _embeddings_
+(busca semântica, ~440 MB) baixa automaticamente na primeira execução — a busca citada, o
+filtro de vigência, as análises e o grafo funcionam só com ele. O de _geração_ (Llama 3.1
+8B, ~4,9 GB) roda no [Ollama](https://ollama.com), um aplicativo separado, e serve apenas à
+etapa final: redigir respostas em linguagem natural. Sem ele, `make run` avisa e abre a
+interface do mesmo jeito, com tudo exceto a geração. **Nada é simulado** — todas as etapas
+rodam o pipeline real; _mocks_ existem somente nos testes unitários.
+
 Todos os comandos: `make help`. Alternativa sem uv no final deste arquivo.
 
 ## Entregáveis e mapa da avaliação
@@ -169,12 +175,15 @@ pip install -r requirements.txt && pip install -e .
 python scripts/demo.py
 ```
 
-## Interface web (opcional)
+## Interface web
 
-`make app` sobe uma interface local em Streamlit ("Letra da Lei") com seis abas: perguntas
+`make run` abre uma interface local em Streamlit ("Letra da Lei") com seis abas: perguntas
 à lei com citações verificadas, a linha do tempo das emendas, o grafo normativo interativo,
 os candidatos a antinomia, o painel de vigência e "Quem mudou a lei" (autoria de registro
-por norma, gerada por `make attribution`). É uma camada **além da rubrica**.
+por norma). Tudo funciona de imediato: o corpus e o dataset de autoria já acompanham o
+repositório — `make attribution` só é necessário para refazer a autoria direto das APIs do
+Congresso. A interface é uma camada **além da rubrica** (os entregáveis avaliados são as
+notebooks, o pacote e o relatório).
 
 ## Limitações
 
