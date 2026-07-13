@@ -18,7 +18,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from pyvis.network import Network
 
-from direito_dados.analytics.aggregate import answer_aggregate
+from direito_dados.analytics.aggregate import answer_aggregate, route_question, run_tool
 from direito_dados.analytics.sandbox import build_dataset, generate_and_run
 from direito_dados.analytics.authorship import amendments_by_origin, authors_by_party, top_authors
 from direito_dados.analytics.network import to_network_data
@@ -247,21 +247,37 @@ def render_qa_tab(ollama_up: bool) -> None:
 
     chunks, embedder, index = get_index_bundle()
     entry: dict = {"question": question}
-    if is_aggregate_question(question):
-        computed = answer_aggregate(question, get_corpus("full"), get_graph("full"))
+
+    # Routing. With Ollama up, an LLM router picks the tool by MEANING (so
+    # "pena mais branda", "leve", "inferior"... all reach the same preset tool
+    # without hardcoded synonym lists); without Ollama, a regex heuristic still
+    # catches the obvious aggregate phrasings.
+    if ollama_up:
+        with st.spinner("Escolhendo a ferramenta certa para a pergunta..."):
+            tool = route_question(question, OllamaClient(model=MODEL))
+    else:
+        tool = "consulta_especifica"
+        if is_aggregate_question(question):
+            tool = "script_agregado"  # regex can't say WHICH preset — try presets then script
+
+    if tool != "consulta_especifica":
+        corpus, graph = get_corpus("full"), get_graph("full")
+        computed = run_tool(tool, corpus, graph)
+        if computed is None and not ollama_up:
+            computed = answer_aggregate(question, corpus, graph)  # regex-picked preset fallback
         entry["mode"] = "computed"
         entry["computed"] = computed
         entry["results"] = []
         if computed is None and ollama_up:
-            # Tier 2: no preset tool covers it — the model writes a script that
-            # runs over the data only, in a restricted subprocess, and the
-            # generated code is shown for audit.
+            # No preset tool fits — the model writes a script that runs over the
+            # data only, in a restricted subprocess, code shown for audit.
             with st.spinner("Sem ferramenta pronta para esta agregação — gerando e "
                             "executando um script sobre os dados (local)..."):
                 entry["script_result"] = generate_and_run(
                     question, get_flat_dataset(), OllamaClient(model=MODEL), retries=2)
         st.session_state.chat_history.append(entry)
         st.rerun()
+
     if ollama_up:
         llm = OllamaClient(model=MODEL)
         valid_ids = {c.id for c in chunks}

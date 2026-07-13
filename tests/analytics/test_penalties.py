@@ -65,3 +65,17 @@ def test_penalty_synonyms_route_to_preset_tools():
     assert "Menores penas" in answer_aggregate("qual a lei com a pena mais branda?", c, g)
     assert "Menores penas" in answer_aggregate("qual crime tem a pena mais leve?", c, g)
     assert "Maiores penas" in answer_aggregate("qual a pena mais severa do código?", c, g)
+
+
+def test_router_maps_tool_name_and_defaults_safely():
+    from direito_dados.analytics.aggregate import route_question, run_tool, TOOLS
+    from direito_dados.generation.llm import FakeLLM
+    import json
+    # honours a valid tool name from the model
+    assert route_question("q", FakeLLM(json.dumps({"ferramenta": "menores_penas"}))) == "menores_penas"
+    # an invented/invalid tool falls back to the specific-query default
+    assert route_question("q", FakeLLM(json.dumps({"ferramenta": "inventada"}))) == "consulta_especifica"
+    # run_tool executes a named preset over a tiny corpus
+    out = run_tool("contagem_corpus", _corpus(), NormGraph())
+    assert out and "3 artigos" in out
+    assert run_tool("consulta_especifica", _corpus(), NormGraph()) is None
