@@ -39,6 +39,9 @@ class Article:
     text: str
     annotations: list[Annotation] = field(default_factory=list)
     status: VigenciaStatus = VigenciaStatus.VIGENTE
+    # Official heading (nomen juris) preceding the article in the consolidated
+    # text, e.g. "Homicídio simples" for CP art. 121. Empty when absent.
+    rubrica: str = ""
 
     @property
     def citation(self) -> str:

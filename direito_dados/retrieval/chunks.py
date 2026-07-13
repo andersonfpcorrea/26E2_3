@@ -22,7 +22,10 @@ def chunk_corpus(corpus: Corpus) -> list[Chunk]:
         for art in norm.articles:
             if not art.text.strip():
                 continue
-            embed_text = f"{art.caput}. {art.text}"[:_EMBED_TEXT_CAP]
+            # The rubrica (official crime name) is the strongest retrieval
+            # signal for name-based queries, so it leads the embedded text.
+            prefix = f"{art.rubrica}. " if art.rubrica else ""
+            embed_text = f"{prefix}{art.caput}. {art.text}"[:_EMBED_TEXT_CAP]
             chunks.append(Chunk(
                 id=f"{norm.id}:art{art.number}",
                 text=art.text,
@@ -35,6 +38,7 @@ def chunk_corpus(corpus: Corpus) -> list[Chunk]:
                     "hierarchy_level": norm.level.value,
                     "status": art.status.value,
                     "citation": art.citation,
+                    "rubrica": art.rubrica,
                 },
             ))
     return chunks

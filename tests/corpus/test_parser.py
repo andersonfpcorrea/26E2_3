@@ -100,3 +100,67 @@ def test_html_to_plain_text_keeps_articles_and_annotations():
     assert "Art. 155." in text
     assert "Lei nº 13.654" in text
     assert "ignore()" not in text
+
+
+RUBRICA_SAMPLE = """CAPÍTULO I
+DOS CRIMES CONTRA A VIDA
+Homicídio simples
+Art. 121. Matar alguém:
+Pena - reclusão, de seis a vinte anos.
+
+Furto
+Art. 155 - Subtrair, para si ou para outrem, coisa alheia móvel:
+Pena - reclusão, de um a quatro anos (Redação dada pela Lei nº 13.654, de 2018).
+
+Art. 214 -
+(Revogado pela Lei nº
+12.015, de 2009)
+Violação sexual mediante fraude
+(Redação
+dada pela Lei nº 12.015, de 2009)
+Art. 215.  Ter conjunção carnal ou praticar outro ato libidinoso, mediante fraude:
+Pena - reclusão, de 2 (dois) a 6 (seis) anos.
+"""
+
+
+def test_rubrica_attaches_to_following_article():
+    arts = {a.number: a for a in split_articles("CP", RUBRICA_SAMPLE)}
+    assert arts["121"].rubrica == "Homicídio simples"
+    assert arts["155"].rubrica == "Furto"
+    assert arts["215"].rubrica == "Violação sexual mediante fraude"
+
+
+def test_rubrica_removed_from_previous_article_text():
+    arts = {a.number: a for a in split_articles("CP", RUBRICA_SAMPLE)}
+    assert "Furto" not in arts["121"].text
+    assert "Violação sexual" not in arts["214"].text
+
+
+def test_structural_headings_are_not_rubricas():
+    arts = {a.number: a for a in split_articles("CP", RUBRICA_SAMPLE)}
+    assert "CAPÍTULO" not in arts["121"].rubrica
+    assert "DOS CRIMES" not in arts["121"].rubrica
+
+
+def test_pena_line_is_never_stolen_as_rubrica():
+    text = "Art. 1. Conduta:\nPena - detenção\n\nArt. 2. Outra conduta."
+    arts = {a.number: a for a in split_articles("CP", text)}
+    assert arts["2"].rubrica == ""
+    assert "Pena - detenção" in arts["1"].text
+
+
+def test_annotation_only_tail_is_not_a_rubrica():
+    text = ("Art. 1. Conduta punida.\n(Incluído pela Lei nº 9.999, de 1999)\n\n"
+            "Art. 2. Outra conduta.")
+    arts = {a.number: a for a in split_articles("CP", text)}
+    assert arts["2"].rubrica == ""
+
+
+def test_revoked_caput_detection_unaffected_by_rubrica_move():
+    arts = {a.number: a for a in split_articles("CP", RUBRICA_SAMPLE)}
+    assert arts["214"].status == VigenciaStatus.REVOGADO
+    # The rubrica's own trailing annotation stays where it was (annotations
+    # never move between blocks), so in this minimal fixture art. 215 has no
+    # annotation of its own and remains VIGENTE. (In the real corpus art. 215
+    # carries inline annotations and is ALTERADO.)
+    assert arts["215"].status == VigenciaStatus.VIGENTE

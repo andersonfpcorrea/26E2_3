@@ -38,14 +38,77 @@ def _extract_caput(body: str) -> str:
     return " ".join(caput_lines).strip()
 
 
+_RUBRICA_STOPWORDS_RE = re.compile(
+    r"(?i)^(pena\b|§|parágrafo\b|art\.?|inciso\b|[ivxlcdm]+\s*[-–])"
+)
+
+
+def _is_annotationish(line: str) -> bool:
+    """Line that is (part of) a Planalto parenthetical annotation."""
+    s = line.strip()
+    return bool(s) and (s.startswith("(") or s.endswith(")"))
+
+
+def _is_rubrica_line(line: str) -> bool:
+    """Heuristic for an official article heading (nomen juris).
+
+    Rubricas are short title-case lines with no terminal punctuation, e.g.
+    "Homicídio simples" or "Violação sexual mediante fraude". Structural
+    headings (PARTE/TÍTULO/CAPÍTULO, all-caps section names), penalty lines,
+    paragraph markers and wrapped sentence fragments are excluded.
+    """
+    s = line.strip()
+    if not s or len(s) > 80:
+        return False
+    if s[-1] in ".:;,)-–—":
+        return False
+    if _is_annotationish(s):
+        return False
+    if s.isupper():  # PARTE / TÍTULO / CAPÍTULO / "DOS CRIMES..." headings
+        return False
+    if not s[0].isalpha() or not s[0].isupper():
+        return False
+    if not any(c.islower() for c in s):
+        return False
+    if _RUBRICA_STOPWORDS_RE.match(s):
+        return False
+    return True
+
+
+def _split_trailing_rubrica(body: str) -> tuple[str, str]:
+    """Split a block into (remaining body, rubrica belonging to the NEXT article).
+
+    Planalto prints each article's heading immediately before its ``Art. N``
+    line, so a plain header split attaches every heading to the *previous*
+    article's tail. Trailing annotation lines (which may refer to the rubrica)
+    are left in place; only the contiguous heading lines are moved.
+    """
+    lines = body.rstrip().splitlines()
+    i = len(lines)
+    while i > 0 and _is_annotationish(lines[i - 1]) and (len(lines) - i) < 4:
+        i -= 1
+    j = i
+    while j > 0 and _is_rubrica_line(lines[j - 1]) and (i - j) < 3:
+        j -= 1
+    if j == i:  # no rubrica found
+        return body, ""
+    rubrica = " ".join(line.strip() for line in lines[j:i])
+    remaining = "\n".join(lines[:j] + lines[i:]).strip()
+    return remaining, rubrica
+
+
 def split_articles(norm_id: str, plain_text: str) -> list[Article]:
     matches = list(_ARTICLE_HEADER_RE.finditer(plain_text))
     articles: list[Article] = []
+    preamble = plain_text[: matches[0].start()] if matches else ""
+    _, next_rubrica = _split_trailing_rubrica(preamble)
     for i, match in enumerate(matches):
         number = match.group(1)
         body_start = match.end()
         body_end = matches[i + 1].start() if i + 1 < len(matches) else len(plain_text)
         body = plain_text[body_start:body_end].strip()
+        rubrica = next_rubrica
+        body, next_rubrica = _split_trailing_rubrica(body)
         caput = _extract_caput(body)
         annotations = extract_annotations(body)
         articles.append(
@@ -56,6 +119,7 @@ def split_articles(norm_id: str, plain_text: str) -> list[Article]:
                 text=body,
                 annotations=annotations,
                 status=article_status(caput, annotations),
+                rubrica=rubrica,
             )
         )
     return articles
