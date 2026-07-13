@@ -36,3 +36,14 @@ def test_embed_text_leads_with_caput(tmp_path):
     art121 = next(c for c in chunks if c.id == "CP:art121")
     assert art121.embed_text.startswith("Matar alguém")
     assert len(art121.embed_text) <= 300
+
+
+def test_duplicate_article_ids_keep_first_occurrence(tmp_path):
+    text = "Art. 1. Corpo principal.\n\nArt. 2. Outro artigo.\n\nArt. 1. Texto do anexo (ADCT)."
+    (tmp_path / "CF.txt").write_text(text, encoding="utf-8")
+    spec = NormSpec(id="CF", title="Constituição", norm_type="constituicao",
+                    source_url="http://x", filename="CF.txt", urn="u", domain="penal")
+    chunks = chunk_corpus(load_corpus(str(tmp_path), specs=[spec]))
+    art1 = [c for c in chunks if c.id == "CF:art1"]
+    assert len(art1) == 1
+    assert "Corpo principal" in art1[0].text

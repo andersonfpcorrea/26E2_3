@@ -37,6 +37,7 @@ from direito_dados.retrieval.index import Result, VectorIndex
 
 MODEL = "llama3.1:8b"
 RAW_DIR = str(Path(__file__).resolve().parent / "data" / "raw")
+INDEX_DIR = Path(__file__).resolve().parent / "data" / "index"
 GRAPH_NODE_CAP = 150
 AUTHORSHIP_PATH = Path(__file__).resolve().parent / "data" / "attribution" / "authorship.json"
 
@@ -46,9 +47,9 @@ EXTERNAL_COLOR = "#6a1b9a"
 
 
 # --- Cached resources -------------------------------------------------------
-# Corpus loading and graph building are cheap (pure parsing); the embedder +
-# vector index build is the expensive step and is scoped by the sidebar
-# selector so the default (Código Penal only) stays fast.
+# Corpus loading and graph building are cheap (pure parsing); the embedding
+# cost is paid once ever — the index is persisted in data/index/ and reused
+# across sessions (provisioned by `make run` before the UI opens).
 
 @st.cache_resource(show_spinner=False)
 def get_corpus(scope: str) -> Corpus:
@@ -68,11 +69,16 @@ def get_embedder() -> E5Embedder:
 
 
 @st.cache_resource(show_spinner=False)
-def get_index_bundle(scope: str):
-    corpus = get_corpus(scope)
+def get_index_bundle():
+    """Full-corpus retrieval bundle backed by the persisted index in data/index/.
+
+    `make run` provisions the index before the UI opens; if it is absent or
+    stale (corpus changed), open_or_build rebuilds it here once.
+    """
+    corpus = get_corpus("full")
     chunks = chunk_corpus(corpus)
     embedder = get_embedder()
-    index = VectorIndex.build(chunks, embedder)
+    index = VectorIndex.open_or_build(chunks, embedder, persist_dir=str(INDEX_DIR))
     return chunks, embedder, index
 
 
@@ -157,7 +163,7 @@ def _render_chat_entry(entry: dict) -> None:
     _render_retrieved_expander(entry["results"])
 
 
-def render_qa_tab(scope: str, ollama_up: bool) -> None:
+def render_qa_tab(ollama_up: bool) -> None:
     st.subheader("Pergunte à lei")
     st.caption(
         "Respostas presas ao texto oficial recuperado; toda citação é verificada por código "
@@ -183,7 +189,7 @@ def render_qa_tab(scope: str, ollama_up: bool) -> None:
     if not question:
         return
 
-    chunks, embedder, index = get_index_bundle(scope)
+    chunks, embedder, index = get_index_bundle()
     entry: dict = {"question": question}
     if ollama_up:
         llm = OllamaClient(model=MODEL)
@@ -311,11 +317,11 @@ def render_graph_tab() -> None:
 # --- Tab 4: Antinomias ---------------------------------------------------------
 
 @st.cache_data(show_spinner=False)
-def _candidates_for(scope: str, threshold: float, _chunks, _index, _embedder) -> list[CandidatePair]:
+def _candidates_for(threshold: float, _chunks, _index, _embedder) -> list[CandidatePair]:
     return generate_candidates(_chunks, _index, _embedder, k=5, threshold=threshold)
 
 
-def render_conflicts_tab(scope: str, ollama_up: bool) -> None:
+def render_conflicts_tab(ollama_up: bool) -> None:
     st.subheader("Antinomias")
     st.warning(
         "Os pares abaixo são **candidatos** a antinomia, obtidos por similaridade semântica "
@@ -323,13 +329,13 @@ def render_conflicts_tab(scope: str, ollama_up: bool) -> None:
         "candidato é matéria para revisão humana."
     )
 
-    chunks, embedder, index = get_index_bundle(scope)
-    corpus = get_corpus(scope)
+    chunks, embedder, index = get_index_bundle()
+    corpus = get_corpus("full")
     chunks_by_id = {c.id: c for c in chunks}
 
     threshold = st.slider("Limiar de similaridade", 0.50, 0.99, 0.85, 0.01)
     with st.spinner("Buscando pares candidatos por similaridade..."):
-        candidates = _candidates_for(scope, threshold, chunks, index, embedder)
+        candidates = _candidates_for(threshold, chunks, index, embedder)
 
     if not candidates:
         st.info("Nenhum par candidato acima do limiar selecionado.")
@@ -506,39 +512,28 @@ def main() -> None:
     )
 
     with st.sidebar:
-        st.header("Configuração")
-        scope_label = st.radio(
-            "Escopo do índice semântico",
-            ["Código Penal (rápido)", "Corpus completo (mais lento)"],
-            index=0,
-        )
-        scope = "CP" if scope_label.startswith("Código Penal") else "full"
-        if scope == "full":
-            st.caption(
-                "Indexando as 9 normas (~2.300 artigos) — a primeira execução pode levar "
-                "alguns minutos."
-            )
+        st.header("Status")
+        st.caption("Índice semântico: as 9 normas do microssistema (persistido em disco).")
         ollama_up = ollama_available() and ollama_has_model(MODEL)
         st.caption(f"Ollama ({MODEL}): {'ativo' if ollama_up else 'indisponível'}")
 
-    spinner_msg = (
-        "Construindo índice semântico do Código Penal..." if scope == "CP" else
-        "Construindo índice semântico do corpus completo (pode levar alguns minutos)..."
-    )
-    with st.spinner(spinner_msg):
-        get_index_bundle(scope)
+    with st.spinner(
+        "Carregando o índice semântico (reconstrói aqui apenas se ausente — use "
+        "`make run` para provisionar antes de abrir)..."
+    ):
+        get_index_bundle()
 
     tab_qa, tab_timeline, tab_graph, tab_conflicts, tab_vigencia, tab_attribution = st.tabs(
         ["Pergunte à lei", "A lei no tempo", "O grafo", "Antinomias", "Vigência", "Quem mudou a lei"]
     )
     with tab_qa:
-        render_qa_tab(scope, ollama_up)
+        render_qa_tab(ollama_up)
     with tab_timeline:
         render_timeline_tab()
     with tab_graph:
         render_graph_tab()
     with tab_conflicts:
-        render_conflicts_tab(scope, ollama_up)
+        render_conflicts_tab(ollama_up)
     with tab_vigencia:
         render_vigencia_tab()
     with tab_attribution:

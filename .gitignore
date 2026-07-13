@@ -10,4 +10,5 @@ data/raw/*
 !data/raw/.gitkeep
 !data/raw/*.txt
 data/analytics/
+data/index/
 *.egg-info/

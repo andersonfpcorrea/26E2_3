@@ -18,7 +18,7 @@
 >   `c01_modelos_llm.ipynb` · `c02_prompting.ipynb` · `c03_embeddings_busca.ipynb` ·
 >   `c04_inferencia_local_ou_remota.ipynb` · `c05_rag_pipeline.ipynb` · `c06_antinomias.ipynb` ·
 >   `c07_lei_como_dado.ipynb`
-> - **Código-fonte:** `direito_dados/` (pacote instalável, testado, com 166 testes em `tests/`)
+> - **Código-fonte:** `direito_dados/` (pacote instalável, testado, com 169 testes em `tests/`)
 > - **Interface web local (opcional, além da rubrica):** `app.py` — `make app`
 > - **Dataset de autoria das leis emendadoras:** `data/attribution/authorship.json`
 > - **README com instruções de uso:** `README.md`
@@ -105,7 +105,7 @@ Ao mesmo tempo, o projeto **não terceiriza para o LLM aquilo que pode ser feito
 | Embeddings/encoder | `sentence-transformers`, `torch` | c03, c05, c06 |
 | Grafo e visualização | `networkx`, `matplotlib` | c07 |
 | Corpus (parsing/fetch) | `beautifulsoup4`, `lxml`, `requests` | corpus, scripts/fetch_corpus.py |
-| Testes | `pytest` (166 testes, incluindo integração ao vivo com e5 e Ollama) | tests/ |
+| Testes | `pytest` (169 testes, incluindo integração ao vivo com e5 e Ollama) | tests/ |
 
 Toda a geração é **local**, via Ollama — nenhuma chamada a API de nuvem é feita em nenhuma das sete notebooks (a comparação com nuvem, na seção de inferência, é arquitetada e justificada, não executada). Essa escolha é discutida em detalhe na seção "Estratégia de inferência local ou remota".
 
@@ -290,7 +290,7 @@ Antes de descrever o chunking em vigor, vale narrar como se chegou a ele — é 
 
 **Correção.** `Article` ganhou um campo `rubrica` (`direito_dados/corpus/models.py`), e uma nova função `_split_trailing_rubrica` (`direito_dados/corpus/parser.py`) roda um passe pós-divisão que identifica linhas de cabeçalho contíguas ao final de cada bloco de artigo — título-caso, sem pontuação terminal, não em caixa alta, não uma linha de `Pena`/parágrafo/anotação — e as move para o artigo **seguinte**, a quem de fato pertencem. Cabeçalhos estruturais (`CAPÍTULO`, `TÍTULO`, seções em caixa alta) e anotações de vigência nunca são movidos, apenas rubricas genuínas. `chunk_corpus` (`direito_dados/retrieval/chunks.py`) passou a construir `embed_text` como `f"{rubrica}. {caput}. {texto}"[:300]` quando o artigo tem rubrica — a rubrica lidera porque é o sinal mais forte para consultas por nome de crime: é literalmente o nome pelo qual o crime é conhecido ("furto", "estelionato"), enquanto o *caput* e o texto operativo usam vocabulário técnico-descritivo que nem sempre contém esse nome.
 
-**Validação.** Sobre o corpus real, a extração recupera corretamente as 8/8 rubricas de crimes emblemáticos testadas manualmente (Homicídio simples, Furto, Roubo, Estelionato, Estupro, Peculato, Corrupção passiva, Violação sexual mediante fraude) e extrai rubrica para 423 artigos no corpus inteiro. Um conjunto de 5 consultas-litmus de recuperação — incluindo os três casos historicamente quebrados (art. 215, o desempate 155-vs-168, e o *miss* denso do art. 171) — passou a acertar o rank 1 em todos os casos após a correção. Os 166 testes do projeto passam, com 5 novos casos dedicados a `_split_trailing_rubrica` (`tests/corpus/test_parser.py`): a rubrica gruda no artigo seguinte, some do texto do artigo anterior, cabeçalhos estruturais nunca são confundidos com rubrica, uma linha de `Pena` nunca é "roubada" como rubrica, e a vigência derivada do *caput* continua correta mesmo com o texto rearranjado.
+**Validação.** Sobre o corpus real, a extração recupera corretamente as 8/8 rubricas de crimes emblemáticos testadas manualmente (Homicídio simples, Furto, Roubo, Estelionato, Estupro, Peculato, Corrupção passiva, Violação sexual mediante fraude) e extrai rubrica para 423 artigos no corpus inteiro. Um conjunto de 5 consultas-litmus de recuperação — incluindo os três casos historicamente quebrados (art. 215, o desempate 155-vs-168, e o *miss* denso do art. 171) — passou a acertar o rank 1 em todos os casos após a correção. Os 169 testes do projeto passam, com 5 novos casos dedicados a `_split_trailing_rubrica` (`tests/corpus/test_parser.py`): a rubrica gruda no artigo seguinte, some do texto do artigo anterior, cabeçalhos estruturais nunca são confundidos com rubrica, uma linha de `Pena` nunca é "roubada" como rubrica, e a vigência derivada do *caput* continua correta mesmo com o texto rearranjado.
 
 ### Modelo de embeddings e estratégia de chunking
 
@@ -746,7 +746,7 @@ make models
 # 4. Fazer uma pergunta ao RAG
 make ask q="qual a pena para furto?"
 
-# 5. Rodar a suíte de testes (166 testes; os que dependem do modelo e5 real
+# 5. Rodar a suíte de testes (169 testes; os que dependem do modelo e5 real
 #    ou de um Ollama ativo são pulados automaticamente se indisponíveis)
 make test
 

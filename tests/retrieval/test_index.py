@@ -42,3 +42,33 @@ def test_query_domain_filter(tmp_path):
     idx = VectorIndex.build(_chunks(), e)
     ids = {r.id for r in idx.query("consumidor", e, k=10, domain="consumidor")}
     assert ids == {"CDC:art6"}
+
+
+class _CountingEmbedder(FakeEmbedder):
+    def __init__(self):
+        super().__init__()
+        self.passage_calls = 0
+
+    def embed_passages(self, texts):
+        self.passage_calls += 1
+        return super().embed_passages(texts)
+
+
+def test_open_or_build_reuses_persisted_index(tmp_path):
+    e = _CountingEmbedder()
+    chunks = _chunks()
+    idx1 = VectorIndex.open_or_build(chunks, e, persist_dir=str(tmp_path))
+    assert e.passage_calls == 1                       # built once
+    idx2 = VectorIndex.open_or_build(chunks, e, persist_dir=str(tmp_path))
+    assert e.passage_calls == 1                       # reopened, NOT re-embedded
+    ids = {r.id for r in idx2.query("homicídio matar", e, k=3)}
+    assert ids  # queries work against the reopened index
+
+
+def test_open_or_build_rebuilds_when_corpus_changes(tmp_path):
+    e = _CountingEmbedder()
+    chunks = _chunks()
+    VectorIndex.open_or_build(chunks, e, persist_dir=str(tmp_path))
+    changed = chunks[:-1]                             # one chunk removed
+    VectorIndex.open_or_build(changed, e, persist_dir=str(tmp_path))
+    assert e.passage_calls == 2                       # mismatch -> rebuilt

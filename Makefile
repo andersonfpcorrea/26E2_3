@@ -3,7 +3,7 @@
 
 OLLAMA_MODEL ?= llama3.1:8b
 
-.PHONY: help run setup models ensure-models ensure-data data demo ask test notebooks report app attribution
+.PHONY: help run setup models ensure-models ensure-data data demo ask test notebooks report index app attribution
 
 help: ## mostra esta ajuda
 	@echo "Comandos disponíveis:"
@@ -12,13 +12,15 @@ help: ## mostra esta ajuda
 run: ## TUDO em um comando: instala o que faltar (verifica antes de baixar) e abre a interface web
 	@command -v uv >/dev/null 2>&1 || { \
 		echo "uv não encontrado. Instale: https://docs.astral.sh/uv/getting-started/installation/"; exit 1; }
-	@echo "[1/4] Dependências Python (uv sync — instantâneo se já instaladas)..."
+	@echo "[1/5] Dependências Python (uv sync — instantâneo se já instaladas)..."
 	@uv sync --all-extras --quiet
-	@echo "[2/4] Dados (corpus e autoria já acompanham o repositório; reconstrói só se ausentes)..."
+	@echo "[2/5] Dados (corpus e autoria já acompanham o repositório; reconstrói só se ausentes)..."
 	@$(MAKE) -s ensure-data
-	@echo "[3/4] Modelos locais (baixa apenas o que faltar)..."
+	@echo "[3/5] Modelos locais (baixa apenas o que faltar)..."
 	@$(MAKE) -s ensure-models
-	@echo "[4/4] Abrindo a interface web (Ctrl+C para encerrar)..."
+	@echo "[4/5] Índice semântico (constrói UMA vez, ~2 min; depois reutiliza)..."
+	@uv run python scripts/build_index.py
+	@echo "[5/5] Tudo pronto — abrindo a interface web (Ctrl+C para encerrar)..."
 	uv run streamlit run app.py
 
 # Internal: idempotent data provisioning — the snapshots ship committed, so
@@ -69,7 +71,7 @@ ask: ## faça sua pergunta ao RAG: make ask q="qual a pena para furto?"
 	@test -n "$(q)" || { echo 'Uso: make ask q="sua pergunta"'; exit 1; }
 	uv run python scripts/demo.py "$(q)"
 
-test: ## roda a suíte de testes (166 testes; os que dependem de e5/Ollama pulam se indisponíveis)
+test: ## roda a suíte de testes (169 testes; os que dependem de e5/Ollama pulam se indisponíveis)
 	uv run pytest -q
 
 notebooks: ## re-executa as 7 notebooks (lento; requer Ollama ativo para c02/c04/c05/c06)
@@ -82,6 +84,9 @@ notebooks: ## re-executa as 7 notebooks (lento; requer Ollama ativo para c02/c04
 
 report: ## regenera o PDF do relatório a partir de report/relatorio.md
 	uv run python scripts/build_report.py
+
+index: ## constrói/reutiliza o índice semântico persistido (data/index/)
+	uv run python scripts/build_index.py
 
 app: ## abre só a interface web (sem verificar modelos; use make run na primeira vez)
 	uv run streamlit run app.py

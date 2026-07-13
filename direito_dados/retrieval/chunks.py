@@ -18,10 +18,18 @@ class Chunk:
 
 def chunk_corpus(corpus: Corpus) -> list[Chunk]:
     chunks: list[Chunk] = []
+    seen_ids: set[str] = set()
     for norm in corpus.norms:
         for art in norm.articles:
             if not art.text.strip():
                 continue
+            chunk_id = f"{norm.id}:art{art.number}"
+            # Annexed documents on the same Planalto page (e.g. the ADCT after
+            # the constitutional body) restart article numbering; the first
+            # occurrence — the consolidated main body — is the citable one.
+            if chunk_id in seen_ids:
+                continue
+            seen_ids.add(chunk_id)
             # The rubrica (official crime name) is the strongest retrieval
             # signal for name-based queries, so it leads the embedded text.
             prefix = f"{art.rubrica}. " if art.rubrica else ""

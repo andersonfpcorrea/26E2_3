@@ -45,6 +45,20 @@ class VectorIndex:
             )
         return cls(collection)
 
+    @classmethod
+    def open_or_build(cls, chunks: list[Chunk], embedder: Embedder, persist_dir: str):
+        """Reuse a persisted index when it matches `chunks`; (re)build otherwise.
+
+        Embedding the corpus is the expensive step (minutes on CPU), but the
+        result is deterministic for a given corpus snapshot — so it is paid
+        once and persisted. The index is reused only when the stored ids match
+        the expected chunk ids exactly; any corpus change triggers a rebuild.
+        """
+        existing = _persisted_collection(chunks, persist_dir)
+        if existing is not None:
+            return cls(existing)
+        return cls.build(chunks, embedder, persist_dir=persist_dir)
+
     def query(self, text: str, embedder: Embedder, k: int = 5,
               exclude_revoked: bool = True, domain: str | None = None) -> list[Result]:
         conditions = []
@@ -70,3 +84,23 @@ class VectorIndex:
                 score=1.0 - dist, metadata=meta,
             ))
         return out
+
+
+def persisted_matches(chunks: list[Chunk], persist_dir: str) -> bool:
+    """True when `persist_dir` holds an index for exactly these chunks."""
+    return _persisted_collection(chunks, persist_dir) is not None
+
+
+def _persisted_collection(chunks: list[Chunk], persist_dir: str):
+    import chromadb
+
+    try:
+        client = chromadb.PersistentClient(path=persist_dir)
+        collection = client.get_collection("norms")
+        if collection.count() == len(chunks):
+            stored = set(collection.get(include=[])["ids"])
+            if stored == {c.id for c in chunks}:
+                return collection
+    except Exception:
+        pass
+    return None

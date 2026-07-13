@@ -40,8 +40,10 @@ class FakeEmbedder:
 class E5Embedder:
     """multilingual-e5-base via sentence-transformers (lazy import)."""
 
-    def __init__(self, model_name: str = "intfloat/multilingual-e5-base"):
+    def __init__(self, model_name: str = "intfloat/multilingual-e5-base",
+                 show_progress: bool = False):
         self.model_name = model_name
+        self.show_progress = show_progress
         self._model = None
 
     def _load(self):
@@ -54,7 +56,8 @@ class E5Embedder:
     def embed_passages(self, texts: list[str]) -> list[list[float]]:
         model = self._load()
         prefixed = [f"passage: {t}" for t in texts]
-        return model.encode(prefixed, normalize_embeddings=True).tolist()
+        return model.encode(prefixed, normalize_embeddings=True,
+                            show_progress_bar=self.show_progress).tolist()
 
     def embed_query(self, text: str) -> list[float]:
         model = self._load()
