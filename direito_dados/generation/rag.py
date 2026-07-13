@@ -1,5 +1,6 @@
 """Grounded, cited RAG: retrieve in-force provisions, generate, verify citations, abstain."""
 
+import re
 from dataclasses import dataclass, field
 
 from direito_dados.generation.llm import LLMClient
@@ -43,7 +44,36 @@ _QUOTE_INSTRUCTION = (
     "palavra, sem parafrasear. NÃO é o id do dispositivo; é o texto dele. "
     'Exemplo: se a resposta se apoia no art. 121, "trecho_citado" seria algo como '
     '"Matar alguém: Pena - reclusão, de seis a vinte anos".'
+    "\n\nATENÇÃO — perguntas agregadas: se a pergunta exigir comparar ou varrer TODAS "
+    "as normas (ex.: qual a maior/menor pena, quantos crimes existem, qual lei tem "
+    "mais artigos), ela NÃO pode ser respondida a partir de alguns trechos "
+    'recuperados. Nesse caso defina "abstained": true e explique em "answer" que a '
+    "pergunta é analítica e exigiria varrer o corpus inteiro, não a recuperação de "
+    "trechos semelhantes."
 )
+
+_AGGREGATE_RE = re.compile(
+    r"(?i)quant[oa]s\b"
+    r"|\btodas?\s+as\s+(leis|normas)\b"
+    r"|\bqual\s+(a\s+)?(lei|norma)\s+(tem|possui|com)\b"
+    r"|\b(maior|menor|mais\s+alta?|mais\s+baixa?)\b.{0,20}\bpena\b"
+    r"|\bmais\s+(alterad|emendad|modificad)"
+)
+
+_AGGREGATE_ANSWER = (
+    "Esta é uma pergunta analítica: responder exigiria varrer e comparar TODAS as "
+    "normas do corpus, o que a recuperação de trechos semelhantes não faz — e uma "
+    "resposta baseada em alguns trechos seria enganosa. Use as abas analíticas "
+    "('A lei no tempo', 'Vigência') para agregações, ou reformule para uma "
+    "pergunta sobre um dispositivo/tema específico (ex.: 'qual a pena para X?')."
+)
+
+
+def is_aggregate_question(question: str) -> bool:
+    """Aggregation/superlative questions (max/count/compare-all) cannot be
+    answered by top-k retrieval; they need the structured analytics layer."""
+    return bool(_AGGREGATE_RE.search(question))
+
 
 # quote_status values (see _verify_quote).
 QUOTE_VERIFIED = "verificado"
@@ -113,6 +143,9 @@ def answer_question(question: str, index: VectorIndex, embedder: Embedder,
     retrieved texts — upgrading the guarantee from "the cited id exists" to
     "the supporting content is anchored in the cited provision".
     """
+    if verify_quote and is_aggregate_question(question):
+        return RagAnswer(answer=_AGGREGATE_ANSWER, abstained=True, retrieved_ids=[])
+
     results = index.query(question, embedder, k=k, exclude_revoked=True)
     retrieved_ids = [r.id for r in results]
     if not results:

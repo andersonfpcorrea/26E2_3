@@ -55,12 +55,12 @@ O corpus cobre as **9 normas do microssistema penal federal brasileiro**, delimi
 | LEP | Lei de Execução Penal (Lei 7.210/1984) | 219 |
 | L11343 | Lei de Drogas (Lei 11.343/2006) | 114 |
 | L11340 | Lei Maria da Penha (Lei 11.340/2006) | 60 |
-| L8072 | Lei de Crimes Hediondos (Lei 8.072/1990) | 20 |
+| L8072 | Lei de Crimes Hediondos (Lei 8.072/1990) | 14 |
 | DL3688 | Lei das Contravenções Penais (Decreto-Lei 3.688/1941) | 75 |
 | LINDB | Lei de Introdução às Normas do Direito Brasileiro (Decreto-Lei 4.657/1942) | 30 |
-| **Total** | | **2.310** |
+| **Total** | | **2.304** |
 
-Dos 2.310 artigos, **2.248 estão em vigor** (1.215 na redação original/`vigente` + 1.033 `alterado` por emenda posterior) e **62 estão revogados**. A LINDB merece destaque à parte: é a própria norma que **codifica as regras de resolução de antinomias** (*lex superior*, *lex posterior*, *lex specialis*) usadas pelo detector de conflitos da seção correspondente — está no corpus tanto como objeto de análise quanto como fonte dos princípios que orientam essa análise.
+Dos 2.304 artigos, **2.242 estão em vigor** (1.209 na redação original/`vigente` + 1.033 `alterado` por emenda posterior) e **62 estão revogados**. Vale registrar um detalhe de parsing que esses números refletem: leis que alteram outras leis citam, entre aspas, o texto integral dos artigos que reescrevem (a Lei 8.072/1990, por exemplo, transcreve a nova redação dos arts. 159, 213, 214, 223, 267 e 270 do Código Penal); o parser detecta esses blocos citados — um salto abrupto na numeração com retomada da sequência própria logo em seguida — e não os conta como artigos da lei que os cita. A LINDB merece destaque à parte: é a própria norma que **codifica as regras de resolução de antinomias** (*lex superior*, *lex posterior*, *lex specialis*) usadas pelo detector de conflitos da seção correspondente — está no corpus tanto como objeto de análise quanto como fonte dos princípios que orientam essa análise.
 
 **Fonte e obtenção.** O texto de cada norma é obtido do **Portal da Legislação do Planalto** (`planalto.gov.br`), que publica a *redação consolidada* de cada lei com anotações inline de vigência — por exemplo `(Redação dada pela Lei nº 13.964, de 2019)` ou `(Revogado pela Lei nº 12.015, de 2009)`. Essas anotações são a matéria-prima de todo o projeto: delas derivam tanto o grafo de emendas/revogações (seção "a lei como dado") quanto o filtro de vigência da recuperação (seção "Embeddings e Busca").
 
@@ -79,7 +79,7 @@ O script (`scripts/fetch_corpus.py`) percorre o registro de 9 normas (`direito_d
 **Por que este corpus.** Três propriedades tornam o microssistema penal federal um recorte particularmente produtivo para este projeto:
 
 1. **Escopo fechado e legalmente completo.** Por ser competência exclusiva da União, o recorte não é uma amostra arbitrária — é o universo inteiro do domínio. Isso permite construir *gold sets* pequenos, mas exaustivos o bastante para avaliação (ex.: o conjunto de recuperação de 6 perguntas e o conjunto de antinomias de 3 pares), algo inviável em um corpus de escala nacional irrestrita.
-2. **Complexidade real, tamanho tratável.** Com 2.310 artigos, 9 hierarquias/datas de promulgação diferentes e milhares de emendas históricas, o corpus tem estrutura genuinamente difícil (hierarquia normativa, vigência artigo a artigo, potenciais antinomias) sem exigir infraestrutura de escala industrial — uma decisão consciente de custo e reprodutibilidade em ambiente acadêmico.
+2. **Complexidade real, tamanho tratável.** Com 2.304 artigos, 9 hierarquias/datas de promulgação diferentes e milhares de emendas históricas, o corpus tem estrutura genuinamente difícil (hierarquia normativa, vigência artigo a artigo, potenciais antinomias) sem exigir infraestrutura de escala industrial — uma decisão consciente de custo e reprodutibilidade em ambiente acadêmico.
 3. **Anotações de vigência prontas para extração.** O Planalto já anota cada alteração/revogação inline. Isso torna a vigência **metadados extraíveis por regex** em vez de um problema de NLP não resolvido — o que libera o projeto para investir esforço onde realmente há um problema difícil de linguagem natural: recuperação semântica, geração fundamentada e adjudicação de conflitos.
 
 **Por que LLMs.** O projeto usa LLMs em três papéis distintos e complementares, cada um escolhido porque a tarefa correspondente **não é resolvível de forma puramente determinística**:
@@ -557,10 +557,10 @@ A notebook `c07_lei_como_dado.ipynb` trata o microssistema penal como um **grafo
 
 ### Estrutura do grafo
 
-Sobre o corpus completo (9 normas, 2.310 artigos), o grafo tem:
+Sobre o corpus completo (9 normas, 2.304 artigos), o grafo tem:
 
 ```
-Nós:  2.381   (337 NORM + 2.044 PROVISION)
+Nós:  2.375   (337 NORM + 2.038 PROVISION)
 Arestas: 4.727   (4.453 AMENDS + 274 REVOKES)
 ```
 

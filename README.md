@@ -31,7 +31,7 @@ Toda citação que o modelo produz é conferida contra o corpus oficial: citaç�
 inexistentes são sinalizadas como **alucinação** e descartadas; sem base recuperada, o sistema
 não responde.
 
-**2. Sabe o que ainda é lei — e o que deixou de ser.** Cada um dos 2.310 artigos carrega sua situação
+**2. Sabe o que ainda é lei — e o que deixou de ser.** Cada um dos 2.304 artigos carrega sua situação
 (em vigor / alterado / revogado), extraída das anotações oficiais do Planalto, e a busca
 **exclui normas revogadas**.
 
@@ -93,7 +93,7 @@ Todos os comandos: `make help`. Alternativa sem uv no final deste arquivo.
 ## O corpus
 
 O recorte é um **microssistema**: um conjunto de leis que gravitam em torno de um código e
-formam um subsistema coeso do ordenamento. São 9 normas, **2.310 artigos** (2.248 em vigor, 62 revogados), obtidas dos
+formam um subsistema coeso do ordenamento. São 9 normas, **2.304 artigos** (2.242 em vigor, 62 revogados), obtidas dos
 textos consolidados oficiais do Planalto:
 
 - [Constituição da República Federativa do Brasil de 1988](https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm) — direitos e garantias, competência penal

@@ -97,8 +97,34 @@ def _split_trailing_rubrica(body: str) -> tuple[str, str]:
     return remaining, rubrica
 
 
+def _phantom_headers(numbers: list[int]) -> set[int]:
+    """Indices of headers that belong to QUOTED foreign articles, not the norm.
+
+    Amending laws quote the articles they rewrite (e.g. Lei 8.072 art. 6º quotes
+    CP arts. 213/214/223/267/270 verbatim). Those quoted headers appear as a
+    block whose numbering jumps far above the norm's own sequence and whose end
+    is marked by the norm's own numbering resuming. Detection: a jump of more
+    than 100 above the last accepted number, with the native sequence resuming
+    (a number within +20 of the last accepted) within the next few headers —
+    quoted blocks are short, and the bounded window keeps genuinely long norms
+    (e.g. the CPP) from being poisoned by low-numbered trailing annexes.
+    """
+    phantoms: set[int] = set()
+    last_accepted = 0
+    window = 30
+    for i, num in enumerate(numbers):
+        upcoming = numbers[i + 1 : i + 1 + window]
+        if num > last_accepted + 100 and any(n <= last_accepted + 20 for n in upcoming):
+            phantoms.add(i)
+            continue
+        last_accepted = num
+    return phantoms
+
+
 def split_articles(norm_id: str, plain_text: str) -> list[Article]:
     matches = list(_ARTICLE_HEADER_RE.finditer(plain_text))
+    numbers = [int(m.group(1).split("-")[0]) for m in matches]
+    phantoms = _phantom_headers(numbers)
     articles: list[Article] = []
     preamble = plain_text[: matches[0].start()] if matches else ""
     _, next_rubrica = _split_trailing_rubrica(preamble)
@@ -109,6 +135,8 @@ def split_articles(norm_id: str, plain_text: str) -> list[Article]:
         body = plain_text[body_start:body_end].strip()
         rubrica = next_rubrica
         body, next_rubrica = _split_trailing_rubrica(body)
+        if i in phantoms:
+            continue
         caput = _extract_caput(body)
         annotations = extract_annotations(body)
         articles.append(

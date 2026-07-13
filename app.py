@@ -364,6 +364,24 @@ def render_conflicts_tab(ollama_up: bool) -> None:
         width="stretch", hide_index=True,
     )
 
+    st.markdown("#### Ler os dois dispositivos lado a lado")
+    pair_labels = [f"{c.a}  ×  {c.b}   (similaridade {c.similarity:.3f})"
+                   for c in candidates[:50]]
+    chosen = st.selectbox("Par candidato", pair_labels, key="conflict_pair_reader")
+    pair = candidates[pair_labels.index(chosen)]
+    col_a, col_b = st.columns(2)
+    for col, cid in ((col_a, pair.a), (col_b, pair.b)):
+        chunk = chunks_by_id.get(cid)
+        with col, st.container(border=True):
+            if chunk is None:
+                st.warning(f"{cid}: texto não encontrado no índice.")
+                continue
+            st.markdown(f"**{chunk.metadata.get('citation', cid)}**")
+            if chunk.metadata.get("rubrica"):
+                st.caption(f"Rubrica: {chunk.metadata['rubrica']}")
+            st.caption(f"Situação: {chunk.metadata.get('status', '?')}")
+            st.markdown(chunk.text)
+
     st.markdown("---")
     col_n, col_btn = st.columns([1, 3])
     with col_n:

@@ -164,3 +164,19 @@ def test_revoked_caput_detection_unaffected_by_rubrica_move():
     # annotation of its own and remains VIGENTE. (In the real corpus art. 215
     # carries inline annotations and is ALTERADO.)
     assert arts["215"].status == VigenciaStatus.VIGENTE
+
+
+def test_quoted_foreign_articles_are_skipped():
+    # An amending law quotes the articles it rewrites (Lei 8.072 pattern):
+    # the quoted block jumps far above the norm's own numbering and the
+    # native sequence resumes right after — those headers are not articles
+    # of THIS norm.
+    text = (
+        "Art. 5. Disposição própria.\n\n"
+        "Art. 6. Os arts. 213 e 214 do Código Penal passam a vigorar assim:\n"
+        "Art. 213. Constranger alguém...\nPena - reclusão.\n\n"
+        "Art. 214. Praticar ato...\nPena - reclusão.\n\n"
+        "Art. 7. Outra disposição própria."
+    )
+    nums = [a.number for a in split_articles("L8072", text)]
+    assert nums == ["5", "6", "7"]

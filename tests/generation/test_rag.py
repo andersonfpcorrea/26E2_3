@@ -79,3 +79,20 @@ def test_default_path_has_no_quote_fields():
     llm = FakeLLM('{"answer":"x","citations":["CP:art121"],"abstained":false,"confidence":0.9}')
     ans = answer_question("pergunta", _index(), e, llm, k=3)
     assert ans.quote == "" and ans.quote_status == ""
+
+
+def test_aggregate_questions_abstain_without_calling_model():
+    e = FakeEmbedder()
+    llm = FakeLLM("should-not-be-called")
+    for q in ("qual a lei com a maior pena?", "quantos crimes existem no código penal?",
+              "qual artigo foi mais alterado?"):
+        ans = answer_question(q, _index(), e, llm, k=3, verify_quote=True)
+        assert ans.abstained, q
+    assert llm.last_prompt is None
+
+
+def test_specific_question_is_not_blocked_by_aggregate_router():
+    from direito_dados.generation.rag import is_aggregate_question
+    assert not is_aggregate_question("qual a pena para quem mata alguém?")
+    assert not is_aggregate_question("qual a pena para furto?")
+    assert not is_aggregate_question("o que é violação sexual mediante fraude?")
