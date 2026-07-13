@@ -82,7 +82,7 @@ Todos os comandos: `make help`. Alternativa sem uv no final deste arquivo.
 | 4. Inferência local, remota ou privada     | [`c04_inferencia_local_ou_remota.ipynb`](c04_inferencia_local_ou_remota.ipynb) | "Estratégia de inferência local ou remota"    |
 | 5. Pipeline RAG + segurança                | [`c05_rag_pipeline.ipynb`](c05_rag_pipeline.ipynb)                             | "O pipeline RAG" + "Riscos de segurança"      |
 | Além da rubrica: detecção de antinomias    | [`c06_antinomias.ipynb`](c06_antinomias.ipynb)                                 | "Detecção de antinomias"                      |
-| Além da rubrica: a lei como dado           | [`c07_lei_como_dado.ipynb`](c07_lei_como_dado.ipynb)                           | "Análise Direito como Dado"                   |
+| Além da rubrica: a lei como dado           | [`c07_lei_como_dado.ipynb`](c07_lei_como_dado.ipynb)                           | "Análise 'a lei como dado'"                   |
 
 - **Código completo:** pacote [`direito_dados/`](direito_dados/) (com 169 testes — `make test`)
   - as 7 notebooks acima, todas executadas com saídas embutidas (podem ser avaliadas sem rodar nada).

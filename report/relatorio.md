@@ -62,7 +62,7 @@ O corpus cobre as **9 normas do microssistema penal federal brasileiro**, delimi
 
 Dos 2.310 artigos, **2.248 estão em vigor** (1.215 na redação original/`vigente` + 1.033 `alterado` por emenda posterior) e **62 estão revogados**. A LINDB merece destaque à parte: é a própria norma que **codifica as regras de resolução de antinomias** (*lex superior*, *lex posterior*, *lex specialis*) usadas pelo detector de conflitos da seção correspondente — está no corpus tanto como objeto de análise quanto como fonte dos princípios que orientam essa análise.
 
-**Fonte e obtenção.** O texto de cada norma é obtido do **Portal da Legislação do Planalto** (`planalto.gov.br`), que publica a *redação consolidada* de cada lei com anotações inline de vigência — por exemplo `(Redação dada pela Lei nº 13.964, de 2019)` ou `(Revogado pela Lei nº 12.015, de 2009)`. Essas anotações são a matéria-prima de todo o projeto: delas derivam tanto o grafo de emendas/revogações (seção "Direito como Dado") quanto o filtro de vigência da recuperação (seção "Embeddings e Busca").
+**Fonte e obtenção.** O texto de cada norma é obtido do **Portal da Legislação do Planalto** (`planalto.gov.br`), que publica a *redação consolidada* de cada lei com anotações inline de vigência — por exemplo `(Redação dada pela Lei nº 13.964, de 2019)` ou `(Revogado pela Lei nº 12.015, de 2009)`. Essas anotações são a matéria-prima de todo o projeto: delas derivam tanto o grafo de emendas/revogações (seção "a lei como dado") quanto o filtro de vigência da recuperação (seção "Embeddings e Busca").
 
 Um snapshot já processado acompanha o repositório em `data/raw/` (textos de domínio público, um arquivo `.txt` por norma), de modo que a reprodução do projeto **não depende de acesso à rede**. Para rebaixar as normas diretamente do Planalto:
 
@@ -551,7 +551,7 @@ Nesta execução, os três pares do gold set sobreviveram **as duas etapas**: ca
 
 ---
 
-## Análise "Direito como Dado" (c07)
+## Análise "a lei como dado" (c07)
 
 A notebook `c07_lei_como_dado.ipynb` trata o microssistema penal como um **grafo com proveniência**, não apenas como texto. Nós são normas (`NORM`) e dispositivos (`PROVISION`); arestas `AMENDS`/`REVOKES` são extraídas diretamente das anotações inline do Planalto (`(Redação dada por...)`, `(Incluído por...)`, `(Revogado por...)`) — fatos verificados do texto oficial (`verification_state=VERIFIED`, `confidence=1.0`).
 
@@ -714,7 +714,7 @@ Por fim, tratamos a lei toda como uma rede de conexões — quais leis alteraram
 - **Baseline em nuvem executado** (não apenas arquitetado), com medição real de latência, custo por token e taxa de acerto de conteúdo em comparação com o modelo local de 8B.
 - **Detecção de revogação tácita**, ao menos como candidato heurístico (ex.: dois dispositivos de igual hierarquia tratando da mesma matéria com datas muito distantes, sinalizados para revisão humana, análogo ao detector de antinomias atual).
 - **Ampliação da adjudicação de antinomias além dos 12 pares de maior similaridade**, com paralelização ou *batching* para tornar viável adjudicar a totalidade dos 813 candidatos gerados.
-- **Um segundo estágio de verificação de conteúdo da citação** (não apenas de existência) — por exemplo, um classificador ou um segundo LLM verificando se o texto do dispositivo citado de fato sustenta a alegação feita na resposta, endereçando diretamente o limite identificado no caso furto/roubo.
+- **Um segundo estágio de verificação de conteúdo da citação** (não apenas de existência), endereçando diretamente o limite identificado nos casos furto/roubo e homicídio/art. 211. Três técnicas concretas, em ordem de força: (a) *quote-then-answer* — acrescentar ao schema um campo `trecho_citado` que obriga o modelo a copiar o excerto literal do dispositivo **antes** de redigir a resposta, com verificação programática de que o trecho existe no texto do artigo citado (eleva a garantia de "o id existe" para "o conteúdo está ancorado no texto citado"); (b) um segundo LLM como juiz de *groundedness* (a resposta é sustentada pelo dispositivo citado?); (c) reduzir k de 5 para 3, diminuindo os vizinhos-distratores que o modelo de 8B tende a citar — além do baseline com modelo maior já listado acima.
 - **Extensão do corpus a outros microssistemas** (ex.: direito tributário, trabalhista), testando se a arquitetura (parser de vigência + grafo + RAG + detector de antinomias) generaliza além do penal.
 - **Publicação acadêmica.** Conforme a especificação de design do projeto, dois componentes têm potencial de contribuição citável na literatura: o parser de vigência inline do Planalto (redução de "alucinação de validade", termo cunhado no próprio projeto) e o gold set de antinomias penais com resolução por princípios LINDB.
 
