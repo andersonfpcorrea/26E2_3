@@ -3,7 +3,7 @@
 
 OLLAMA_MODEL ?= llama3.1:8b
 
-.PHONY: help run setup models ensure-models data demo ask test notebooks report app attribution
+.PHONY: help run setup models ensure-models ensure-data data demo ask test notebooks report app attribution
 
 help: ## mostra esta ajuda
 	@echo "Comandos disponíveis:"
@@ -12,12 +12,25 @@ help: ## mostra esta ajuda
 run: ## TUDO em um comando: instala o que faltar (verifica antes de baixar) e abre a interface web
 	@command -v uv >/dev/null 2>&1 || { \
 		echo "uv não encontrado. Instale: https://docs.astral.sh/uv/getting-started/installation/"; exit 1; }
-	@echo "[1/3] Dependências Python (uv sync — instantâneo se já instaladas)..."
+	@echo "[1/4] Dependências Python (uv sync — instantâneo se já instaladas)..."
 	@uv sync --all-extras --quiet
-	@echo "[2/3] Modelos locais (baixa apenas o que faltar)..."
+	@echo "[2/4] Dados (corpus e autoria já acompanham o repositório; reconstrói só se ausentes)..."
+	@$(MAKE) -s ensure-data
+	@echo "[3/4] Modelos locais (baixa apenas o que faltar)..."
 	@$(MAKE) -s ensure-models
-	@echo "[3/3] Abrindo a interface web (Ctrl+C para encerrar)..."
+	@echo "[4/4] Abrindo a interface web (Ctrl+C para encerrar)..."
 	uv run streamlit run app.py
+
+# Internal: idempotent data provisioning — the snapshots ship committed, so
+# these only act when files are genuinely absent.
+ensure-data:
+	@if [ -f data/raw/CP.txt ]; then echo "  Corpus: presente."; else \
+		echo "  Corpus ausente — baixando do Planalto (~1 min)..."; \
+		uv run python scripts/fetch_corpus.py; fi
+	@if [ -f data/attribution/authorship.json ]; then echo "  Autoria de registro: presente."; else \
+		echo "  Dataset de autoria ausente — reconstruindo das APIs do Congresso (~15 min)..."; \
+		uv run python scripts/build_attribution.py || \
+		echo "  aviso: reconstrução falhou — a aba 'Quem mudou a lei' mostrará instruções."; fi
 
 setup: ## instala todas as dependências Python (uv sync)
 	uv sync --all-extras

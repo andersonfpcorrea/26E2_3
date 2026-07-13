@@ -54,7 +54,7 @@ make run       # instala o que faltar (verifica antes de baixar, pula o que já 
                # e abre a interface web com tudo funcionando
 ```
 
-Prefere passos separados? Os mesmos estágios existem como comandos individuais:
+### Comandos individuais
 
 ```bash
 make setup     # só as dependências Python (uv sync)
@@ -63,12 +63,11 @@ make models    # só os modelos locais (verifica e baixa apenas o que faltar)
 make ask q="qual a pena para furto?"   # pergunta direta no terminal
 ```
 
-**E se eu não tiver o Ollama?** O sistema usa **dois modelos**. O de _embeddings_
+O sistema usa **dois modelos**. O de _embeddings_
 (busca semântica, ~440 MB) baixa automaticamente na primeira execução — a busca citada, o
 filtro de vigência, as análises e o grafo funcionam só com ele. O de _geração_ (Llama 3.1
 8B, ~4,9 GB) roda no [Ollama](https://ollama.com), um aplicativo separado, e serve apenas à
-etapa final: redigir respostas em linguagem natural. Sem ele, `make run` avisa e abre a
-interface do mesmo jeito, com tudo exceto a geração. **Nada é simulado** — todas as etapas
+etapa final: redigir respostas em linguagem natural. **Nada é simulado** — todas as etapas
 rodam o pipeline real; _mocks_ existem somente nos testes unitários.
 
 Todos os comandos: `make help`. Alternativa sem uv no final deste arquivo.
@@ -162,9 +161,9 @@ tests/          # 166 testes espelhando o pacote
 make setup      # dependências Python (uv sync --all-extras)
 make demo       # demonstração de ponta a ponta (independe do Ollama)
 make models     # modelos locais: llama3.1:8b via Ollama + embeddings e5
-make test       # 166 testes; os que exigem e5/Ollama pulam se indisponíveis
-make notebooks  # re-executa as 7 notebooks (lento; exige Ollama ativo)
-make report     # regenera o PDF a partir de report/relatorio.md
+make test       # 166 testes
+make notebooks  # executa os 7 notebooks
+make report     # produz o PDF a partir de report/relatorio.md
 ```
 
 **Sem uv** (alternativa com pip):
@@ -180,10 +179,12 @@ python scripts/demo.py
 `make run` abre uma interface local em Streamlit ("Letra da Lei") com seis abas: perguntas
 à lei com citações verificadas, a linha do tempo das emendas, o grafo normativo interativo,
 os candidatos a antinomia, o painel de vigência e "Quem mudou a lei" (autoria de registro
-por norma). Tudo funciona de imediato: o corpus e o dataset de autoria já acompanham o
-repositório — `make attribution` só é necessário para refazer a autoria direto das APIs do
-Congresso. A interface é uma camada **além da rubrica** (os entregáveis avaliados são as
-notebooks, o pacote e o relatório).
+por norma). Tudo funciona de imediato: o corpus e o dataset de autoria **já acompanham o
+repositório**, e o `make run` verifica cada um e só reconstrói o que estiver ausente —
+por isso `make attribution` (refazer a autoria direto das APIs do Congresso) e `make data`
+(rebaixar o corpus do Planalto) normalmente nunca precisam ser executados; existem para
+reprodutibilidade a partir da fonte. A interface é uma camada **além da rubrica** (os
+entregáveis avaliados são as notebooks, o pacote e o relatório).
 
 ## Limitações
 
