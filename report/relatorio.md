@@ -18,7 +18,7 @@
 >   `c01_modelos_llm.ipynb` · `c02_prompting.ipynb` · `c03_embeddings_busca.ipynb` ·
 >   `c04_inferencia_local_ou_remota.ipynb` · `c05_rag_pipeline.ipynb` · `c06_antinomias.ipynb` ·
 >   `c07_lei_como_dado.ipynb`
-> - **Código-fonte:** `direito_dados/` (pacote instalável, testado, com 160 testes em `tests/`)
+> - **Código-fonte:** `direito_dados/` (pacote instalável, testado, com 166 testes em `tests/`)
 > - **Interface web local (opcional, além da rubrica):** `app.py` — `make app`
 > - **Dataset de autoria das leis emendadoras:** `data/attribution/authorship.json`
 > - **README com instruções de uso:** `README.md`
@@ -105,7 +105,7 @@ Ao mesmo tempo, o projeto **não terceiriza para o LLM aquilo que pode ser feito
 | Embeddings/encoder | `sentence-transformers`, `torch` | c03, c05, c06 |
 | Grafo e visualização | `networkx`, `matplotlib` | c07 |
 | Corpus (parsing/fetch) | `beautifulsoup4`, `lxml`, `requests` | corpus, scripts/fetch_corpus.py |
-| Testes | `pytest` (160 testes, incluindo integração ao vivo com e5 e Ollama) | tests/ |
+| Testes | `pytest` (166 testes, incluindo integração ao vivo com e5 e Ollama) | tests/ |
 
 Toda a geração é **local**, via Ollama — nenhuma chamada a API de nuvem é feita em nenhuma das sete notebooks (a comparação com nuvem, na seção de inferência, é arquitetada e justificada, não executada). Essa escolha é discutida em detalhe na seção "Estratégia de inferência local ou remota".
 
@@ -282,64 +282,91 @@ A Técnica 3 é a usada em produção, ainda apoiada por `parse_answer` como red
 
 A notebook `c03_embeddings_busca.ipynb` cobre o subsistema de recuperação sobre um subconjunto de 545 artigos (CP + Lei de Drogas), sem reimplementar nenhuma lógica de recuperação — apenas exercitando os módulos já testados de `direito_dados.retrieval`.
 
+### Correção do parser: rubrica-aware article splitting
+
+Antes de descrever o chunking em vigor, vale narrar como se chegou a ele — é a peça de engenharia mais consequente do projeto e mudou praticamente todos os números desta seção.
+
+**Diagnóstico.** O Planalto imprime o nome oficial do crime (a *rubrica*, ou *nomen juris* — ex. "Furto", "Estelionato", "Violação sexual mediante fraude") **imediatamente antes** da linha `Art. N.` a que ele pertence. O parser original de divisão de artigos, baseado em regex sobre os cabeçalhos `Art. N`, tratava tudo que vinha antes de um cabeçalho como pertencente ao artigo **anterior** — o que grudava sistematicamente cada rubrica no fim do artigo errado. O sintoma concreto que expôs o problema: `CP:art215` (violação sexual mediante fraude) não aparecia nem no top-15 de uma busca pelo próprio nome oficial do crime, porque sua rubrica estava, na prática, embutida no texto do art. 214 (o dispositivo revogado que ele sucedeu).
+
+**Correção.** `Article` ganhou um campo `rubrica` (`direito_dados/corpus/models.py`), e uma nova função `_split_trailing_rubrica` (`direito_dados/corpus/parser.py`) roda um passe pós-divisão que identifica linhas de cabeçalho contíguas ao final de cada bloco de artigo — título-caso, sem pontuação terminal, não em caixa alta, não uma linha de `Pena`/parágrafo/anotação — e as move para o artigo **seguinte**, a quem de fato pertencem. Cabeçalhos estruturais (`CAPÍTULO`, `TÍTULO`, seções em caixa alta) e anotações de vigência nunca são movidos, apenas rubricas genuínas. `chunk_corpus` (`direito_dados/retrieval/chunks.py`) passou a construir `embed_text` como `f"{rubrica}. {caput}. {texto}"[:300]` quando o artigo tem rubrica — a rubrica lidera porque é o sinal mais forte para consultas por nome de crime: é literalmente o nome pelo qual o crime é conhecido ("furto", "estelionato"), enquanto o *caput* e o texto operativo usam vocabulário técnico-descritivo que nem sempre contém esse nome.
+
+**Validação.** Sobre o corpus real, a extração recupera corretamente as 8/8 rubricas de crimes emblemáticos testadas manualmente (Homicídio simples, Furto, Roubo, Estelionato, Estupro, Peculato, Corrupção passiva, Violação sexual mediante fraude) e extrai rubrica para 423 artigos no corpus inteiro. Um conjunto de 5 consultas-litmus de recuperação — incluindo os três casos historicamente quebrados (art. 215, o desempate 155-vs-168, e o *miss* denso do art. 171) — passou a acertar o rank 1 em todos os casos após a correção. Os 166 testes do projeto passam, com 5 novos casos dedicados a `_split_trailing_rubrica` (`tests/corpus/test_parser.py`): a rubrica gruda no artigo seguinte, some do texto do artigo anterior, cabeçalhos estruturais nunca são confundidos com rubrica, uma linha de `Pena` nunca é "roubada" como rubrica, e a vigência derivada do *caput* continua correta mesmo com o texto rearranjado.
+
 ### Modelo de embeddings e estratégia de chunking
 
 O modelo é o `intfloat/multilingual-e5-base`, usado com os prefixos assimétricos que ele exige (`"passage: "` para textos indexados, `"query: "` para consultas — omiti-los degrada a qualidade da recuperação).
 
-A unidade de indexação (`Chunk`) é **um por artigo**, mas o texto efetivamente embutido não é o corpo bruto do artigo: é `"{caput}. {texto}"[:300]` — uma estratégia de **chunking caput-forward**. O *caput* (a frase de abertura do artigo, normalmente a descrição nuclear da conduta) é repetido no início do texto embutido, dando a ele peso extra na representação semântica. A motivação é que muitos artigos têm parágrafos e incisos longos que, sozinhos, diluiriam o sinal do *caput* se fossem embutidos sem esse reforço. Exemplo real, art. 121:
+A unidade de indexação (`Chunk`) é **um por artigo**, mas o texto efetivamente embutido não é o corpo bruto do artigo: é `f"{rubrica}. {caput}. {texto}"[:300]` — uma estratégia de **chunking rubrica- e *caput*-forward**. Quando o artigo tem rubrica (nem todo artigo abre um tipo penal novo, então nem todo artigo tem uma), ela lidera o texto embutido, seguida do *caput* (a frase de abertura do artigo, normalmente a descrição nuclear da conduta), repetido para reforçar seu peso. A motivação para o reforço é que muitos artigos têm parágrafos e incisos longos que, sozinhos, diluiriam esses dois sinais se fossem embutidos sem essa dupla ênfase. Exemplo real, art. 121 (rubrica "Homicídio simples"):
 
 ```
-embed_text: "Matar alguem:. Matar alguem:
+embed_text: "Homicídio simples. Matar alguem:. Matar alguem:
 Pena - reclusão, de seis a vinte anos.
 Caso de diminuição de pena
-§ 1º Se o agente comete o crime impelido por motivo de relevante valor social ou moral..."
+§
+1º Se o agente comete o crime impelido por motivo de relevante valor social ou moral..."
 ```
 
-Note o caput ("Matar alguem:") literalmente repetido no início do texto embutido. Para a consulta em linguagem natural "qual a pena para quem mata alguém?", essa estratégia resulta em `CP:art121` recuperado em **1º lugar** (score 0,891), seguido de dispositivos correlatos (`art. 121-B`, `art. 226`, `art. 147`, `art. 121-A`):
+Note a rubrica ("Homicídio simples.") abrindo o texto embutido, seguida do caput ("Matar alguem:") repetido. Para a consulta em linguagem natural "qual a pena para quem mata alguém?", essa estratégia resulta em `CP:art121` recuperado em **1º lugar** (score 0,887), seguido de dispositivos correlatos por vocabulário jurídico compartilhado (`art. 226`, `art. 212`, `art. 209`, `art. 258`):
 
 ```
 Consulta: "qual a pena para quem mata alguém?"
-  CP art. 121                  score=0.891
-  CP art. 121-B                score=0.866
-  CP art. 226                  score=0.861
-  CP art. 147                  score=0.858
-  CP art. 121-A                score=0.858
+  CP art. 121                  score=0.887
+  CP art. 226                  score=0.860
+  CP art. 212                  score=0.858
+  CP art. 209                  score=0.855
+  CP art. 258                  score=0.855
 ```
 
-Outras duas consultas de domínios distintos confirmam a mesma precisão temática — "furto de coisa alheia móvel" recupera o cluster de crimes patrimoniais (art. 168, 155, 157...) e "tráfico ilícito de entorpecentes" recupera exclusivamente artigos da Lei de Drogas (18, 17, 50-A...).
+Outras duas consultas de domínios distintos confirmam a mesma precisão temática — "furto de coisa alheia móvel" agora recupera o próprio `CP:art155` em 1º lugar (score 0,890), à frente do cluster de crimes patrimoniais correlatos (`art. 168`, `art. 157`, `art. 156`, `art. 313`) — e "tráfico ilícito de entorpecentes" recupera exclusivamente artigos da Lei de Drogas e do CP em torno do mesmo campo semântico (`art. 17`, `art. 50-A`, `art. 18`, `art. 28`).
 
 ### Vector store e filtragem por vigência
 
 O índice é construído em **ChromaDB** (distância de cosseno), com **524 passagens únicas** após deduplicação de colisões de id geradas por um artefato conhecido do parser em incisos da Lei de Drogas (Art. 8º-A a 8º-F colapsando em `L11343:art8`).
 
-A propriedade de segurança mais importante da camada de recuperação é a **exclusão de dispositivos revogados por padrão** (`exclude_revoked=True`). Uma consulta desenhada para "casar" com um artigo revogado — *"violação sexual mediante fraude"*, que corresponde ao antigo art. 214 (revogado pela Lei 12.015/2009) — demonstra isso na prática:
+A propriedade de segurança mais importante da camada de recuperação é a **exclusão de dispositivos revogados por padrão** (`exclude_revoked=True`). Duas consultas desenhadas para "casar" com artigos hoje revogados do Código Penal demonstram isso na prática — e, depois do parser rubrica-aware, com papéis diferentes entre si:
 
 ```
+Consulta: "usurpação de nome ou pseudônimo alheio"  (CP art. 185, revogado pela Lei 10.695/2003)
 -- exclude_revoked=True (padrão) --
-  CP art. 203   score=0.849   status=alterado
-  CP art. 273   score=0.849   status=alterado
-  ...                                            (art. 214 ausente)
-
+  CP art. 242   score=0.866   status=alterado
+  ...                                            (art. 185 ausente)
 -- exclude_revoked=False --
-  CP art. 214   score=0.881   status=revogado    <- maior score de todos
-  CP art. 216   score=0.850   status=revogado
-  CP art. 203   score=0.849   status=alterado
+  CP art. 185   score=0.914   status=revogado    <- maior score de todos
+  CP art. 242   score=0.866   status=alterado
+  ...
+
+Consulta: "violação sexual mediante fraude"  (antigo CP art. 214, revogado pela Lei 12.015/2009)
+-- exclude_revoked=True (padrão) --
+  CP art. 215   score=0.892   status=alterado    <- lidera, com ou sem filtro
+  ...                                            (art. 214 ausente mesmo sem filtro)
+-- exclude_revoked=False --
+  CP art. 215   score=0.892   status=alterado    <- idêntico ao filtrado
   ...
 ```
 
-Com o filtro padrão, `CP:art214` fica de fora do top-5 apesar de ser, sem o filtro, o dispositivo de **maior similaridade** para essa consulta — a redação antiga do crime revogado ainda é o texto que melhor "casa" semanticamente com a pergunta, só que hoje sem nenhum efeito jurídico. O filtro de metadados intercepta esse caso antes que ele chegue à resposta final.
+Na primeira consulta, o filtro é indispensável: com o padrão `exclude_revoked=True`, `CP:art185` fica de fora do top-5; sem o filtro, ele **lidera** (score 0,914) — porque sua rubrica, "Usurpação de nome ou pseudônimo alheio", agora está corretamente presa a ele (antes do parser rubrica-aware, essa rubrica não aparecia associada a nenhum artigo com esse peso). A rubrica sozinha basta para vencer a busca por similaridade, o que torna o filtro `where`, aplicado **antes** da consulta vetorial, indispensável: sem ele, o resultado nº 1 seria uma lei sem nenhum efeito jurídico.
+
+Na segunda consulta, o resultado é hoje **idêntico** com o filtro ligado ou desligado — mas por um motivo que também é consequência direta do fix. `CP:art214` não tem mais nenhuma rubrica associada: a redação que originalmente carregava o nome "Violação sexual mediante fraude" foi revogada, e o parser corretamente moveu essa mesma rubrica para `CP:art215`, o dispositivo que sucedeu o revogado na reforma da Lei 12.015/2009. Sem rubrica, o `embed_text` de `CP:art214` é hoje só a nota de revogação — sem sinal semântico sobre o crime — e por isso ele não aparece nem no top-5 sem filtro. `CP:art215` lidera as duas listas com score 0,892. O filtro de vigência continua sendo a garantia estrutural (ele intercepta o cenário do art. 185 acima, e continuaria interceptando um art. 214 competitivo se a rubrica ainda estivesse presa a ele por acidente), mas esta consulta específica deixou de exercitá-lo — um efeito colateral honesto do fix, não uma regressão.
 
 ### Busca densa vs. híbrida (BM25 + densa)
 
-Um índice BM25 puro (sem dependência externa) é combinado com a busca densa por normalização min-max e fusão ponderada (`alpha * denso + (1-alpha) * léxico`, `alpha=0,5` por padrão). O caso mais informativo é a consulta *"estelionato mediante fraude"*: a busca **densa sozinha** deixa `CP:art171` (estelionato) de fora do top-5 —
+Um índice BM25 puro (sem dependência externa) é combinado com a busca densa por normalização min-max e fusão ponderada (`alpha * denso + (1-alpha) * léxico`, `alpha=0,5` por padrão). O caso do estelionato, historicamente o exemplo central desta seção, **mudou de sinal** com o parser rubrica-aware: para a consulta *"estelionato mediante fraude"*, a busca **densa sozinha** hoje já lidera com `CP:art171` —
 
 ```
-denso : ['CP:art170', 'CP:art206', 'CP:art183-A', 'CP:art337-L', 'CP:art179']
+denso : ['CP:art171', 'CP:art170', 'CP:art215', 'CP:art206', 'CP:art183-A']
 bm25  : ['CP:art170', 'CP:art204', 'CP:art171', 'CP:art215', 'CP:art178']
-híbrido: ['CP:art170', 'CP:art204', 'CP:art171', 'CP:art206', 'CP:art183-A']
+híbrido: ['CP:art171', 'CP:art170', 'CP:art215', 'CP:art204', 'CP:art178']
 ```
 
-O motivo é estrutural, não um acaso de embedding: o nome popular do crime ("Estelionato") é um título de seção no texto original do Planalto, descartado pelo parser de artigos — ele nunca aparece no *caput*/texto do art. 171, apenas a redação operativa ("obter vantagem ilícita... mediante artifício, ardil, ou qualquer outro meio fraudulento"). O BM25, puramente lexical, ainda recupera `CP:art171` via sobreposição de termos ("mediante", variações de "fraude"), e a busca híbrida herda esse acerto. Este é um exemplo real de por que um *retriever* só denso pode falhar quando a consulta usa o nome doutrinário/popular de um crime que não está literalmente no dispositivo legal — e por que a fusão híbrida funciona como rede de segurança.
+Antes da correção, "Estelionato" era um título de seção descartado pelo parser antigo — nunca chegava a `embed_text`, que carregava apenas a redação operativa do art. 171 ("obter vantagem ilícita... mediante artifício, ardil, ou qualquer outro meio fraudulento"), sem o nome do crime; a busca densa sozinha deixava o art. 171 fora do top-5, e só o BM25 (via sobreposição lexical de "mediante"/variações de "fraude") o recuperava, com a fusão híbrida herdando esse acerto como rede de resgate. Hoje, com a rubrica presa corretamente ao artigo (`embed_text` começa com `"Estelionato. Obter, para si..."`), o denso já não precisa de ajuda: a fusão híbrida é **redundante** com o denso para esta consulta específica, não mais uma rede de segurança.
+
+Isso levanta uma pergunta honesta: se o denso ficou robusto para nomes de crime, o híbrido ainda tem alguma vantagem prática hoje? Uma terceira consulta, desenhada deliberadamente para **não** usar o vocabulário jurídico do dispositivo nem sua rubrica — uma paráfrase coloquial da apropriação indébita (`CP:art168`, rubrica "Apropriação indébita"): *"ficar com um dinheiro que recebeu emprestado e não devolver"* — responde que sim:
+
+- **Denso**: `CP:art168` não aparece entre os 5 primeiros, nem entre os 20 mais próximos (checagem ampliada feita à parte) — a paráfrase não compartilha vocabulário suficiente com "Apropriação indébita. Apropriar-se de coisa alheia móvel, de que tem a posse ou a detenção..." para que o embedding aproxime os dois.
+- **BM25**: recupera `CP:art168` na **4ª posição** — há sobreposição lexical parcial suficiente com outros artigos do capítulo de crimes patrimoniais.
+- **Híbrido**: mesmo assim, `CP:art168` **não aparece** no top-5 híbrido. Como o artigo está ausente do pool denso, sua pontuação normalizada nesse componente é `0,0`, o que reduz pela metade (`alpha=0,5`) a pontuação combinada e o deixa atrás de artigos que pontuam moderadamente em ambos os retrievers ao mesmo tempo, mesmo sem ser a resposta certa para nenhum deles isoladamente.
+
+Este é o caso de falha real e honesto desta seção, que substitui o antigo exemplo do estelionato como demonstração do limite da fusão: **a busca híbrida não é uma rede de segurança garantida.** Ela ajuda quando o acerto lexical do BM25 é forte o bastante para sobreviver à normalização conjunta com o denso — como acontecia com o estelionato antes da correção do parser. Mas quando a consulta é uma paráfrase coloquial que não compartilha vocabulário nem com a rubrica nem com o *caput* do dispositivo certo, denso e híbrido podem falhar juntos, e só o léxico puro, isolado, ainda enxerga o sinal.
 
 ### Avaliação de recuperação
 
@@ -347,10 +374,12 @@ Sobre um conjunto-ouro de 6 perguntas (`GoldItem`), o retriever denso alcança:
 
 ```
 hit_rate@5 = 0,833   (5/6)
-MRR        = 0,625
+MRR        = 0,833
 ```
 
-A única falha é uma pergunta deliberadamente fora de escopo (*"Homicídio culposo na direção de veículo automotor"*, esperando `CTB:art302` — o Código de Trânsito não faz parte do corpus). As outras cinco perguntas — incluindo homicídio, furto, roubo, porte de drogas e associação para o tráfico — são todas recuperadas corretamente no top-5, a maioria em 1º lugar. A notebook observa que recuperação por *k* fixo não distingue "não sei" de "a melhor opção que tenho"; esse problema é tratado à parte pela camada de geração, com verificação de citação e abstenção (seção seguinte).
+`MRR` agora **coincide** com `hit_rate` — o que só acontece quando toda pergunta respondida corretamente acerta o dispositivo certo já na 1ª posição do ranking, não em algum lugar dentro do top-5. Isso é consequência direta do parser rubrica-aware: antes da correção, "furto de coisa alheia móvel" competia de perto com `CP:art168` (apropriação indébita) por não ter a rubrica "Furto" reforçando o `embed_text` de `CP:art155`, o que empurrava o rank do dispositivo certo para baixo mesmo quando ele ainda aparecia no top-5 (o mesmo caso "155-vs-168" discutido na seção anterior). Hoje `CP:art155` lidera com folga (0,890 contra 0,878 de `CP:art168`), e as cinco perguntas dentro do escopo do corpus — homicídio, furto, roubo, porte de drogas e associação para o tráfico — acertam todas o rank 1.
+
+A única falha é uma pergunta deliberadamente fora de escopo (*"Homicídio culposo na direção de veículo automotor"*, esperando `CTB:art302` — o Código de Trânsito não faz parte do corpus); como `VectorIndex.query` sempre devolve os *k* vizinhos mais próximos (não há limiar de abstenção nesta camada), a consulta retorna os artigos do CP/L11343 mais próximos semanticamente (sobre culpa, trânsito, condução), mesmo sabendo que nenhum é a resposta certa — um limite estrutural do design, não um erro de embedding, e inalterado pelo fix. A notebook observa que recuperação por *k* fixo não distingue "não sei" de "a melhor opção que tenho"; esse problema é tratado à parte pela camada de geração, com verificação de citação e abstenção (seção seguinte).
 
 ---
 
@@ -395,7 +424,7 @@ A conclusão não escolhe um extremo: para este projeto, hoje, a inferência **l
 
 ## O pipeline RAG: descrição, exemplos e análise de falhas (c05)
 
-A notebook `c05_rag_pipeline.ipynb` exercita `direito_dados.generation.rag.answer_question` de ponta a ponta: recuperação (top-k de dispositivos em vigor) → prompt com ids citáveis → geração local (`llama3.1:8b`) → saída JSON estruturada → verificação de citação → abstenção quando não há base. O índice usado cobre apenas o Código Penal (431 dispositivos, indexado em 12,5s).
+A notebook `c05_rag_pipeline.ipynb` exercita `direito_dados.generation.rag.answer_question` de ponta a ponta: recuperação (top-k de dispositivos em vigor) → prompt com ids citáveis → geração local (`llama3.1:8b`) → saída JSON estruturada → verificação de citação → abstenção quando não há base. O índice usado cobre apenas o Código Penal (431 dispositivos, indexado em 13,3s).
 
 ### Caso positivo: peculato
 
@@ -405,44 +434,58 @@ Pergunta: *"Qual a pena para o funcionário público que se apropria de dinheiro
 recuperados: ['CP:art312', 'CP:art313', 'CP:art327']
 citações:    ['CP:art312']   |   alucinadas: []
 abstained:   False
-resposta:    "Pena - reclusão, de dois a doze anos."
+resposta:    "O funcionário público que se apropria de dinheiro público em razão do
+              cargo é punido com reclusão de 2 a 12 anos e multa."
 ```
 
-O sistema cita exatamente o dispositivo correto (peculato, art. 312), sem citação alucinada.
+O sistema cita exatamente o dispositivo correto (peculato, art. 312), sem citação alucinada, e a pena declarada está correta.
 
-### Análise de falha honesta: furto citado como roubo
+### Análise de falha honesta: furto (a falha migrou da recuperação para a geração)
 
-O caso mais instrutivo do projeto é uma falha real, não construída. O caput do furto (art. 155, *"Subtrair, para si ou para outrem, coisa alheia móvel"*) compartilha vocabulário quase literal com apropriação indébita (art. 168) e roubo (art. 157, *"Subtrair coisa móvel alheia... mediante grave ameaça"*). Para a pergunta *"furto de coisa alheia móvel"*, a recuperação por similaridade já erra o rank 1:
-
-```
-CP:art168   score=0.892   'Apropriar-se de coisa alheia móvel...'
-CP:art155   score=0.877   'Subtrair, para si ou para outrem, coisa alheia móvel:...'   <- correto, mas 2º lugar
-CP:art157   score=0.871   'Subtrair coisa móvel alheia... mediante grave ameaça...'
-```
-
-E o RAG completo, condicionado nesse contexto, cita o artigo errado:
+O caso mais instrutivo do projeto continua sendo uma falha real, não construída — mas seu perfil mudou depois do parser rubrica-aware, e a notebook narra explicitamente esse antes/depois. O caput do furto (art. 155, *"Subtrair, para si ou para outrem, coisa alheia móvel"*) compartilha vocabulário quase literal com apropriação indébita (art. 168) e roubo (art. 157, *"Subtrair coisa móvel alheia... mediante grave ameaça"*) — três crimes patrimoniais distintos que colidem no mesmo bairro semântico. Antes do fix, essa colisão já derrubava o rank 1 na própria recuperação (o caso "155-vs-168" citado no commit do parser). Hoje a recuperação **acerta**:
 
 ```
-recuperados: ['CP:art168', 'CP:art155', 'CP:art157']
+Recuperação (somente similaridade), "furto de coisa alheia móvel":
+  CP:art155   score=0.890   'Subtrair, para si ou para outrem, coisa alheia móvel:...'   <- correto, 1º lugar
+  CP:art168   score=0.878   'Apropriar-se de coisa alheia móvel...'
+  CP:art157   score=0.877   'Subtrair coisa móvel alheia... mediante grave ameaça...'
+```
+
+Só que a recuperação corrigida não elimina a falha — ela a **empurra para a etapa de geração**. Com os três dispositivos certos no contexto, nessa ordem, `answer_question` ainda erra:
+
+```
+recuperados: ['CP:art155', 'CP:art168', 'CP:art157']
 citações:    ['CP:art157']   |   alucinadas: []
-resposta:    "O dispositivo que se aplica ao furto de coisa alheia móvel é o artigo 157 do Código Penal."
+resposta:    "Sim"
 ```
 
-O ponto crítico é que `hallucinated_citations` fica **vazio** neste caso: `CP:art157` existe de fato no corpus e foi de fato recuperado — não é uma citação inventada, é uma citação **semanticamente incorreta**. A notebook nomeia esse limite com precisão: *"a verificação de citação alucinada confirma que o id existe no corpus, não que o conteúdo citado responde corretamente à pergunta — um limite honesto que nenhum schema resolve sozinho, e a principal motivação para comparar com um baseline em nuvem (mais forte em recuperar nuances lexicais finas do português jurídico) no relatório técnico."*
+`hallucinated_citations` fica **vazio**: `CP:art157` existe de fato no corpus e foi de fato recuperado — não é uma citação inventada, é uma citação **semanticamente incorreta**, e o modelo a escolheu apesar de `CP:art155` (o dispositivo correto) estar em primeiro lugar no próprio contexto que recebeu. Um segundo sintoma agrava o caso: como a consulta é uma frase nominal ("furto de coisa alheia móvel"), não uma pergunta, a resposta gerada foi apenas `"Sim"` — uma confirmação de uma palavra só, sem pena, sem elemento do tipo, sem valor informativo, mas ainda assim "válida" pelo schema (não abstém, não alucina id).
+
+O limite honesto do projeto é hoje mais preciso do que antes do fix: **a correção rubrica-aware resolveu a ambiguidade na camada de recuperação, mas não resolve — porque não pode resolver, por construção — erros da camada de geração**, onde o modelo local ainda pode escolher o dispositivo errado entre candidatos já corretamente ordenados. `hallucinated_citations` continua confirmando apenas que o id citado existe no corpus, não que é o id certo para a pergunta nem que a resposta tem conteúdo útil — a principal motivação remanescente para comparar com um baseline em nuvem no relatório técnico.
 
 ### RAG vs. sem RAG (memória paramétrica)
 
 Para a pergunta *"Qual a pena para quem mata alguém, segundo o Código Penal brasileiro?"*, a resposta **sem RAG** (o mesmo `llama3.1:8b`, sem nenhum contexto recuperado) fabrica conteúdo com aparência de precisão:
 
-> "O artigo 121 determina as penalidades para homicídio: 'Pena - reclusão, de um a vinte anos.' O §1º do mesmo artigo adiciona detalhes sobre o crime: 'Se deixar o crime impune ou for infâmia ou ferir grave e permanentemente a honra da vítima ou seus familiares.'"
+> "O crime de homicídio é punido com pena de reclusão, que varia de 6 a 20 anos, nos termos do artigo 121, caput, combinado com o artigo 122, ambos da Lei n° 9.455/1997 (Código Penal Brasileiro). [...] Homicídio doloso, qualificado por motivo fútil. Pena: reclusão de 6 (seis) a 20 anos. [...] Homicídio culposo ou impróprio, também conhecido como acidente de trânsito [...] a pena pode ser até dois anos em regime aberto ou especial."
 
-Ambas as citações entre aspas são fabricadas: a pena real é "de **seis** a vinte anos" (não "um"), e o §1º real trata de redução de pena por relevante valor social ou moral — um tema completamente diferente de "infâmia" e "honra da vítima", que o modelo inventou com formatação de citação literal.
+Vários erros passam despercebidos sem verificação: o modelo atribui o art. 121 à **Lei nº 9.455/1997** (a Lei de Tortura — nada a ver com o Código Penal, que é o Decreto-Lei 2.848/1940) e o combina indevidamente com o **art. 122** (induzimento ao suicídio, um crime distinto); ao descrever o homicídio qualificado, repete a pena do *caput* ("6 a 20 anos") quando a pena real do homicídio qualificado é de doze a trinta anos; e inventa, para o homicídio culposo, uma pena "até dois anos em regime aberto ou especial" — a pena real é detenção de um a três anos, sem menção a regime no próprio artigo. Sem RAG, não há nenhum mecanismo para pegar esse tipo de erro.
 
-**Com RAG**, a resposta cita ids reais e verificados (`CP:art121`, `CP:art226`), sem alucinação de citação — mas ainda contém uma imprecisão de conteúdo (menciona "prisão perpétua", pena inexistente no ordenamento brasileiro, e "até 30 anos", número não presente no art. 121). A notebook resume o limite com uma frase que se tornou o argumento central deste relatório sobre confiabilidade: *"a verificação de citação garante que o id existe e foi de fato recuperado, não que o texto gerado sobre aquele id é factualmente correto."*
+**Com RAG**, a resposta cita apenas um id — `CP:art211` ("Destruir, subtrair ou ocultar cadáver ou parte dele", um crime completamente diferente de matar alguém) — e afirma **"reclusão de 20 a 40 anos"**:
+
+```
+--- Com RAG (fundamentado no corpus) ---
+reclusão de 20 a 40 anos
+citações verificadas: ['CP:art211']   |   alucinadas: []
+```
+
+Esse número não é inventado: existe literalmente no corpus, no § 2º-D do próprio art. 121 (homicídio doloso cometido por integrante de organização criminosa ultraviolenta) — mas é a pena de uma qualificadora bem específica, não a pena geral de homicídio, e **não está no artigo citado** (`CP:art211`). `CP:art211` foi de fato o segundo dispositivo recuperado (score 0,853, atrás de `CP:art121` em 0,877) — um vizinho semântico plausível por vocabulário (morte/cadáver), mas de um crime distinto. `hallucinated_citations` ficou vazio porque `CP:art211` existe no corpus — a verificação de id não pega esse erro, porque o id **é** real; ela só não garante que o conteúdo gerado corresponde ao dispositivo citado. A lição, que se tornou o argumento central deste relatório sobre confiabilidade: **a verificação de citação garante que o id existe e foi de fato recuperado, não que o texto gerado sobre aquele id é factualmente correto, nem que é o dispositivo certo entre os recuperados** — verificação de id é condição necessária, não suficiente.
 
 ### Segurança de vigência dentro do RAG
 
-Repetindo o teste da seção de embeddings, mas agora através do pipeline completo: para *"violação sexual mediante fraude"* (que corresponde ao art. 214, revogado), o RAG recupera `['CP:art203', 'CP:art273', 'CP:art337-L', 'CP:art179', 'CP:art206']` — o art. 214 revogado, que teria o maior score de similaridade bruta (0,881) sem o filtro, nunca chega a ser considerado pela geração.
+Repetindo o teste da seção de embeddings, mas agora através do pipeline completo: para *"violação sexual mediante fraude"* (que corresponde ao antigo art. 214, revogado pela Lei 12.015/2009 e sucedido por `CP:art215`), o RAG recupera `['CP:art215', 'CP:art203', 'CP:art273', 'CP:art179', 'CP:art298']`; `CP:art214` **não aparece** entre os cinco primeiros nem mesmo com `exclude_revoked=False`. Diferente de execuções anteriores desta notebook, essa consulta deixou de exercitar o filtro: com a rubrica correta ("Violação sexual mediante fraude") realocada para `CP:art215` pelo parser rubrica-aware, o `embed_text` de `CP:art214` é hoje só o carimbo de revogação, sem sinal semântico competitivo — `CP:art215` lidera as duas listas (filtrada e não filtrada) com score 0,892, idênticas entre si. A garantia estrutural continua válida (o filtro `exclude_revoked=True` é aplicado **antes** da consulta vetorial, não depois — nenhum dispositivo revogado chega ao contexto do modelo, independentemente do score que teria), só não é mais **necessária** para este caso de teste específico.
+
+A notebook não localiza, nesta execução, nenhuma consulta do Código Penal em que um artigo revogado ainda vença os vigentes/alterados relacionados — o que é boa notícia sobre o corpus, mas enfraquece este exemplo como demonstração do filtro em ação. A demonstração viva atual do filtro em funcionamento é outra: para a consulta *"adultério é crime?"*, `CP:art240` (adultério, revogado pela Lei 11.106/2005) **lidera** o ranking bruto sem filtro (score 0,874, o maior de todos) e desaparece completamente do top-5 com `exclude_revoked=True` (padrão) — verificado diretamente contra o índice fora desta notebook, com o mesmo par de chamadas `index.query(..., exclude_revoked=True/False)` usado nas demais seções.
 
 ### Abstenção em pergunta fora de escopo
 
@@ -474,23 +517,22 @@ citações alucinadas:  ['CP:art999']
 
 ## Detecção de antinomias: princípios, adjudicação e avaliação (c06)
 
-A notebook `c06_antinomias.ipynb` implementa a contribuição mais original do projeto: um detector de **candidatos** a antinomia (conflito normativo) em três etapas, sobre o Código Penal (431 dispositivos vigentes).
+A notebook `c06_antinomias.ipynb` implementa a contribuição mais original do projeto: um detector de **candidatos** a antinomia (conflito normativo) em três etapas, sobre o Código Penal (431 dispositivos indexados, dos quais 406 em vigor).
 
 ### Pipeline em três etapas
 
-1. **Geração de candidatos por similaridade** (`generate_candidates`, `k=3`, limiar de similaridade `0,85`): com 431 dispositivos, a comparação exaustiva seria ~92 mil pares; o filtro por similaridade reduz o espaço a **910 pares** acima do limiar — tratável para adjudicação.
+1. **Geração de candidatos por similaridade** (`generate_candidates`, `k=3`, limiar de similaridade `0,85`): dos 431 dispositivos do CP indexados, 406 estão em vigor (os 25 restantes, revogados, são excluídos desta etapa). A comparação exaustiva desses 406 dispositivos vigentes seria ~82 mil pares (406×405/2); o filtro por similaridade reduz o espaço a **813 pares** acima do limiar — ainda demais para adjudicar todos com um LLM local em tempo de notebook, mas tratável para o subconjunto de maior similaridade levado à etapa seguinte.
 2. **Princípios LINDB — determinísticos onde possível, LLM onde exige leitura semântica.** *Lex superior* (hierarquia) e *lex posterior* (data) são computáveis a partir de metadados, sem LLM. *Lex specialis* (qual norma é mais específica) exige comparar conteúdo, e fica a cargo do adjudicador LLM local, que recebe uma "dica" determinística sempre que aplicável.
 3. **Avaliação** (`evaluate_antinomias`) contra um *gold set* pequeno e declaradamente ilustrativo — precisão, revocação e F1.
 
 ### Adjudicação dos 12 candidatos de maior similaridade
 
-Por custo computacional, a adjudicação com LLM é limitada aos 12 pares de maior similaridade (todos entre 0,893 e 0,908). Os 12 foram **todos confirmados** como conflito candidato, majoritariamente por *lex specialis* (confiança entre 0,80 e 1,00) — esperado, já que a etapa de geração já filtrou por similaridade temática altíssima. Um exemplo com justificativa textual do próprio LLM:
+Por custo computacional, a adjudicação com LLM é limitada aos 12 pares de maior similaridade (todos entre 0,893 e 0,906, liderados por `CP:art210` × `CP:art211`, sobre violação de sepultura). Desses 12, **9 foram confirmados** como conflito candidato, majoritariamente por *lex specialis* (confiança entre 0,80 e 1,00); **3 foram rejeitados** (`CP:art198`×`CP:art199`, `CP:art296`×`CP:art306`, `CP:art359-O`×`CP:art359-Q`) — o modelo julgou sem conflito plausível ou com confiança abaixo do limiar (`min_confidence=0,5`). A taxa de confirmação (75%) ainda é consistente com o padrão esperado (a geração já filtrou por similaridade temática altíssima), mas a rejeição de uma fração não trivial mostra que a adjudicação **não é um mero carimbo**: ela agrega julgamento além do que o limiar de similaridade sozinho capturaria. Um exemplo confirmado, com justificativa textual do próprio LLM:
 
 ```
-CP:art209 × CP:art210  |  princípio=lex_specialis  confiança=0.80
-  razão: "Ambas as normas tratam de violação a sepulturas, mas o art. 210
-  (Dispositivo B) aborda especificamente 'violar ou profanar sepultura ou
-  urna funerária', sendo considerado mais específico e, portanto, prevalecente."
+CP:art213 × CP:art217-A  |  princípio=lex_specialis  confiança=0.80
+  razão: "As leis têm a mesma hierarquia e data, então aplicamos a regra da
+  lex specialis, que prioriza a norma mais específica."
 ```
 
 Todos os pares confirmados geram uma aresta `conflict_candidate` no grafo, com `verification_state=CANDIDATE` — nunca um veredito.
@@ -500,12 +542,12 @@ Todos os pares confirmados geram uma aresta `conflict_candidate` no grafo, com `
 O *gold set* (3 pares, escolhidos e justificados pelo autor, não validados por especialista — limitação declarada explicitamente) cobre três famílias de conflito plausível: estupro vs. estupro de vulnerável (`art. 213` × `art. 217-A`), atentado contra a liberdade de trabalho vs. constrangimento a celebrar contrato (`art. 197` × `art. 198`), e a família de crimes de aborto (`art. 124` × `art. 126`). As métricas resultantes:
 
 ```
-precisão:  0,167   (tp=2, fp=10)
-revocação: 0,667   (tp=2, fn=1)
-F1:        0,267
+precisão:  0,333   (tp=3, fp=6)
+revocação: 1,000   (tp=3, fn=0)
+F1:        0,500
 ```
 
-A leitura honesta desses números, tal como discutida na própria notebook, é que a precisão baixa **não** significa que os 10 pares "falsos positivos" sejam erros do detector no sentido jurídico — são candidatos igualmente plausíveis que simplesmente não estão no gold set minúsculo de 3 pares contra 12 conflitos candidatos confirmados. Com um denominador dessa ordem de grandeza, a precisão numérica é estruturalmente baixa por construção, não porque o detector erre sistematicamente. O único falso negativo (`art. 197` × `art. 198`) tem causa identificada: esse par não estava entre os 12 candidatos levados à adjudicação — foi cortado ainda na etapa de geração de candidatos por similaridade, evidenciando que o gargalo de recall está no **limiar de geração**, não na adjudicação por LLM. Um gold set maior (~15 pares) verificado por um especialista em direito penal é declarado como trabalho futuro, não como lacuna escondida.
+Nesta execução, os três pares do gold set sobreviveram **as duas etapas**: caíram entre os 12 candidatos de maior similaridade e foram confirmados pela adjudicação — recall perfeito (1,000). A precisão continua baixa (0,333): dos 9 conflitos candidatos confirmados, 6 não estão no gold set minúsculo de 3 itens. Isso **não** significa que esses 6 pares sejam falsos positivos no sentido jurídico — são candidatos igualmente plausíveis que simplesmente não foram incluídos neste gold set ilustrativo; com um denominador dessa ordem de grandeza, a precisão numérica é estruturalmente baixa por construção, não porque o detector erre sistematicamente. O recall perfeito, por sua vez, é uma propriedade **desta execução**, não uma garantia estrutural do pipeline: em outra rodada, ou com `k`/`threshold` diferentes na etapa de geração, um par do gold set poderia perfeitamente cair fora do top-12 e nunca chegar à adjudicação — o funil de similaridade/limiar determina o teto de recall antes mesmo do LLM entrar em cena. Um gold set maior (~15 pares) verificado por um especialista em direito penal continua sendo trabalho futuro declarado, não uma lacuna escondida.
 
 ---
 
@@ -564,7 +606,7 @@ A distribuição calculada (`hierarchy_distribution`) mostra `{'CONSTITUICAO': 1
 
 ### Dispositivos mais alterados
 
-No Código Penal isoladamente, o topo do ranking de alterações é: `art. 121` (homicídio, 22) e `art. 157` (roubo, 22) empatados, seguidos por `art. 129` (lesão corporal, 20), `art. 7` (extraterritorialidade, 20) e `art. 155` (furto, 18). Os dois crimes contra a pessoa e contra o patrimônio mais centrais do Código foram sucessivamente reformados (Lei dos Crimes Hediondos, Pacote Anticrime, entre outras) para endurecer penas e criar qualificadoras. `CP:art171` (estelionato) — o mesmo artigo que a busca só-densa não conseguiu recuperar na seção de embeddings — também aparece no top-10 (17 alterações), reforçando que é um dispositivo central e ativamente atualizado, não marginal, apesar da falha pontual de recuperação lexical.
+No Código Penal isoladamente, o topo do ranking de alterações é: `art. 121` (homicídio, 22) e `art. 157` (roubo, 22) empatados, seguidos por `art. 129` (lesão corporal, 20), `art. 7` (extraterritorialidade, 20) e `art. 155` (furto, 18). Os dois crimes contra a pessoa e contra o patrimônio mais centrais do Código foram sucessivamente reformados (Lei dos Crimes Hediondos, Pacote Anticrime, entre outras) para endurecer penas e criar qualificadoras. `CP:art171` (estelionato) — o artigo cujo *nomen juris* motivou o parser rubrica-aware (seção de embeddings) — também aparece no top-10 (17 alterações), reforçando que é um dispositivo central e ativamente atualizado, não marginal.
 
 ### Visualização de rede
 
@@ -606,7 +648,7 @@ O projeto trata segurança não como uma auditoria à parte, mas como uma propri
 | **Injeção de prompt** ("ignore as instruções anteriores...") | `SYSTEM_PROMPT` fixo no código (não construído por concatenação de entrada do usuário); saída sempre validada por `parse_answer`/schema; citações sempre verificadas contra `valid_ids` | c05: prompt de injeção explícito recebido → modelo não vaza o system prompt, não afirma a falsidade solicitada, responde "Não posso cumprir esse pedido." e se abstém (`abstained=True`, `citations=[]`) |
 | **Vazamento de prompt/contexto** | Geração 100% local via Ollama — nada sai da máquina; sem telemetria de terceiros | c04: `OPENAI_API_KEY` verificada como ausente; nenhuma chamada de rede em nenhuma notebook |
 | **Citação alucinada** (id inexistente no corpus) | `hallucinated_citations` — verificação programática de pertencimento contra o conjunto de ids reais, independente da confiança declarada pelo modelo | c05: `FakeLLM` citando `CP:art999` (inexistente) é corretamente sinalizado e excluído, mesmo com `confidence: 0.95` |
-| **Alucinação de validade** (citar lei revogada como se estivesse em vigor) | Filtro `exclude_revoked=True` na recuperação, aplicado **antes** da consulta vetorial (não é efeito colateral do ranking); vigência derivada em nível de artigo, não de norma inteira | c03/c05: `CP:art214` (revogado) tem o maior score de similaridade bruta (0,881) mas nunca aparece nas respostas com o filtro padrão |
+| **Alucinação de validade** (citar lei revogada como se estivesse em vigor) | Filtro `exclude_revoked=True` na recuperação, aplicado **antes** da consulta vetorial (não é efeito colateral do ranking); vigência derivada em nível de artigo, não de norma inteira | c03: `CP:art185` (revogado) tem o maior score de similaridade bruta (0,914) mas nunca aparece nas respostas com o filtro padrão; c05: `CP:art240` (adultério, revogado) lidera o ranking bruto sem filtro (0,874) e desaparece completamente com o filtro padrão |
 | **Resposta fabricada sem base normativa** | Abstenção instruída no `SYSTEM_PROMPT`; se não há resultados recuperados, o sistema se abstém **sem sequer chamar o modelo** | c05: pergunta fora de escopo ("receita de bolo de cenoura") → `abstained=True`, `citations=[]` |
 | **Saída malformada / injeção via formatação** | JSON schema (`format=<schema>` nativo do Ollama) restringindo a estrutura da saída; `parse_answer` tolerante a cercas de código e prosa ao redor, mas falha para o lado seguro (abstenção) se não houver JSON balanceado parseável | c02: técnica 1 (zero-shot) demonstra a falha que o schema resolve; c05 confirma o comportamento em produção |
 | **Higiene de segredos** | Nenhuma chave de API necessária para o caminho de produção (Ollama local, sem autenticação, `localhost:11434`); nenhum segredo no repositório | README, c04 |
@@ -619,13 +661,13 @@ O ponto central, reafirmado em mais de uma notebook, é que **a segurança deste
 
 Lidos em conjunto, os sete capítulos contam uma história consistente sobre onde um LLM de 8B parâmetros, servido localmente, é confiável e onde não é:
 
-1. **Conhecimento paramétrico jurídico é raso — RAG não é opcional, é a premissa do projeto.** Desde o capítulo 1 (BERTimbau falha em prever "móvel" no cloze de furto) até o capítulo 5 (a resposta sem RAG para a pena de homicídio fabrica uma pena errada e um parágrafo inteiro inexistente, com formatação de citação literal), a evidência é consistente: sem fundamentação em texto recuperado, o modelo produz prosa fluente e convincente que é factualmente incorreta. A arquitetura do projeto — RAG hierarquia- e vigência-aware, com verificação de citação obrigatória — é uma resposta direta a esse achado, não uma escolha de design arbitrária.
+1. **Conhecimento paramétrico jurídico é raso — RAG não é opcional, é a premissa do projeto.** Desde o capítulo 1 (BERTimbau falha em prever "móvel" no cloze de furto) até o capítulo 5 (a resposta sem RAG para a pena de homicídio atribui o art. 121 à Lei de Tortura, funde-o com o art. 122 e erra a pena da qualificadora), a evidência é consistente: sem fundamentação em texto recuperado, o modelo produz prosa fluente e convincente que é factualmente incorreta. A arquitetura do projeto — RAG hierarquia- e vigência-aware, com verificação de citação obrigatória — é uma resposta direta a esse achado, não uma escolha de design arbitrária.
 
-2. **Verificação de citação captura um tipo de erro, não todos.** O caso do furto citado como roubo (capítulo 5) é o achado mais importante do projeto sobre os limites do que já foi construído: `hallucinated_citations` garante que todo id citado *existe* e *foi recuperado* — mas não garante que o conteúdo gerado sobre aquele id responde corretamente à pergunta. Verificação de existência e verificação de correção são propriedades diferentes, e só a primeira está implementada. Isso não invalida o mecanismo — ele efetivamente elimina toda uma classe de erro (ids fabricados) — mas delimita exatamente o que "citação verificada" garante e o que não garante.
+2. **Verificação de citação captura um tipo de erro, não todos — e o parser rubrica-aware isolou esse limite na camada de geração.** O caso do furto (capítulo 5) é o achado mais importante do projeto sobre os limites do que já foi construído: depois do fix, a recuperação acerta `CP:art155` em 1º lugar, mas a geração ainda cita `CP:art157` (roubo) — o erro sobreviveu ao contexto correto. O caso do homicídio com RAG é ainda mais nítido: a resposta cita apenas `CP:art211` (crime de ocultação de cadáver, não homicídio) e afirma "reclusão de 20 a 40 anos" — um número real do corpus (art. 121 §2º-D), mas atribuído ao artigo errado. `hallucinated_citations` garante que todo id citado *existe* e *foi recuperado* — mas não garante que o conteúdo gerado sobre aquele id responde corretamente à pergunta nem que é o dispositivo certo entre os recuperados. Verificação de existência e verificação de correção são propriedades diferentes, e só a primeira está implementada.
 
-3. **Recuperação lexical pura ainda tem um papel — a busca híbrida não é redundante.** O caso do art. 171 (estelionato, ausente do top-5 denso por não conter o nome popular do crime) mostra que embeddings semânticos, por mais bem calibrados, herdam um viés para o vocabulário que está literalmente presente no texto indexado. BM25 puro, apesar de "mais simples", recupera exatamente o caso em que a busca densa falha — a fusão híbrida é uma rede de segurança medida, não teórica.
+3. **A busca híbrida ajuda, mas não é uma rede de segurança garantida.** Antes do parser rubrica-aware, o caso do art. 171 (estelionato) mostrava embeddings semânticos perdendo um dispositivo cujo nome popular não estava no texto indexado, com o BM25 (léxico puro) resgatando o acerto. Hoje esse caso está corrigido — a rubrica presa ao artigo faz o denso liderar sozinho. Mas uma paráfrase coloquial da apropriação indébita (*"ficar com um dinheiro que recebeu emprestado e não devolver"*, sem usar a rubrica "Apropriação indébita" nem o vocabulário do *caput*) escapa do denso inteiramente (ausente até no top-20) **e** do híbrido: a normalização min-max de `hybrid_search` zera o componente denso quando o artigo está fora do pool, o que reduz pela metade sua pontuação combinada — mesmo o BM25 encontrando o artigo certo (rank 4) isoladamente. A fusão híbrida é uma rede de segurança condicional, não universal.
 
-4. **A separação entre determinístico e semântico é o que torna o detector de antinomias auditável.** *Lex superior* e *lex posterior* nunca dependem do LLM — são cálculo sobre hierarquia e data, sempre reproduzíveis e sempre corretos dado o metadado de entrada. Só *lex specialis*, que exige julgamento sobre o conteúdo de dois textos, é delegado ao modelo. A precisão baixa (0,167) do gold set de 3 pares não é evidência de que o detector erra sistematicamente — é uma consequência aritmética de comparar 12 candidatos confirmados contra um gold set propositalmente minúsculo; a leitura correta é a revocação (0,667) e a identificação exata da causa do único falso negativo: um corte na etapa de geração de candidatos, não um erro de julgamento do LLM.
+4. **A separação entre determinístico e semântico é o que torna o detector de antinomias auditável.** *Lex superior* e *lex posterior* nunca dependem do LLM — são cálculo sobre hierarquia e data, sempre reproduzíveis e sempre corretos dado o metadado de entrada. Só *lex specialis*, que exige julgamento sobre o conteúdo de dois textos, é delegado ao modelo, que nesta execução rejeitou 3 dos 12 candidatos adjudicados (25%) — evidência de que a etapa agrega julgamento, não apenas ratifica o limiar de similaridade. A precisão baixa (0,333) do gold set de 3 pares não é evidência de que o detector erra sistematicamente — é uma consequência aritmética de comparar 9 candidatos confirmados contra um gold set propositalmente minúsculo; a revocação perfeita (1,000) nesta execução é uma propriedade do resultado observado, não uma garantia estrutural do pipeline — o funil de geração de candidatos (limiar de similaridade) segue sendo o teto de recall antes mesmo do LLM entrar em cena.
 
 5. **A estrutura do grafo explica, de forma legível, por que certos dispositivos são "instáveis".** Os artigos que lideram o ranking de alterações (homicídio, roubo, furto, estelionato) são exatamente os mesmos que aparecem nos casos de falha de recuperação e nas notícias de reforma penal recorrente (Lei dos Crimes Hediondos, Pacote Anticrime) — a análise "direito como dado" não é decorativa, ela explica *por que* esses dispositivos específicos são os pontos de atrito do sistema inteiro, do parser à geração.
 
@@ -639,11 +681,11 @@ Em termos simples: o projeto pega nove leis penais brasileiras (Constituição, 
 
 Primeiro, testamos se um modelo de linguagem "sabe" direito penal de cabeça, sem consultar nada — e descobrimos que não sabe muito bem: ele erra até o nome de um dos elementos centrais do crime de furto. Isso confirma que a estratégia certa não é confiar na memória do modelo, e sim **buscar o texto da lei relevante primeiro e só então gerar uma resposta baseada nesse texto** — a técnica chamada de RAG (geração aumentada por recuperação).
 
-Testamos três formas de pedir ao modelo para responder de forma organizada, até chegar a uma que sempre produz uma resposta estruturada, com a lista exata de artigos usados. Construímos um buscador que entende perguntas em português comum ("quem mata alguém") e as conecta ao artigo certo do Código Penal, mesmo quando a pergunta não usa o mesmo vocabulário técnico da lei — e descobrimos um caso em que a busca "por significado" falha e uma busca "por palavra exata" (mais simples) acerta, então usamos as duas juntas.
+Testamos três formas de pedir ao modelo para responder de forma organizada, até chegar a uma que sempre produz uma resposta estruturada, com a lista exata de artigos usados. Construímos um buscador que entende perguntas em português comum ("quem mata alguém") e as conecta ao artigo certo do Código Penal, mesmo quando a pergunta não usa o mesmo vocabulário técnico da lei. No caminho, encontramos e corrigimos um defeito real na forma como o texto da lei era dividido: o nome oficial de cada crime ("Furto", "Estelionato") estava sendo colado no artigo errado, o que prejudicava justamente as buscas por nome de crime — depois do conserto, essas buscas passaram a acertar de cara. Mesmo assim, descobrimos um caso em que a busca "por significado" ainda falha e uma busca "por palavra exata" (mais simples) ainda ajuda, então usamos as duas juntas — embora nem sempre a combinação salve o dia.
 
 Rodamos o modelo inteiramente no computador local, não na nuvem — porque perguntas sobre casos jurídicos podem envolver informação sensível, e local nenhum dado sai da máquina. Medimos: cada resposta leva cerca de 2,7 segundos.
 
-Construímos um sistema que responde perguntas citando os artigos exatos usados, e que verifica automaticamente se cada citação existe de verdade na lei — se o modelo "inventasse" um artigo que não existe, o sistema pega esse erro. Descobrimos, porém, um limite importante: o sistema garante que o artigo citado existe, mas não garante que o artigo citado é o certo para aquela pergunta — em um teste, o modelo confundiu furto com roubo, dois crimes parecidos mas diferentes.
+Construímos um sistema que responde perguntas citando os artigos exatos usados, e que verifica automaticamente se cada citação existe de verdade na lei — se o modelo "inventasse" um artigo que não existe, o sistema pega esse erro. Descobrimos, porém, um limite importante que nem o conserto da busca resolveu: o sistema garante que o artigo citado existe, mas não garante que o artigo citado é o certo para aquela pergunta — mesmo depois de a busca passar a entregar o artigo certo em primeiro lugar, em um teste o modelo ainda confundiu furto com roubo ao gerar a resposta, e em outro citou um artigo sobre ocultação de cadáver ao responder sobre a pena de homicídio.
 
 Também construímos um "detector de contradições": ele procura pares de artigos que podem estar em conflito e tenta explicar, usando regras clássicas do direito (a lei mais nova vale mais que a mais antiga, a lei mais específica vale mais que a genérica), qual prevaleceria. Mas nunca emite um veredito — apenas uma sugestão para um humano revisar.
 
@@ -655,12 +697,13 @@ Por fim, tratamos a lei toda como uma rede de conexões — quais leis alteraram
 
 - **Vigência tácita e inconstitucionalidade ficam fora do escopo determinístico.** O sistema deriva vigência das anotações explícitas do Planalto; revogação tácita (uma norma nova contradizendo silenciosamente uma antiga, LINDB art. 2º §1º) e inconstitucionalidade declarada pelo STF não têm anotação correspondente e não são detectadas.
 - **Hierarquia com aliasing de `Enum`.** Decreto-lei, lei ordinária e medida provisória compartilham o mesmo valor numérico de hierarquia (posição 3) por serem tratados como equivalentes para fins de *lex superior* — correto substantivamente, mas isso faz a pirâmide de hierarquia (c07) exibir apenas dois níveis visíveis em vez de seis, um efeito colateral técnico que precisa ser lido no código, não só no gráfico.
-- **Citação verificada garante existência, não correção.** O caso do furto citado como roubo (c05) demonstra que `hallucinated_citations` vazio não implica resposta correta — apenas que o id citado existe e foi recuperado.
-- **Modelo local de 8B parâmetros erra em conteúdo, mesmo com contexto correto.** Em mais de um teste (c02, c04, c05), o `llama3.1:8b` produziu conteúdo impreciso (penas erradas, dispositivos trocados, "pena de morte" e "prisão perpétua" inexistentes no Brasil) mesmo recebendo o texto legal correto como contexto — a motivação central para comparar com um baseline em nuvem, arquitetado mas não executado neste projeto.
+- **Citação verificada garante existência, não correção — mesmo com recuperação perfeita.** O caso do furto (c05) demonstra isso da forma mais direta possível: depois do parser rubrica-aware corrigir a recuperação (`CP:art155` passa a liderar com folga), a geração ainda citou `CP:art157` (roubo). O caso do homicídio com RAG é mais grave ainda: a resposta citou `CP:art211` (ocultação de cadáver, não homicídio) e atribuiu a ele uma pena — "20 a 40 anos" — que existe de fato no corpus (art. 121 §2º-D), mas em outro dispositivo. `hallucinated_citations` vazio garante apenas que o id citado existe e foi recuperado; não garante que é o id certo nem que o conteúdo gerado sobre ele é correto. Esta é hoje a fragilidade mais séria e mensurável do pipeline — não mais compartilhada com a recuperação, isolada na camada de geração.
+- **A fusão híbrida (BM25 + denso) não é uma rede de segurança universal.** A normalização min-max de `hybrid_search` zera o componente denso de um dispositivo ausente do seu pool de candidatos, o que pode afundar sua pontuação combinada mesmo quando o BM25, isoladamente, o encontra (caso real: paráfrase coloquial de apropriação indébita, BM25 rank 4, híbrido fora do top-5). A fusão ajuda quando o acerto lexical é forte o bastante para sobreviver à normalização conjunta — não em todos os casos.
+- **Cobertura de rubrica é parcial, por natureza do próprio corpus.** O parser rubrica-aware extrai 423 rubricas em um corpus de 2.310 artigos — a maioria dos artigos genuinamente não tem uma (só artigos que abrem um tipo penal novo carregam nomen juris explícito no Planalto), e o formato de anotação do CPP difere do CP o suficiente para que a extração de rubrica, calibrada sobre o CP, não generalize automaticamente para todas as normas do corpus.
+- **Modelo local de 8B parâmetros erra em conteúdo, mesmo com contexto correto e corretamente ordenado.** Em mais de um teste (c02, c04, c05), o `llama3.1:8b` produziu conteúdo impreciso (penas erradas, dispositivos trocados, fontes legais fabricadas) mesmo recebendo o texto legal correto como contexto — a motivação central para comparar com um baseline em nuvem, arquitetado mas não executado neste projeto.
 - **Baseline em nuvem não foi medido, apenas arquitetado.** A comparação de qualidade/custo/latência com um provedor de nuvem (c04) usa estimativas raciocinadas, não chamadas reais — uma limitação explícita, não uma alegação de equivalência.
-- **Gold sets pequenos e não verificados por especialista.** Tanto o gold set de recuperação (6 perguntas) quanto o de antinomias (3 pares) foram autorados pelo próprio autor do projeto, não por um profissional do direito penal — as métricas de precisão/revocação relatadas são ilustrativas do método de avaliação, não uma medida definitiva de qualidade.
-- **Adjudicação de antinomias limitada aos 12 pares de maior similaridade.** Por custo/tempo de execução em notebook, apenas os 12 candidatos com maior similaridade dos 910 gerados foram levados ao LLM — o gargalo de recall identificado (um par do gold set cortado antes da adjudicação) está na etapa de geração de candidatos, não na adjudicação em si.
-- **Recuperação densa herda viés de vocabulário do texto indexado.** O caso do estelionato (art. 171) mostra que consultas com o nome popular/doutrinário de um crime que não aparece literalmente no dispositivo legal podem escapar da busca só-densa — mitigado, mas não eliminado, pela fusão híbrida.
+- **Gold sets pequenos e não verificados por especialista.** Tanto o gold set de recuperação (6 perguntas) quanto o de antinomias (3 pares) foram autorados pelo próprio autor do projeto, não por um profissional do direito penal — as métricas de precisão/revocação relatadas são ilustrativas do método de avaliação, não uma medida definitiva de qualidade. Nesta execução os 3 pares do gold set de antinomias sobreviveram integralmente às duas etapas (recall 1,000) — uma propriedade desta rodada específica de `k`/`threshold`, não uma garantia estrutural do pipeline.
+- **Adjudicação de antinomias limitada aos 12 pares de maior similaridade.** Por custo/tempo de execução em notebook, apenas os 12 candidatos com maior similaridade dos 813 gerados foram levados ao LLM — o teto de recall é determinado pelo limiar de geração de candidatos, antes mesmo de o LLM entrar em cena.
 - **Escopo federal-penal, não generalizável sem reengenharia.** O parser de anotações e a lógica de hierarquia são específicos ao formato de anotação do Planalto e à estrutura de normas do microssistema penal; estender a outros ramos do direito ou a legislação estadual/municipal exigiria trabalho de adaptação, não é plug-and-play.
 
 ---
@@ -670,7 +713,7 @@ Por fim, tratamos a lei toda como uma rede de conexões — quais leis alteraram
 - **Gold set de antinomias expandido e verificado por especialista** (~15 pares, conforme a especificação de design do projeto), permitindo métricas de precisão/revocação estatisticamente mais confiáveis.
 - **Baseline em nuvem executado** (não apenas arquitetado), com medição real de latência, custo por token e taxa de acerto de conteúdo em comparação com o modelo local de 8B.
 - **Detecção de revogação tácita**, ao menos como candidato heurístico (ex.: dois dispositivos de igual hierarquia tratando da mesma matéria com datas muito distantes, sinalizados para revisão humana, análogo ao detector de antinomias atual).
-- **Ampliação da adjudicação de antinomias além dos 12 pares de maior similaridade**, com paralelização ou *batching* para tornar viável adjudicar a totalidade dos ~910 candidatos gerados.
+- **Ampliação da adjudicação de antinomias além dos 12 pares de maior similaridade**, com paralelização ou *batching* para tornar viável adjudicar a totalidade dos 813 candidatos gerados.
 - **Um segundo estágio de verificação de conteúdo da citação** (não apenas de existência) — por exemplo, um classificador ou um segundo LLM verificando se o texto do dispositivo citado de fato sustenta a alegação feita na resposta, endereçando diretamente o limite identificado no caso furto/roubo.
 - **Extensão do corpus a outros microssistemas** (ex.: direito tributário, trabalhista), testando se a arquitetura (parser de vigência + grafo + RAG + detector de antinomias) generaliza além do penal.
 - **Publicação acadêmica.** Conforme a especificação de design do projeto, dois componentes têm potencial de contribuição citável na literatura: o parser de vigência inline do Planalto (redução de "alucinação de validade", termo cunhado no próprio projeto) e o gold set de antinomias penais com resolução por princípios LINDB.
@@ -699,7 +742,7 @@ make models
 # 4. Fazer uma pergunta ao RAG
 make ask q="qual a pena para furto?"
 
-# 5. Rodar a suíte de testes (160 testes; os que dependem do modelo e5 real
+# 5. Rodar a suíte de testes (166 testes; os que dependem do modelo e5 real
 #    ou de um Ollama ativo são pulados automaticamente se indisponíveis)
 make test
 
