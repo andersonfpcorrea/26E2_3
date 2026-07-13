@@ -56,7 +56,8 @@ _AGGREGATE_RE = re.compile(
     r"(?i)quant[oa]s\b"
     r"|\btodas?\s+as\s+(leis|normas)\b"
     r"|\bqual\s+(a\s+)?(lei|norma)\s+(tem|possui|com)\b"
-    r"|\b(maior|menor|mais\s+alta?|mais\s+baixa?)\b.{0,20}\bpena\b"
+    r"|\b(maior|menor|mais\s+(alta|baixa|severa|dura|grave|pesada|branda|leve|suave))\b.{0,30}\bpena\b"
+    r"|\bpena\s+(máxima|mínima|maior|menor|mais\s+(alta|baixa|severa|dura|grave|pesada|branda|leve|suave))\b"
     r"|\bmais\s+(alterad|emendad|modificad)"
 )
 

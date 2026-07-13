@@ -21,7 +21,7 @@ run: ## TUDO em um comando: instala o que faltar (verifica antes de baixar) e ab
 	@echo "[4/5] Índice semântico (constrói UMA vez, ~2 min; depois reutiliza)..."
 	@uv run python scripts/build_index.py
 	@echo "[5/5] Tudo pronto — abrindo a interface web (Ctrl+C para encerrar)..."
-	uv run streamlit run app.py
+	uv run streamlit run app.py --server.fileWatcherType none
 
 # Internal: idempotent data provisioning — the snapshots ship committed, so
 # these only act when files are genuinely absent.
@@ -54,7 +54,7 @@ ensure-models:
 		echo "  Ollama não instalado (https://ollama.com) — opcional: o app funciona"; \
 		echo "  sem ele (busca citada, análises e grafo); só a geração de respostas fica off."; \
 	fi
-	@echo "  Embeddings (multilingual-e5-base): verificando cache (baixa ~440 MB só na 1ª vez)..."
+	@echo "  Embeddings (multilingual-e5-base): verificando cache..."
 	@uv run python -c "from direito_dados.retrieval.embedder import E5Embedder; \
 		E5Embedder().embed_query('ok'); print('  Embeddings prontos.')"
 
@@ -89,7 +89,7 @@ index: ## constrói/reutiliza o índice semântico persistido (data/index/)
 	uv run python scripts/build_index.py
 
 app: ## abre só a interface web (sem verificar modelos; use make run na primeira vez)
-	uv run streamlit run app.py
+	uv run streamlit run app.py --server.fileWatcherType none
 
 attribution: ## (opcional) refaz o dataset de autoria a partir das APIs do Congresso — já acompanha o repo
 	uv run python scripts/build_attribution.py

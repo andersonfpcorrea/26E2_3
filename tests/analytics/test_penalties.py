@@ -57,3 +57,11 @@ def test_answer_aggregate_maior_pena_and_counts():
 def test_format_months():
     assert format_months(72) == "6 anos"
     assert format_months(3) == "3 meses"
+
+
+def test_penalty_synonyms_route_to_preset_tools():
+    c = _corpus()
+    g = NormGraph()
+    assert "Menores penas" in answer_aggregate("qual a lei com a pena mais branda?", c, g)
+    assert "Menores penas" in answer_aggregate("qual crime tem a pena mais leve?", c, g)
+    assert "Maiores penas" in answer_aggregate("qual a pena mais severa do código?", c, g)

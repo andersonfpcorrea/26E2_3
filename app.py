@@ -259,7 +259,7 @@ def render_qa_tab(ollama_up: bool) -> None:
             with st.spinner("Sem ferramenta pronta para esta agregação — gerando e "
                             "executando um script sobre os dados (local)..."):
                 entry["script_result"] = generate_and_run(
-                    question, get_flat_dataset(), OllamaClient(model=MODEL))
+                    question, get_flat_dataset(), OllamaClient(model=MODEL), retries=2)
         st.session_state.chat_history.append(entry)
         st.rerun()
     if ollama_up:

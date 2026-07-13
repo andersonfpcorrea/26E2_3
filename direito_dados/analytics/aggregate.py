@@ -19,7 +19,7 @@ def answer_aggregate(question: str, corpus: Corpus, graph: NormGraph) -> str | N
     """Markdown answer computed over the WHOLE corpus, or None if unsupported."""
     q = question.lower()
 
-    if re.search(r"\b(maior|mais\s+alta?)\b.{0,30}\bpena\b|\bpena\s+(máxima|maior)\b", q):
+    if re.search(r"\b(maior|mais\s+(alta|severa|dura|grave|pesada))\b.{0,30}\bpena\b|\bpena\s+(máxima|maior|mais\s+(severa|dura|grave|pesada|alta))\b", q):
         rows = top_penalties(corpus, n=5)
         if not rows:
             return None
@@ -30,7 +30,7 @@ def answer_aggregate(question: str, corpus: Corpus, graph: NormGraph) -> str | N
                          f"a {format_months(p.max_months)}  \n  _\"{p.excerpt}\"_")
         return "\n".join(lines)
 
-    if re.search(r"\b(menor|mais\s+baixa?)\b.{0,30}\bpena\b|\bpena\s+mínima\b", q):
+    if re.search(r"\b(menor|mais\s+(baixa|branda|leve|suave))\b.{0,30}\bpena\b|\bpena\s+(mínima|menor|mais\s+(branda|leve|suave|baixa))\b", q):
         rows = top_penalties(corpus, n=5, lowest=True)
         if not rows:
             return None
