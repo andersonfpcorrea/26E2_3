@@ -18,6 +18,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from pyvis.network import Network
 
+from direito_dados.analytics.aggregate import answer_aggregate
 from direito_dados.analytics.authorship import amendments_by_origin, authors_by_party, top_authors
 from direito_dados.analytics.network import to_network_data
 from direito_dados.analytics.summary import most_amended_articles, vigencia_summary
@@ -28,7 +29,7 @@ from direito_dados.conflicts.candidates import CandidatePair, generate_candidate
 from direito_dados.conflicts.detect import detect_conflicts
 from direito_dados.corpus import NORMS, Corpus, VigenciaStatus, load_corpus
 from direito_dados.generation.llm import OllamaClient, ollama_available, ollama_has_model
-from direito_dados.generation.rag import RagAnswer, answer_question
+from direito_dados.generation.rag import RagAnswer, answer_question, is_aggregate_question
 from direito_dados.graph import build_graph
 from direito_dados.graph.models import NormGraph
 from direito_dados.retrieval.chunks import chunk_corpus
@@ -132,6 +133,21 @@ def _render_retrieved_expander(results: list[Result]) -> None:
 # --- Tab 1: Pergunte à lei ---------------------------------------------------
 
 def _render_chat_entry(entry: dict) -> None:
+    if entry["mode"] == "computed":
+        if entry["computed"]:
+            st.markdown(entry["computed"])
+            st.caption(
+                "Resposta agregada: computada por código sobre o corpus inteiro "
+                "(nenhum texto gerado por LLM) — perguntas de máximo/contagem não "
+                "são respondíveis por recuperação de trechos."
+            )
+        else:
+            st.warning(
+                "Pergunta analítica detectada, mas ainda sem ferramenta de agregação "
+                "correspondente. Reformule para um dispositivo/tema específico ou use "
+                "as abas analíticas."
+            )
+        return
     if entry["mode"] == "rag":
         answer: RagAnswer = entry["answer"]
         if answer.abstained:
@@ -208,6 +224,13 @@ def render_qa_tab(ollama_up: bool) -> None:
 
     chunks, embedder, index = get_index_bundle()
     entry: dict = {"question": question}
+    if is_aggregate_question(question):
+        computed = answer_aggregate(question, get_corpus("full"), get_graph("full"))
+        entry["mode"] = "computed"
+        entry["computed"] = computed
+        entry["results"] = []
+        st.session_state.chat_history.append(entry)
+        st.rerun()
     if ollama_up:
         llm = OllamaClient(model=MODEL)
         valid_ids = {c.id for c in chunks}
