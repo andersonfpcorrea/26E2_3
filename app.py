@@ -19,6 +19,7 @@ import streamlit.components.v1 as components
 from pyvis.network import Network
 
 from direito_dados.analytics.aggregate import answer_aggregate
+from direito_dados.analytics.sandbox import build_dataset, generate_and_run
 from direito_dados.analytics.authorship import amendments_by_origin, authors_by_party, top_authors
 from direito_dados.analytics.network import to_network_data
 from direito_dados.analytics.summary import most_amended_articles, vigencia_summary
@@ -84,6 +85,12 @@ def get_index_bundle():
 
 
 @st.cache_resource(show_spinner=False)
+def get_flat_dataset():
+    """Flattened per-article rows for model-generated aggregation scripts."""
+    return build_dataset(get_corpus("full"), get_graph("full"))
+
+
+@st.cache_resource(show_spinner=False)
 def get_authorship() -> list[Authorship] | None:
     """None when `data/attribution/authorship.json` hasn't been generated yet
     (`make attribution`) — the tab renders an info box instead of failing."""
@@ -137,15 +144,31 @@ def _render_chat_entry(entry: dict) -> None:
         if entry["computed"]:
             st.markdown(entry["computed"])
             st.caption(
-                "Resposta agregada: computada por código sobre o corpus inteiro "
-                "(nenhum texto gerado por LLM) — perguntas de máximo/contagem não "
-                "são respondíveis por recuperação de trechos."
+                "Resposta agregada: computada por ferramenta verificada sobre o corpus "
+                "inteiro (nenhum texto gerado por LLM)."
+            )
+        elif entry.get("script_result") is not None and entry["script_result"].ok:
+            res = entry["script_result"]
+            st.markdown(f"**Resultado (computado sobre o corpus inteiro):**\n\n{res.output}")
+            with st.expander("Script gerado pelo modelo (confira o código)"):
+                st.code(res.script, language="python")
+            st.caption(
+                "Sem ferramenta pronta para esta agregação, o modelo local escreveu o "
+                "script acima, executado em ambiente restrito **somente sobre os dados** "
+                "(sem imports, sem arquivos, sem rede). Audite o código antes de confiar "
+                "no número."
+            )
+        elif entry.get("script_result") is not None:
+            st.warning(
+                f"O modelo tentou gerar um script para esta agregação, mas a execução "
+                f"falhou ({entry['script_result'].error}). Reformule a pergunta ou use "
+                "as abas analíticas."
             )
         else:
             st.warning(
                 "Pergunta analítica detectada, mas ainda sem ferramenta de agregação "
-                "correspondente. Reformule para um dispositivo/tema específico ou use "
-                "as abas analíticas."
+                "correspondente (e o Ollama está inativo para gerar um script). "
+                "Reformule para um dispositivo/tema específico ou use as abas analíticas."
             )
         return
     if entry["mode"] == "rag":
@@ -229,6 +252,14 @@ def render_qa_tab(ollama_up: bool) -> None:
         entry["mode"] = "computed"
         entry["computed"] = computed
         entry["results"] = []
+        if computed is None and ollama_up:
+            # Tier 2: no preset tool covers it — the model writes a script that
+            # runs over the data only, in a restricted subprocess, and the
+            # generated code is shown for audit.
+            with st.spinner("Sem ferramenta pronta para esta agregação — gerando e "
+                            "executando um script sobre os dados (local)..."):
+                entry["script_result"] = generate_and_run(
+                    question, get_flat_dataset(), OllamaClient(model=MODEL))
         st.session_state.chat_history.append(entry)
         st.rerun()
     if ollama_up:
