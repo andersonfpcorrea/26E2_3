@@ -49,8 +49,18 @@ class E5Embedder:
     def _load(self):
         if self._model is None:
             from sentence_transformers import SentenceTransformer
+            from transformers.utils import logging as hf_logging
 
-            self._model = SentenceTransformer(self.model_name)
+            # The per-tensor "Loading weights" bar is noise (local disk read).
+            hf_logging.disable_progress_bar()
+            try:
+                # Fully offline when the model is already in the local cache —
+                # avoids the HF Hub metadata request (and its auth warning)
+                # that otherwise happens on EVERY load.
+                self._model = SentenceTransformer(self.model_name, local_files_only=True)
+            except Exception:
+                # First run: model not cached yet — download it (network).
+                self._model = SentenceTransformer(self.model_name)
         return self._model
 
     def embed_passages(self, texts: list[str]) -> list[list[float]]:

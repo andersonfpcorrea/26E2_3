@@ -39,3 +39,43 @@ def test_empty_retrieval_abstains_without_calling_model():
     llm = FakeLLM('{"answer":"não deveria ser chamado"}')
     ans = answer_question("xyz", VectorIndex.build([], e), e, llm, k=3)
     assert ans.abstained and ans.citations == [] and llm.last_prompt is None
+
+
+def _quoted_llm(quote, citations):
+    import json
+    return FakeLLM(json.dumps({
+        "trecho_citado": quote, "answer": "resposta",
+        "citations": citations, "abstained": False, "confidence": 0.9,
+    }))
+
+
+def test_quote_verified_when_excerpt_is_in_cited_article():
+    e = FakeEmbedder()
+    llm = _quoted_llm("Matar alguém", ["CP:art121"])
+    ans = answer_question("o que é homicídio?", _index(), e, llm, k=3, verify_quote=True)
+    assert ans.quote_status == "verificado"
+    assert ans.quote_found_in == "CP:art121"
+
+
+def test_quote_misattribution_is_flagged_with_real_owner():
+    e = FakeEmbedder()
+    # Model cites art121 but quotes art155's text — the content/citation
+    # mismatch that plain id verification cannot catch.
+    llm = _quoted_llm("Subtrair coisa", ["CP:art121"])
+    ans = answer_question("pergunta", _index(), e, llm, k=3, verify_quote=True)
+    assert ans.quote_status == "atribuicao_incorreta"
+    assert ans.quote_found_in == "CP:art155"
+
+
+def test_quote_not_found_when_fabricated():
+    e = FakeEmbedder()
+    llm = _quoted_llm("texto que não existe em lugar nenhum", ["CP:art121"])
+    ans = answer_question("pergunta", _index(), e, llm, k=3, verify_quote=True)
+    assert ans.quote_status == "nao_encontrado"
+
+
+def test_default_path_has_no_quote_fields():
+    e = FakeEmbedder()
+    llm = FakeLLM('{"answer":"x","citations":["CP:art121"],"abstained":false,"confidence":0.9}')
+    ans = answer_question("pergunta", _index(), e, llm, k=3)
+    assert ans.quote == "" and ans.quote_status == ""

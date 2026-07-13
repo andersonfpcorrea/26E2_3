@@ -152,6 +152,23 @@ def _render_chat_entry(entry: dict) -> None:
                 "para esta pergunta; a citação foi removida da resposta em vez de apresentada "
                 "como verificada."
             )
+        if answer.quote_status:
+            if answer.quote_status == "verificado":
+                st.success(
+                    f'Trecho de sustentação verificado no dispositivo citado '
+                    f'({answer.quote_found_in}): "{answer.quote}"'
+                )
+            elif answer.quote_status == "atribuicao_incorreta":
+                st.error(
+                    f"Atribuição incorreta detectada: o trecho que sustenta a resposta "
+                    f'pertence a **{answer.quote_found_in}**, não ao dispositivo citado. '
+                    f'Trecho: "{answer.quote}"'
+                )
+            else:
+                st.warning(
+                    "O trecho de sustentação informado pelo modelo NÃO foi encontrado "
+                    "nos dispositivos recuperados — trate a resposta com cautela."
+                )
         if answer.hierarchy_notes:
             st.caption(f"Nota de hierarquia: {answer.hierarchy_notes}")
     else:
@@ -195,7 +212,8 @@ def render_qa_tab(ollama_up: bool) -> None:
         llm = OllamaClient(model=MODEL)
         valid_ids = {c.id for c in chunks}
         with st.spinner(f"Gerando com {MODEL} (local)..."):
-            answer = answer_question(question, index, embedder, llm, k=5, valid_ids=valid_ids)
+            answer = answer_question(question, index, embedder, llm, k=5, valid_ids=valid_ids,
+                                     verify_quote=True)
         entry["mode"] = "rag"
         entry["answer"] = answer
         entry["results"] = index.query(question, embedder, k=5)
@@ -248,7 +266,7 @@ def render_timeline_tab() -> None:
         {"citação": (graph.node(pid).label if graph.node(pid) else pid), "emendas": count}
         for pid, count in ranked
     ]
-    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
 
 
 # --- Tab 3: O grafo ------------------------------------------------------------
@@ -343,7 +361,7 @@ def render_conflicts_tab(ollama_up: bool) -> None:
 
     st.dataframe(
         pd.DataFrame([{"a": c.a, "b": c.b, "similaridade": round(c.similarity, 4)} for c in candidates]),
-        use_container_width=True, hide_index=True,
+        width="stretch", hide_index=True,
     )
 
     st.markdown("---")
@@ -379,7 +397,7 @@ def render_vigencia_tab() -> None:
     summary = vigencia_summary(full_corpus)
     order = ["vigente", "alterado", "revogado"]
     summary_df = pd.DataFrame(summary).T[order]
-    st.dataframe(summary_df, use_container_width=True)
+    st.dataframe(summary_df, width="stretch")
 
     st.subheader("Artigos revogados")
     rows = []
@@ -402,7 +420,7 @@ def render_vigencia_tab() -> None:
             lambda row: search.lower() in " ".join(str(v) for v in row).lower(), axis=1
         )
         revoked_df = revoked_df[mask]
-    st.dataframe(revoked_df, use_container_width=True, hide_index=True)
+    st.dataframe(revoked_df, width="stretch", hide_index=True)
 
 
 # --- Tab 6: Quem mudou a lei -------------------------------------------------------
@@ -459,7 +477,7 @@ def render_attribution_tab() -> None:
         for tipo, counts in sorted(by_tipo.items())
         for status, count in sorted(counts.items())
     ]
-    st.dataframe(pd.DataFrame(coverage_rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(coverage_rows), width="stretch", hide_index=True)
 
     col_origin, col_party = st.columns(2)
     with col_origin:
@@ -482,7 +500,7 @@ def render_attribution_tab() -> None:
     ranked = top_authors(records, top=top_n)
     st.dataframe(
         pd.DataFrame(ranked, columns=["autor", "leis de autoria"]),
-        use_container_width=True, hide_index=True,
+        width="stretch", hide_index=True,
     )
 
     st.subheader("Todas as normas")
@@ -493,7 +511,7 @@ def render_attribution_tab() -> None:
             lambda row: search.lower() in " ".join(str(v) for v in row).lower(), axis=1
         )
         table_df = table_df[mask]
-    st.dataframe(table_df, use_container_width=True, hide_index=True)
+    st.dataframe(table_df, width="stretch", hide_index=True)
 
 
 # --- Main ------------------------------------------------------------------------

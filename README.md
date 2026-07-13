@@ -177,7 +177,10 @@ python scripts/demo.py
 ## Interface web
 
 `make run` abre uma interface local em Streamlit ("Letra da Lei") com seis abas: perguntas
-à lei com citações verificadas, a linha do tempo das emendas, o grafo normativo interativo,
+à lei com citações verificadas — incluindo a verificação do **trecho de sustentação**
+(*quote-then-answer*): o modelo é obrigado a copiar o excerto literal que embasa a resposta,
+e o sistema confere se o excerto existe no dispositivo citado, alertando atribuições
+incorretas —, a linha do tempo das emendas, o grafo normativo interativo,
 os candidatos a antinomia, o painel de vigência e "Quem mudou a lei" (autoria de registro
 por norma). Tudo funciona de imediato: o corpus e o dataset de autoria **já acompanham o
 repositório**, e o `make run` verifica cada um e só reconstrói o que estiver ausente —
