@@ -32,7 +32,7 @@ ask: ## faça sua pergunta ao RAG: make ask q="qual a pena para furto?"
 	@test -n "$(q)" || { echo 'Uso: make ask q="sua pergunta"'; exit 1; }
 	uv run python scripts/demo.py "$(q)"
 
-test: ## roda a suíte de testes (160 testes; os que dependem de e5/Ollama pulam se indisponíveis)
+test: ## roda a suíte de testes (166 testes; os que dependem de e5/Ollama pulam se indisponíveis)
 	uv run pytest -q
 
 notebooks: ## re-executa as 7 notebooks (lento; requer Ollama ativo para c02/c04/c05/c06)
