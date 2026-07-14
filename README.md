@@ -84,7 +84,7 @@ Todos os comandos: `make help`. Alternativa sem uv no final deste arquivo.
 | Além da rubrica: detecção de antinomias    | [`c06_antinomias.ipynb`](c06_antinomias.ipynb)                                 | "Detecção de antinomias"                      |
 | Além da rubrica: a lei como dado           | [`c07_lei_como_dado.ipynb`](c07_lei_como_dado.ipynb)                           | "Análise 'a lei como dado'"                   |
 
-- **Código completo:** pacote [`direito_dados/`](direito_dados/) (com 169 testes — `make test`)
+- **Código completo:** pacote [`direito_dados/`](direito_dados/) (com 190 testes — `make test`)
   - as 7 notebooks acima, todas executadas com saídas embutidas (podem ser avaliadas sem rodar nada).
 - **Pipeline RAG + este README** com instalação, preparação dos dados, indexação e consultas.
 - **Relatório técnico (PDF):**
@@ -142,12 +142,12 @@ direito_dados/
   conflicts/    # princípios LINDB, geração de candidatos, adjudicação, avaliação
 scripts/        # demo.py, fetch_corpus.py, build_report.py
 data/raw/       # snapshot das 9 normas (texto processado)
-tests/          # 169 testes espelhando o pacote
+tests/          # 190 testes espelhando o pacote
 ```
 
 ## Propriedades de segurança
 
-- **Vigência:** a busca exclui artigos revogadas; a revogação de um parágrafo não revoga o artigo inteiro.
+- **Vigência:** a busca exclui artigos revogados; a revogação de um parágrafo não revoga o artigo inteiro.
 - **Citação verificada:** toda citação do modelo é conferida contra o
   corpus; ids inexistentes são reportados como alucinados.
 - **Abstenção:** sem contexto recuperado o sistema não responde.
@@ -161,7 +161,7 @@ tests/          # 169 testes espelhando o pacote
 make setup      # dependências Python (uv sync --all-extras)
 make demo       # demonstração de ponta a ponta (independe do Ollama)
 make models     # modelos locais: llama3.1:8b via Ollama + embeddings e5
-make test       # 169 testes
+make test       # 190 testes
 make notebooks  # executa os 7 notebooks
 make report     # produz o PDF a partir de report/relatorio.md
 ```
@@ -178,7 +178,7 @@ python scripts/demo.py
 
 `make run` abre uma interface local em Streamlit ("Letra da Lei") com seis abas: perguntas
 à lei com citações verificadas — incluindo a verificação do **trecho de sustentação**
-(*quote-then-answer*): o modelo é obrigado a copiar o excerto literal que embasa a resposta,
+(_quote-then-answer_): o modelo é obrigado a copiar o excerto literal que embasa a resposta,
 e o sistema confere se o excerto existe no dispositivo citado, alertando atribuições
 incorretas —, a linha do tempo das emendas, o grafo normativo interativo,
 os candidatos a antinomia, o painel de vigência e "Quem mudou a lei" (autoria de registro
