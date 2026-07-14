@@ -187,7 +187,7 @@ repositório**, e o `make run` verifica cada um e só reconstrói o que estiver 
 por isso `make attribution` (refazer a autoria direto das APIs do Congresso) e `make data`
 (rebaixar o corpus do Planalto) normalmente nunca precisam ser executados; existem para
 reprodutibilidade a partir da fonte. A interface é uma camada **além da rubrica** (os
-entregáveis avaliados são as notebooks, o pacote e o relatório).
+entregáveis avaliados são os notebooks, o pacote e o relatório).
 
 ## Limitações
 
