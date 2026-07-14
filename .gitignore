@@ -12,3 +12,5 @@ data/raw/*
 data/analytics/
 data/index/
 *.egg-info/
+
+entrega_moodle/
