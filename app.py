@@ -389,17 +389,33 @@ def render_graph_tab() -> None:
         unsafe_allow_html=True,
     )
 
-    net = Network(height="650px", width="100%", directed=True, cdn_resources="in_line")
-    net.toggle_physics(True)
-    for n in capped_nodes:
-        net.add_node(
-            n["id"], label=n["label"],
-            title=f"{n['kind']} · {n.get('status') or ''}",
-            color=_node_color(n),
-        )
-    for e in capped_edges:
-        net.add_edge(e["src"], e["dst"], title=e["kind"])
-    components.html(net.generate_html(notebook=False), height=670, scrolling=True)
+    # Static, pre-computed layout: physics is disabled so the graph doesn't
+    # oscillate forever, and a networkx spring layout (deterministic, cheap)
+    # gives node positions — far lighter than letting vis.js simulate hundreds
+    # of nodes in the browser.
+    try:
+        import networkx as nx
+
+        g = nx.DiGraph()
+        g.add_nodes_from(n["id"] for n in capped_nodes)
+        g.add_edges_from((e["src"], e["dst"]) for e in capped_edges)
+        pos = nx.spring_layout(g, seed=42, k=0.6)
+
+        net = Network(height="650px", width="100%", directed=True, cdn_resources="in_line")
+        net.toggle_physics(False)
+        for n in capped_nodes:
+            x, y = pos[n["id"]]
+            net.add_node(
+                n["id"], label=n["label"],
+                title=f"{n['kind']} · {n.get('status') or ''}",
+                color=_node_color(n), x=float(x) * 1200, y=float(y) * 1200, physics=False,
+            )
+        for e in capped_edges:
+            net.add_edge(e["src"], e["dst"], title=e["kind"])
+        components.html(net.generate_html(notebook=False), height=670, scrolling=True)
+    except Exception as exc:  # never let the optional graph crash the app
+        st.warning(f"Não foi possível renderizar o grafo interativo desta norma ({exc}). "
+                   "As estatísticas acima permanecem válidas.")
 
 
 # --- Tab 4: Antinomias ---------------------------------------------------------
